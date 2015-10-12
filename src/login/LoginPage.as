@@ -18,6 +18,8 @@
 	import flash.text.TextFormat;
 	import flash.utils.Timer;
 	
+	import user.UserConfig;
+	
 	//import org.osmf.events.TimeEvent;
 	
 	public class LoginPage extends Page
@@ -30,12 +32,7 @@
 		private var info:TextField = new TextField();
 		
 		private var btnContainer = new Sprite();
-		private var timerOnLine:Timer;
-		private var timerOffLine:Timer;
-		private var timeroutLine:Timer = new Timer(10*1000);
-		
-		private var address:String = "www.pauchie.com.cn:8180";
-		//private var address:String = "222.125.72.173:8280"
+
 		
 		private var btnImage:Image = new Image();
 		private var xml:XML;
@@ -47,64 +44,24 @@
 		
 		public function LoginPage()
 		{
-//			sharedObject = SharedObject.getLocal("offlineTime");
-//			sharedObject.clear();
-			checkTime();
-			initPage();
-			halfHourTimer.addEventListener(TimerEvent.TIMER,onTimer);
-			timeroutLine.addEventListener(TimerEvent.TIMER,ontwenty);
-			halfHourTimer.start();
-			
-
-			
+			autoLogin();
+			initPage();			
 		}
 		
-
-		private function onTimer(e:TimerEvent):void{
-			var urlLoader:URLLoader = new URLLoader();
-			urlLoader.load(new URLRequest("http://www.dajinge.com/ipad/user.php?username="+userText.text+"&password="+passText.text));
-			trace("http://www.dajinge.com/ipad/user.php?username="+userText.text+"&password="+passText.text+"   halfhpur");
-			urlLoader.addEventListener(Event.COMPLETE, __completeHandler1);
-			timeroutLine.start();
-		}
-		
-		private function ontwenty(e:TimerEvent):void{
-			parent.addChild(this);
-			this.visible = true;
-			timeroutLine.stop();
-		}
-		
-		private function __completeHandler1(evt:Event):void
-		{
-			try
-			{
-				trace("!!!!"+evt.currentTarget.data.toString()+"!!!!");
-				xml = new XML(evt.currentTarget.data.toString());
-				if(xml.status.toString() == "OK"){					
-					timeroutLine.stop();
-				}else{
-					info.text = xml.message.toString();
-				}
+		private function autoLogin():void{
+			if(UserConfig.autoLogin){
+				
 			}
-			catch (err:Error)
-			{
-				trace("ERROR:" + err.getStackTrace());
-			}
-			
-		} 
+		}
 		
 		private function __completeHandler(evt:Event):void
 		{
 			try
 			{
-				trace("333@@##$$%%"+evt.currentTarget.data.toString()+"!!@@##$$%%");
 				xml = new XML(evt.currentTarget.data.toString());
 				if(xml.status.toString() == "OK"){
 					
 					this.visible = false;					
-					sharedObject = SharedObject.getLocal("offlineTime");
-					sharedObject.data.loginTime = new Date().time;
-					sharedObject.flush();
 					
 				}else{
 					info.text = xml.message.toString();
@@ -119,34 +76,9 @@
 		
 		private function loadPhp():void {
 			var urlLoader:URLLoader = new URLLoader();
-			urlLoader.load(new URLRequest("http://www.dajinge.com/ipad/user.php?username="+userText.text+"&password="+passText.text));
-			trace("http://www.dajinge.com/ipad/user.php?username="+userText.text+"&password="+passText.text);
+			urlLoader.load(new URLRequest(Common.url+"furniture/action/user/iosLogin?name="+userText.text+"&password="+passText.text+"&change=0"));
 			urlLoader.addEventListener(Event.COMPLETE, __completeHandler);
-		}
-		
-//		private function onCompletedHandle(event:Event):void {
-//			trace(event.currentTarget.data.toString());
-//			var xml:XML = new XML(event.currentTarget.data.toString());
-//			trace(xml.status == "OK");
-//		}
-		
-		private var sharedObject:SharedObject;
-		private static const offlineTimeAllowed:Number = 1000;
-		private var checkTimeFalseTimer:Timer;
-		private function checkTime():Boolean{
-			sharedObject = SharedObject.getLocal("offlineTime");
-			if(sharedObject.data.loginTime == undefined || sharedObject.data.loginTime == null){
-				return false;
-			}
-			var timeLeft:Number = offlineTimeAllowed - new Date().time + (sharedObject.data.loginTime as Number);
-			trace(timeLeft);
-			if(timeLeft > 0){
-				this.visible = false;
-				return true;
-			}else{
-				return false;
-			}
-		}
+		}		
 		
 		private function __onIOError(evt:Event):void
 		{
@@ -154,14 +86,14 @@
 		}
 		
 		public function initPage():void{
-			backSource = "img/login.png";
+			backSource = "data/img/login.png";
 			backImage.x = 200;
 			backImage.y = 130;
 			graphics.beginFill(0xffffff,0.4);
 			graphics.drawRect(0,0,1024,768);
 			graphics.endFill();
 			
-			btnImage.source = "img/btn.png";
+			btnImage.source = "data/img/btn.png";
 			btnImage.x = 445;
 			btnImage.y = 350;
 			btnImage.visible = false;

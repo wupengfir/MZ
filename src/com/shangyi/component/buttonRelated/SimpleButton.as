@@ -1,5 +1,6 @@
 package com.shangyi.component.buttonRelated
 {
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -14,6 +15,10 @@ package com.shangyi.component.buttonRelated
 		private var _color:uint;
 		private var rootx:SimpleButton;
 		private var text:TextField = new TextField();
+		
+		private var normal:Shape = new Shape();
+		private var selected:Shape = new Shape();;
+		
 		public function SimpleButton(_width:Number,_height:Number,_color:uint = 0xff5675,_alpha:Number = .8)
 		{
 			this.graphics.beginFill(_color,_alpha);
@@ -23,23 +28,40 @@ package com.shangyi.component.buttonRelated
 			this._height = _height;
 			this._color = _color;
 			this.buttonMode = true;
+			
+			var r:Number = _color>>16;
+			var g:Number = _color>>8 & 0xff;
+			var b:Number = _color & 0xff;	
+			r = r>20?r:20;
+			g = g>20?g:20;
+			b = b>20?b:20;
+			var result:uint = (r-20)<<16|(g-20)<<8|(b-20);
+			selected.graphics.beginFill(result,_alpha);
+			selected.graphics.drawRoundRect(0,0,_width,_height,_width/3);
+			selected.graphics.endFill();
+			
+			normal.graphics.beginFill(_color,_alpha);
+			normal.graphics.drawRoundRect(0,0,_width,_height,_width/3);
+			normal.graphics.endFill();
+			
+			selected.visible = false;
+			
+			addChild(selected);
+			addChild(normal);
+			
 			rootx = this;
 			addEventListener(Event.ADDED_TO_STAGE,function(e:Event):void{
 				rootx.addEventListener(MouseEvent.MOUSE_DOWN,function(e:MouseEvent):void{
-					rootx.graphics.clear();					
-					var r:Number = _color>>16;
-					var g:Number = _color>>8 & 0xff;
-					var b:Number = _color & 0xff;					
-					var result:uint = (r-20)<<16|(g-20)<<8|(b-20);
-					rootx.graphics.beginFill(result,_alpha);
-					rootx.graphics.drawRoundRect(0,0,_width,_height,_width/3);
-					rootx.graphics.endFill();
+					selected.visible = true;
+					normal.visible = false;
 				});
-				stage.addEventListener(MouseEvent.MOUSE_UP,function(e:MouseEvent):void{
-					rootx.graphics.clear();
-					rootx.graphics.beginFill(_color,_alpha);
-					rootx.graphics.drawRoundRect(0,0,_width,_height,_width/3);
-					rootx.graphics.endFill();
+				rootx.addEventListener(MouseEvent.MOUSE_UP,function(e:MouseEvent):void{
+					selected.visible = false;
+					normal.visible = true;
+				});
+				rootx.addEventListener(MouseEvent.MOUSE_OUT,function(e:MouseEvent):void{
+					selected.visible = false;
+					normal.visible = true;
 				});
 			});
 		}

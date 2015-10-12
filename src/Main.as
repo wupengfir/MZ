@@ -16,6 +16,7 @@
 	import flash.events.MouseEvent;
 	import flash.filesystem.File;
 	import flash.geom.Point;
+	import flash.net.SharedObject;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
@@ -23,6 +24,8 @@
 	import flash.utils.Dictionary;
 	
 	import login.LoginPage;
+	
+	import user.UserConfig;
 
 	
 
@@ -47,7 +50,6 @@
 			Common.SCREEN_SCALEX = this.scaleX = 1/3;
 			Common.SCREEN_SCALEY = this.scaleY = 1/3;
 			basePath = File.applicationDirectory.url;
-			backSource = "img/ui/1.jpg";
 			init();
 		}
 		
@@ -65,8 +67,24 @@
 		
 		private function onLoadComplete(e:Event):void{
 			Common.url = ((new XML(e.target.data)).url.(@type=="common"))[0].attribute("path").toString();
+			
+			loadUserConfig();
+			
+			
+			addChild(new LoginPage);
 		}				
-				
+		
+		private function loadUserConfig(){
+			var data:SharedObject = UserConfig.userConfigData;
+			if(data.data.autoLogin != null){
+				UserConfig.autoLogin = data.data.autoLogin;
+				trace(UserConfig.autoLogin);
+			}else{
+				data.data.autoLogin = false;
+				data.flush();
+			}
+		}
+		
 	}
 }
 
