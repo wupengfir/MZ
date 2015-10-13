@@ -8,6 +8,8 @@ package page.homepages
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filesystem.File;
+	import flash.geom.Rectangle;
+	import flash.media.StageWebView;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	
@@ -24,6 +26,8 @@ package page.homepages
 		private var functionBar:Sprite = new Sprite();
 		
 		private var video:VideoContainer = new VideoContainer();
+		
+		private var webview:StageWebView = new StageWebView();
 		public function HomePage()
 		{
 			loadData();
@@ -84,12 +88,20 @@ package page.homepages
 			var img:Image = e.currentTarget as Image;
 			switch(img.info.status){
 				case 1:
-					navigateToURL(new URLRequest(img.info.url));
+					//navigateToURL(new URLRequest(img.info.url));
+					
+					webview.stage = this.stage;
+					webview.viewPort = new Rectangle( 0, 100, stage.stageWidth, stage.stageHeight);
+					webview.loadURL(img.info.url);
 					break;
 				case 2:
 					break;
 				case 3:
-					navigateToURL(new URLRequest(Common.url+"furniture/uploadMp4/"+img.info.url));
+					//addChild(webview);
+					webview.stage = this.stage;
+					webview.viewPort = new Rectangle( 0, 100, stage.stageWidth, stage.stageHeight);
+					webview.loadURL(Common.url+"furniture/uploadMp4/"+img.info.url);
+					//navigateToURL(new URLRequest(Common.url+"furniture/uploadMp4/"+img.info.url));
 					//play(Common.url+"furniture/uploadMp4/"+img.info.url);
 					break;
 				case 4:
