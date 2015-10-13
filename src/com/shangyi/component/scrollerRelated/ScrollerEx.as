@@ -15,7 +15,7 @@
 	import flash.net.URLRequest;
 	import flash.system.System;
 	
-	public class Scroller extends Sprite
+	public class ScrollerEx extends Sprite
 	{
 		public var content:Sprite = new Sprite();
 		private var maskSp:Sprite;
@@ -33,8 +33,9 @@
 		private var contentClickAble:Boolean = true;
 		
 		private var sliderContainer:Sprite = new Sprite();
-		private var rootSroller:Scroller;
-		public function Scroller(_width:int,_height:int,type:int = 0)
+		private var rootSroller:ScrollerEx;
+		public var _lock:Boolean = false;
+		public function ScrollerEx(_width:int,_height:int,type:int = 0)
 		{
 			_type =type;
 			maxHeight = _height;
@@ -62,7 +63,7 @@
 		}
 		
 		private var sliderBtn:Sprite = new Sprite();
-		private function initSlider(base:Number):void{
+		private function initSlider():void{
 			addChildWithSelf = true;
 			addChild(sliderContainer);
 			addChildWithSelf = false;
@@ -77,15 +78,14 @@
 				addEventListener(Event.ADDED_TO_STAGE,function(e:Event){rootSroller.stage.addEventListener(MouseEvent.MOUSE_UP,onSliderUp);});
 			}
 			if(_type == 0){
-				sliderContainer.y = maxHeight+10+base;
+				sliderContainer.y = maxHeight+10;
 			}else{
-				sliderContainer.x = maxWidth+10+base;
+				sliderContainer.x = maxWidth+10;
 			}
 		}
 		private var downSliderPosition:Number;
 		private var downMousePosition:Number;
 		private function onSliderDown(e:MouseEvent):void{
-			trace("downdown");
 			if(_type == 0){
 				downMousePosition = e.stageX;
 				downSliderPosition = sliderBtn.x;
@@ -190,14 +190,12 @@
 			oldSize = newSize;
 		}
 		
-		private var downX:Number;
+		public var downX:Number;
 		private var contentX:Number;
 		private var downY:Number;
 		private var contentY:Number;
 		private function down(e:MouseEvent):void{
-			time = 0;
 			downX = e.stageX;
-			removeEventListener(Event.ENTER_FRAME,onEnterFrameEx);
 			contentX = content.x;
 			downY = e.stageY;
 			contentY = content.y;
@@ -207,19 +205,17 @@
 				if(maxWidth<content.width){
 					addEventListener(Event.ENTER_FRAME,onEnterFrame);
 				}
-				currentpos = downX; 
 			}else{
 				if(maxHeight<content.height){
 					addEventListener(Event.ENTER_FRAME,onEnterFrame);
 				}
-				currentpos = downY;
 			}
 		}
 		private var sliderThickness:int;
-		public function setSlider(flag:Boolean,base:Number = 0,wid:Number = 10):void{
+		public function setSlider(flag:Boolean,wid:Number = 10):void{
 			if(flag){
 				sliderThickness = wid;
-				initSlider(base);
+				initSlider();
 			}else{
 				if(sliderContainer){
 					sliderContainer.visible = false;
@@ -228,60 +224,8 @@
 		}
 		
 		public function up(e:MouseEvent):void{
-			nochangesped = speed>0?-1:1;//(0-speed)/5;
-			addEventListener(Event.ENTER_FRAME,onEnterFrameEx);
+//			removeEventListener(MouseEvent.MOUSE_MOVE,move);
 			removeEventListener(Event.ENTER_FRAME,onEnterFrame);
-		}
-		
-		
-		private function onEnterFrameEx(e:Event):void{
-			if(!stage)return;
-			switch(_type){
-				case 0:
-					speed+=nochangesped;
-					var resultX:Number = content.x + speed;
-					if(Math.abs(speed)<= Math.abs(nochangesped)){
-						removeEventListener(Event.ENTER_FRAME,onEnterFrameEx);
-					}
-					if(resultX >= 0){
-						content.x = 0;
-						removeEventListener(Event.ENTER_FRAME,onEnterFrameEx);
-					}else if(resultX <= maxWidth - content.width){
-						content.x = maxWidth - content.width;
-						removeEventListener(Event.ENTER_FRAME,onEnterFrameEx);
-					}else{
-						content.x = resultX;
-					}
-					if(sliderBtn){
-						sliderBtn.x = -content.x*(sliderContainer.width - sliderBtn.width)/(content.width-maxWidth)
-					}
-					//trace(content.x);
-					break;
-				case 1:
-					speed+=nochangesped;
-					var resultY:Number = content.y + speed;
-					if(Math.abs(speed)<= Math.abs(nochangesped)){
-						removeEventListener(Event.ENTER_FRAME,onEnterFrameEx);
-					}
-					if(resultY >= 0){
-						content.y = 0;
-						removeEventListener(Event.ENTER_FRAME,onEnterFrameEx);
-					}else if(resultY <= maxHeight - content.height){
-						content.y = maxHeight - content.height;
-						removeEventListener(Event.ENTER_FRAME,onEnterFrameEx);
-					}else{
-						content.y = resultY;
-					}
-					if(sliderBtn){
-						sliderBtn.y = -content.y*(maxHeight - currentSliderBtnSize)/(content.height-maxHeight)
-					}
-					break;
-			}
-			if(Math.abs(_type == 0?stage.mouseX - downX:stage.mouseY - downY)>15){
-				contentClickAble = false;
-			}else{
-				contentClickAble = true;
-			}
 		}
 		
 		public function set selectAble(flag:Boolean):void{
@@ -313,22 +257,17 @@
 			}
 		}
 		
-		private var speed:Number = 0;
-		private var nochangesped:Number = 0;
-		private var currentpos:Number = 0;
-		private var time:int = 0;
-		
 		private function onEnterFrame(e:Event):void{
-			time++;
+			if(_lock){
+				return;
+			}
+			if(ImageViewer.zooming){
+				return;
+			}
 			switch(_type){
 				case 0:
 //					if((maxWidth - content.width)<=(contentX + stage.mouseX - downX)&&(contentX + stage.mouseX - downX)<=0)
 						var resultX:Number = contentX + stage.mouseX - downX;
-						speed = (stage.mouseX - downX)/time;
-						if(Math.abs(stage.mouseX - currentpos) < 10){
-							speed = 0;
-						}
-						currentpos = stage.mouseX;
 						if(resultX >= 0){
 							content.x = 0;
 						}else if(resultX <= maxWidth - content.width){
@@ -344,11 +283,6 @@
 //					if((maxHeight - content.height)<=(contentY + stage.mouseY - downY)&&(contentY + stage.mouseY - downY)<=0)
 //						content.y = contentY + stage.mouseY - downY;
 					var resultY:Number = contentY + stage.mouseY - downY;
-					speed = (stage.mouseY - downY)/time;
-					currentpos = stage.mouseY;
-					if(Math.abs(stage.mouseY - currentpos) < 10){
-						speed = 0;
-					}
 					if(resultY >= 0){
 						content.y = 0;
 					}else if(resultY <= maxHeight - content.height){
@@ -423,7 +357,6 @@
 			}
 			btnArr.splice(0);
 			oldSize = 0;
-			//trace(content.numChildren+"wewewew");
 		}
 		
 		public function removeContent():void{
@@ -448,17 +381,6 @@
 				return super.addChild(child);
 			}else{
 				btnArr.push(child);
-				if(_type == 1){
-					if(child.width!=0){
-						child.x = (maxWidth - child.width)/2;
-					}else{
-						if(child is Image){
-							child.addEventListener(Image.GET_DATA,function(e:Event):void{
-								e.currentTarget.x = (maxWidth - e.currentTarget.width)/2;
-							});
-						}
-					}						
-				}
 				if(child is ImageButton){
 					(child as Object).selectAble = _selectAble;
 				}

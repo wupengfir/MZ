@@ -25,6 +25,8 @@
 	
 	import login.LoginPage;
 	
+	import page.homepages.HomePage;
+	
 	import user.UserConfig;
 
 	
@@ -37,7 +39,9 @@
 		public static var currentPath:String;
 		
 		private var dic:Dictionary = new Dictionary();
-
+		
+		private var logo:Image = new Image("data/img/logo.jpg");
+		
 		public function Main()
 		{
 			stage.align = StageAlign.TOP_LEFT;
@@ -56,8 +60,22 @@
 		
 		private function init():void{
 			loadXml();
+			showLogo();
 		}
-			
+		
+		private function showLogo():void{
+			logo.width = 1200;
+			logo.height = 900;
+			logo.alpha = 0;
+			addChild(logo);
+			TweenLite.to(logo,1,{alpha:1,onComplete:function():void{
+				TweenLite.to(logo,2,{onComplete:function():void{
+					logo.clear();
+					addChild(new HomePage);
+				}});
+			}});
+		}
+		
 		private function loadXml():void{
 			var urlLoader:URLLoader = new URLLoader();
 			urlLoader.load(new URLRequest(basePath + "data/xml/url.xml"));
@@ -66,19 +84,14 @@
 
 		
 		private function onLoadComplete(e:Event):void{
-			Common.url = ((new XML(e.target.data)).url.(@type=="common"))[0].attribute("path").toString();
-			
-			loadUserConfig();
-			
-			
-			addChild(new LoginPage);
+			Common.url = ((new XML(e.target.data)).url.(@type=="common"))[0].attribute("path").toString();			
+			loadUserConfig();			
 		}				
 		
-		private function loadUserConfig(){
+		private function loadUserConfig():void{
 			var data:SharedObject = UserConfig.userConfigData;
 			if(data.data.autoLogin != null){
 				UserConfig.autoLogin = data.data.autoLogin;
-				trace(UserConfig.autoLogin);
 			}else{
 				data.data.autoLogin = false;
 				data.flush();

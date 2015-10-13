@@ -18,6 +18,9 @@
 	import flash.text.TextFormat;
 	import flash.utils.Timer;
 	
+	import json.JsonData;
+	import json.JsonDecoder;
+	
 	import user.UserConfig;
 	
 	//import org.osmf.events.TimeEvent;
@@ -85,20 +88,35 @@
 			
 		}
 		
+		private function coverPathGot(evt:Event):void
+		{
+			var data:JsonData = JsonDecoder.decoderToJsonData(evt.currentTarget.data);
+			if(data.success){
+				backSource = Common.url+"furniture/images/"+data.dataValue.coverIma+".jpg";
+			}
+		} 
+		
+		private function coverPathGotError(e:IOErrorEvent):void{
+			backSource = "data/img/default.jpg";
+		}
+		
 		public function initPage():void{
-			backSource = "data/img/login.png";
-			backImage.x = 200;
-			backImage.y = 130;
-			graphics.beginFill(0xffffff,0.4);
-			graphics.drawRect(0,0,1024,768);
-			graphics.endFill();
-			
-			btnImage.source = "data/img/btn.png";
-			btnImage.x = 445;
-			btnImage.y = 350;
-			btnImage.visible = false;
-			btnImage.mouseChildren = btnImage.mouseEnabled = false;
-			addChild(btnImage);
+//			backSource = "data/img/login.png";
+//			backImage.x = 200;
+//			backImage.y = 130;
+//			graphics.beginFill(0xffffff,0.4);
+//			graphics.drawRect(0,0,1024,768);
+//			graphics.endFill();
+//			
+//			btnImage.source = "data/img/btn.png";
+//			btnImage.x = 445;
+//			btnImage.y = 350;
+//			btnImage.visible = false;
+//			btnImage.mouseChildren = btnImage.mouseEnabled = false;
+//			addChild(btnImage);
+			backImage.width = Common.MAX_WIDTH;
+			backImage.height = Common.MAX_HEIGHT;
+			Common.loadURL("furniture/action/davert/iosCover",coverPathGot,coverPathGotError);
 			
 			var format1:TextFormat = new TextFormat();
 			format1.size = 20;

@@ -2,7 +2,11 @@ package
 {
 	import com.shangyi.component.base.Page;
 	
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 
 	
 	public class Common
@@ -23,6 +27,15 @@ package
 		{
 			
 		}		
+		
+		public static function loadURL(path:String,f:Function,ef:Function):void{
+			var urlLoader:URLLoader = new URLLoader();
+			urlLoader.load(new URLRequest(Common.url+path));
+			if(f != null)
+			urlLoader.addEventListener(Event.COMPLETE, f);
+			if(ef != null)
+			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, ef);
+		}
 		
 		public static function checkClick(mx:Number,my:Number,mw:Number,mh:Number,e:MouseEvent):Boolean{
 			if(e.localX>mx&&e.localY>my&&e.localX<(mx+mw)&&e.localY<(my+mh)){
