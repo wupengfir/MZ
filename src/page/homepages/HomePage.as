@@ -90,7 +90,7 @@ package page.homepages
 				case 1:
 					//navigateToURL(new URLRequest(img.info.url));
 					
-					webview.stage = this.stage;
+					webview.stage = Common.MAIN.stage;
 					webview.viewPort = new Rectangle( 0, 100, stage.stageWidth, stage.stageHeight);
 					webview.loadURL(img.info.url);
 					break;
@@ -98,7 +98,7 @@ package page.homepages
 					break;
 				case 3:
 					//addChild(webview);
-					webview.stage = this.stage;
+					webview.stage = Common.MAIN.stage;
 					webview.viewPort = new Rectangle( 0, 100, stage.stageWidth, stage.stageHeight);
 					webview.loadURL(Common.url+"furniture/uploadMp4/"+img.info.url);
 					//navigateToURL(new URLRequest(Common.url+"furniture/uploadMp4/"+img.info.url));
