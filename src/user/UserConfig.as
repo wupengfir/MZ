@@ -8,6 +8,7 @@ package user
 		
 		public static var autoLogin:Boolean = false;
 		
+		public static var loginedList:Array;
 		public function UserConfig()
 		{
 		}

@@ -88,21 +88,20 @@ package page.homepages
 			var img:Image = e.currentTarget as Image;
 			switch(img.info.status){
 				case 1:
-					//navigateToURL(new URLRequest(img.info.url));
+					navigateToURL(new URLRequest(img.info.url));
 					
-					webview.stage = Common.MAIN.stage;
-					webview.viewPort = new Rectangle( 0, 100, stage.stageWidth, stage.stageHeight);
-					webview.loadURL(img.info.url);
+//					webview.stage = Common.MAIN.stage;
+//					webview.viewPort = new Rectangle( 0, 50, stage.stageWidth, stage.stageHeight);
+//					webview.loadURL(img.info.url);
 					break;
 				case 2:
 					break;
 				case 3:
-					//addChild(webview);
-					webview.stage = Common.MAIN.stage;
-					webview.viewPort = new Rectangle( 0, 100, stage.stageWidth, stage.stageHeight);
-					webview.loadURL(Common.url+"furniture/uploadMp4/"+img.info.url);
-					//navigateToURL(new URLRequest(Common.url+"furniture/uploadMp4/"+img.info.url));
-					//play(Common.url+"furniture/uploadMp4/"+img.info.url);
+//					webview.stage = Common.MAIN.stage;
+//					webview.viewPort = new Rectangle( 0, 50, stage.stageWidth, stage.stageHeight);
+//					webview.loadURL(Common.url+"furniture/uploadMp4/"+img.info.url);
+//					navigateToURL(new URLRequest(Common.url+"furniture/uploadMp4/"+img.info.url));
+					play(Common.url+"furniture/uploadMp4/"+img.info.url);
 					break;
 				case 4:
 					break;

@@ -51,8 +51,8 @@
 			Common.MAIN = this;
 			Common.SCREEN_WIDTH = 1200;
 			Common.SCREEN_HEIGHT = 900;
-			Common.SCREEN_SCALEX = this.scaleX = 1/3;
-			Common.SCREEN_SCALEY = this.scaleY = 1/3;
+			Common.SCREEN_SCALEX = this.scaleX = 1/1;
+			Common.SCREEN_SCALEY = this.scaleY = 1/1;
 			basePath = File.applicationDirectory.url;
 			init();
 		}
@@ -64,14 +64,14 @@
 		}
 		
 		private function showLogo():void{
-			logo.width = 1200;
-			logo.height = 900;
+			logo.width = Common.MAX_WIDTH;
+			logo.height = Common.MAX_HEIGHT;
 			logo.alpha = 0;
 			addChild(logo);
 			TweenLite.to(logo,1,{alpha:1,onComplete:function():void{
 				TweenLite.to(logo,2,{onComplete:function():void{
 					logo.clear();
-					addChild(new HomePage);
+					addChild(new LoginPage);
 				}});
 			}});
 		}
@@ -96,6 +96,14 @@
 				data.data.autoLogin = false;
 				data.flush();
 			}
+			
+			if(data.data.loginedList != null){
+				UserConfig.loginedList = data.data.loginedList;
+			}else{
+				data.data.loginedList = new Array;
+				data.flush();
+			}
+			
 		}
 		
 	}

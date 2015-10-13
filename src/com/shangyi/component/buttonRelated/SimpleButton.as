@@ -14,10 +14,17 @@ package com.shangyi.component.buttonRelated
 		private var _color:uint;
 		private var rootx:SimpleButton;
 		private var text:TextField = new TextField();
-		public function SimpleButton(_width:Number,_height:Number,_color:uint = 0xff5675,_alpha:Number = .8)
+		public var round:Boolean;
+		public function SimpleButton(_width:Number,_height:Number,round:Boolean = false,_color:uint = 0x483d8b,_alpha:Number = .8)
 		{
+			this.round = round; 
 			this.graphics.beginFill(_color,_alpha);
-			this.graphics.drawRoundRect(0,0,_width,_height,_width/3);
+			if(round){
+				this.graphics.drawRoundRect(0,0,_width,_height,_width/30);
+			}else{
+				this.graphics.drawRect(0,0,_width,_height);
+			}
+			
 			this.graphics.endFill();
 			this._width = _width;
 			this._height = _height;
@@ -32,20 +39,28 @@ package com.shangyi.component.buttonRelated
 					var b:Number = _color & 0xff;					
 					var result:uint = (r-20)<<16|(g-20)<<8|(b-20);
 					rootx.graphics.beginFill(result,_alpha);
-					rootx.graphics.drawRoundRect(0,0,_width,_height,_width/3);
+					if(rootx.round){
+						rootx.graphics.drawRoundRect(0,0,_width,_height,_width/30);
+					}else{
+						rootx.graphics.drawRect(0,0,_width,_height);
+					}
 					rootx.graphics.endFill();
 				});
 				stage.addEventListener(MouseEvent.MOUSE_UP,function(e:MouseEvent):void{
 					rootx.graphics.clear();
 					rootx.graphics.beginFill(_color,_alpha);
-					rootx.graphics.drawRoundRect(0,0,_width,_height,_width/3);
+					if(rootx.round){
+						rootx.graphics.drawRoundRect(0,0,_width,_height,_width/30);
+					}else{
+						rootx.graphics.drawRect(0,0,_width,_height);
+					}
 					rootx.graphics.endFill();
 				});
 			});
 		}
 		
 		public function set label(_label:String):void{
-			text.width = _width;
+			text.width = _width/2;
 			text.height = _height;
 			text.text = _label;
 			text.mouseEnabled = false;
@@ -55,7 +70,9 @@ package com.shangyi.component.buttonRelated
 			addChild(text);
 		}
 		
-		
+		public function clear():void{
+			
+		}
 		
 	}
 }
