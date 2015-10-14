@@ -25,7 +25,10 @@
 	import json.JsonData;
 	import json.JsonDecoder;
 	
+	import page.homepages.HomePage;
+	
 	import user.UserConfig;
+	import user.UserInfo;
 	
 	//import org.osmf.events.TimeEvent;
 	
@@ -66,13 +69,7 @@
 		
 		private function onMouseClick(e:MouseEvent):void{
 			
-			if(UserConfig.loginedList.indexOf(userText.text) == -1){
-				UserConfig.loginedList.push(userText.text);
-				trace(UserConfig.loginedList.length);
-				var data:SharedObject = UserConfig.userConfigData;
-				data.data.loginedList = UserConfig.loginedList;
-				data.flush();
-			}
+			
 			
 			loadPhp();
 		}
@@ -114,8 +111,21 @@
 		{
 			var data:JsonData = JsonDecoder.decoderToJsonData(evt.currentTarget.data);
 			if(data.success){
-				this.visible = false;
+				if(UserConfig.loginedList.indexOf(userText.text) == -1){
+					UserConfig.loginedList.push(userText.text);
+					trace(UserConfig.loginedList.length);
+					var data1:SharedObject = UserConfig.userConfigData;
+					data1.data.loginedList = UserConfig.loginedList;
+					data1.flush();
+				}
+				
+				UserInfo.userName = data.dataValue.account;
+				UserInfo.sessionID = data.dataValue.JSESSIONID;
+				
+				this.clear();
+				Common.MAIN.addChild(new HomePage);
 			}
+			
 		} 
 		
 		

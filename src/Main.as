@@ -51,8 +51,8 @@
 			Common.MAIN = this;
 			Common.SCREEN_WIDTH = 1200;
 			Common.SCREEN_HEIGHT = 900;
-			Common.SCREEN_SCALEX = this.scaleX = 1/1;
-			Common.SCREEN_SCALEY = this.scaleY = 1/1;
+			Common.SCREEN_SCALEX = this.scaleX = 1/3;
+			Common.SCREEN_SCALEY = this.scaleY = 1/3;
 			basePath = File.applicationDirectory.url;
 			init();
 		}
@@ -100,7 +100,9 @@
 			if(data.data.loginedList != null){
 				UserConfig.loginedList = data.data.loginedList;
 			}else{
+				
 				data.data.loginedList = new Array;
+				UserConfig.loginedList = data.data.loginedList;
 				data.flush();
 			}
 			
