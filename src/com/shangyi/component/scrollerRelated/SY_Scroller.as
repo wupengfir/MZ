@@ -34,11 +34,13 @@ package com.shangyi.component.scrollerRelated
 		
 		private var offset:int;
 		
-		public function SY_Scroller(_width:int,_height:int,scrollerWidth:int,scrollerHeight:int,backColor:uint = 0xffffff,type:int = 0)
+		private var relocate:Boolean;
+		public function SY_Scroller(_width:int,_height:int,scrollerWidth:int,scrollerHeight:int,backColor:uint = 0xffffff,type:int = 0,relocate:Boolean = true)
 		{
 			if(_width < scrollerWidth || _height < scrollerHeight){
 				throw new Error("size of SY_Scroller should be larger than its scroller");
 			}
+			this.relocate = relocate;
 			this.type = type;
 			backWidth = _width;
 			backHeight = _height;
@@ -154,20 +156,25 @@ package com.shangyi.component.scrollerRelated
 				if(func){
 					btn.addEventListener(MouseEvent.CLICK,func);
 				}
-				
-//				if(type == 0){
-//					btn.width = space;
-//					btn.height = size;
-//					btn.x = (Math.floor(index/lines))*this.offset;
-//					btn.y = (index%lines)*(size + offset);
-//				}else{
-//					btn.width = size;
-//					btn.height = space;
-//					btn.x = (index%lines)*(size + offset);
-//					btn.y = (Math.floor(index/lines))*this.offset;
-//				}
+				if(!relocate){
+					if(type == 0){
+						btn.width = space;
+						btn.height = size;
+						btn.x = (Math.floor(index/lines))*(space + offset);
+						btn.y = (index%lines)*(size + offset);
+					}else{
+						btn.width = size;
+						btn.height = space;
+						btn.x = (index%lines)*(size + offset);
+						btn.y = (Math.floor(index/lines))*this.offset;
+					}	
+				}
+
 				btn.index = index;
-				btn.addEventListener(Image.GET_DATA,reLocate);
+				if(relocate){
+					btn.addEventListener(Image.GET_DATA,reLocate);
+				}
+				
 				if(index == selectedIndex){
 					btn.selected = true;
 					this.selectedObj = btn;

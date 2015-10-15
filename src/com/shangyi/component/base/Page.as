@@ -44,7 +44,7 @@
 		private var stack:Array = new Array();
 		protected function initByPageScript(root:XML):void{
 			var target:XML;
-			var currentParent:DisplayObjectContainer = this;
+			var currentParent:Object = this;
 			stack.push(root);
 			while(stack.length>0){
 				target = stack.pop();
@@ -106,6 +106,12 @@
 //				load.load(new URLRequest(source));
 //				load.contentLoaderInfo.addEventListener(Event.COMPLETE,onLoadComplete,false,0,true);
 //			}
+		}
+		
+		public function drawBack(_width:Number = Common.MAX_WIDTH,_height:Number = Common.MAX_HEIGHT,color:uint = 0xffffffff):void{
+			graphics.beginFill(color,1);
+			graphics.drawRect(0,0,_width,_height);
+			graphics.endFill();
 		}
 		
 		public function clearAll(par:DisplayObjectContainer):void{

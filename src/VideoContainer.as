@@ -25,8 +25,8 @@ package
 		private var textBox:TextField; 
 		public function VideoContainer()
 		{
-			graphics.beginFill(0x00ffff,.5);
-			graphics.drawRect(0,0,1200,900);
+			graphics.beginFill(0xffffff,1);
+			graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
 			graphics.endFill();
 			textBox = new TextField();  
 			textBox.autoSize = TextFieldAutoSize.CENTER;  

@@ -37,6 +37,14 @@ package
 			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, ef);
 		}
 		
+		public static function getImageUrljpg(iname:String):String{
+			return Common.url+"furniture/images/"+iname+".jpg";
+		}
+		
+		public static function getImageUrlpng(iname:String):String{
+			return Common.url+"furniture/images/"+iname+".png";
+		}
+		
 		public static function checkClick(mx:Number,my:Number,mw:Number,mh:Number,e:MouseEvent):Boolean{
 			if(e.localX>mx&&e.localY>my&&e.localX<(mx+mw)&&e.localY<(my+mh)){
 				return true;
