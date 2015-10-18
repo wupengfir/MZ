@@ -19,16 +19,20 @@ package page.homepages
 	import json.JsonData;
 	import json.JsonDecoder;
 	
+	import page.functionpage.FunctionPage;
+	
 	import user.UserInfo;
 	
 	public class HomePage extends Page
 	{
 		
+		public static var functionBar:FunctionPage = new FunctionPage();
+		
 		private var advertiseContainer:SY_Scroller = new SY_Scroller(1200,340,1200,340);
 		private var lifeStyleContainer:SY_Scroller = new SY_Scroller(1200,150,1200,150,0xffffff,0,false);
 		private var spaceContainer:SY_Scroller = new SY_Scroller(1200,130,1200,130);
 		
-		private var functionBar:Sprite = new Sprite();
+		
 		
 		private var video:VideoContainer = new VideoContainer();
 		
@@ -52,15 +56,17 @@ package page.homepages
 			spaceContainer.scroller.setmasksize(0,180);
 			addChild(spaceContainer);
 			
-			functionBar.y = 780;
+			
 			addChild(functionBar);
 			
-			
+			//initFunctionBar();
 			
 			video.addEventListener(Event.COMPLETE,function(e:Event):void{
 				removeChild(video);
 			});
 		}
+		
+		
 		
 		private function play(path:String):void{
 			addChild(video);
