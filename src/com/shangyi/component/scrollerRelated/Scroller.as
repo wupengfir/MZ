@@ -61,6 +61,22 @@
 			});
 		}
 		
+		public function setmasksize(w:Number,h:Number):void{
+			addChildWithSelf = true;
+			content.mask = null;
+			this.removeChild(maskSp);
+			maskSp = new Sprite();
+			this.addChild(maskSp);
+			w = w==0?maxWidth:w;
+			h = h==0?maxHeight:h;
+			maskSp.graphics.clear();
+			maskSp.graphics.beginFill(0x000000,0);
+			maskSp.graphics.drawRect(0,0,w,h);
+			maskSp.graphics.endFill();
+			content.mask = maskSp;
+			addChildWithSelf = false;
+		}
+		
 		private var sliderBtn:Sprite = new Sprite();
 		private function initSlider(base:Number):void{
 			addChildWithSelf = true;

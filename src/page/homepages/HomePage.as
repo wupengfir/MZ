@@ -14,16 +14,19 @@ package page.homepages
 	import flash.media.StageWebView;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
+	import flash.utils.Dictionary;
 	
 	import json.JsonData;
 	import json.JsonDecoder;
 	
+	import user.UserInfo;
+	
 	public class HomePage extends Page
 	{
 		
-		private var advertiseContainer:SY_Scroller = new SY_Scroller(1200,250,1200,250);
-		private var lifeStyleContainer:SY_Scroller = new SY_Scroller(1200,250,1200,250,0xffffff,0,false);
-		private var spaceContainer:SY_Scroller = new SY_Scroller(1200,250,1200,250);
+		private var advertiseContainer:SY_Scroller = new SY_Scroller(1200,340,1200,340);
+		private var lifeStyleContainer:SY_Scroller = new SY_Scroller(1200,150,1200,150,0xffffff,0,false);
+		private var spaceContainer:SY_Scroller = new SY_Scroller(1200,130,1200,130);
 		
 		private var functionBar:Sprite = new Sprite();
 		
@@ -33,26 +36,26 @@ package page.homepages
 		
 		private var imageViewer:ImageViewer;
 		
-		private var downloadpage:DownloadPage = new DownloadPage();
+		private var downloadpageDic:Dictionary = new Dictionary();
+		//private var downloadpage:DownloadPage = new DownloadPage();
 		public function HomePage()
 		{
 			loadData();
 			
 			addChild(advertiseContainer);
 					
-			lifeStyleContainer.y = 300;
+			lifeStyleContainer.y = 380;
+			lifeStyleContainer.scroller.setmasksize(0,200);
 			addChild(lifeStyleContainer);
 			
-			spaceContainer.y = 600;
+			spaceContainer.y = 650;
+			spaceContainer.scroller.setmasksize(0,180);
 			addChild(spaceContainer);
 			
-			functionBar.y = 800;
+			functionBar.y = 780;
 			addChild(functionBar);
 			
-			downloadpage.visible = false;
-			downloadpage.x = 300;
-			downloadpage.y = 225;
-			addChild(downloadpage);
+			
 			
 			video.addEventListener(Event.COMPLETE,function(e:Event):void{
 				removeChild(video);
@@ -72,6 +75,7 @@ package page.homepages
 		private function loadData():void{
 			Common.loadURL("furniture/action/davert/iosAdvert",handleAdvertise,null);
 			Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,null);
+			Common.loadURL("furniture/action/space/iosSpaceBefore",handleSpace,null);
 		}
 		
 		private function handleAdvertise(e:Event):void{
@@ -85,7 +89,7 @@ package page.homepages
 					urlList.push(Common.url+"furniture/images/"+obj.ad_logo+".jpg");
 				}
 				
-				advertiseContainer.dataSource(urlList,200,0,onAdvertiseClick);
+				advertiseContainer.dataSource(urlList,600,0,onAdvertiseClick);
 				
 				var index:int = 0;
 				for each(var img:Image in advertiseContainer.scroller.btnArr){
@@ -106,23 +110,70 @@ package page.homepages
 					urlList.push(Common.url+"furniture/images/"+obj.li_logo+".jpg");
 				}
 				
-				lifeStyleContainer.dataSource(urlList,400,30,null);
+				lifeStyleContainer.dataSource(urlList,290,30,null);
 				
 				var index:int = 0;
 				for each(var img:Image in lifeStyleContainer.scroller.btnArr){
 					img.info = dataList[index];
-					if(!new File(File.applicationDirectory.nativePath+"/data/img/"+img.info.li_No).exists){
+					if(UserInfo.diyDataLoaded.indexOf(img.info.li_No) == -1){//!new File(File.applicationDirectory.nativePath+"/data/img/"+img.info.li_No).exists){
 						img.addEventListener(MouseEvent.CLICK,onLoadClick);
+						img.addEventListener(Image.GET_DATA,function(evt:Event):void{
+							var nameLebel:Label = new Label(evt.currentTarget.info.li_name,18/evt.currentTarget.scaleY);
+							nameLebel.width = 150/evt.currentTarget.scaleY;
+							nameLebel.height = 30/evt.currentTarget.scaleY;
+							nameLebel.x = 3;
+							nameLebel.y = 160/evt.currentTarget.scaleY;
+							evt.currentTarget.addChild(nameLebel)
+						});
 						var filter:ColorMatrixFilter = new ColorMatrixFilter([0.3,0.6,0,0,0,0.3,0.6,0,0,0,0.3,0.6,0,0,0,0,0,0,1,0]) ;
 						img.filters = [filter];
 					}else{
 						img.addEventListener(MouseEvent.CLICK,onLifeWayClick);
+						img.addEventListener(Image.GET_DATA,function(evt:Event):void{
+							var nameLebel:Label = new Label(evt.currentTarget.info.li_name,18/evt.currentTarget.scaleY);
+							nameLebel.width = 150/evt.currentTarget.scaleY;
+							nameLebel.height = 30/evt.currentTarget.scaleY;
+							nameLebel.x = 3;
+							nameLebel.y = 160/evt.currentTarget.scaleY;
+							evt.currentTarget.addChild(nameLebel)
+						});
 					}
 					index++;
 				}
 				
 			}
 		}
+		
+		private function handleSpace(e:Event):void{
+			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
+			trace(e.currentTarget.data);
+			if(data.success){
+				var urlList:Array = new Array();
+				var dataList:Array = data.dataValue.datavalue as Array;
+				
+				for each(var obj:Object in dataList){
+					urlList.push(Common.url+"furniture/images/"+obj.sp_logo+".jpg");
+				}
+				
+				spaceContainer.dataSource(urlList,170,30,null);
+				
+				var index:int = 0;
+				for each(var img:Image in spaceContainer.scroller.btnArr){
+					img.info = dataList[index];
+					img.addEventListener(MouseEvent.CLICK,onLifeWayClick);
+					img.addEventListener(Image.GET_DATA,function(evt:Event):void{
+						var nameLebel:Label = new Label(evt.currentTarget.info.sp_name,18);
+						nameLebel.x = 3;
+						nameLebel.y = 160;
+						evt.currentTarget.addChild(nameLebel)
+					});
+
+					index++;
+				}
+				
+			}
+		}
+		
 		//点击未下载状态生活方式
 		private function onLoadClick(e:MouseEvent):void{
 			var img:Image = e.currentTarget as Image;
@@ -132,7 +183,16 @@ package page.homepages
 		private function handleLifewayData(e:Event):void{
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
 			trace(e.currentTarget.data);
-			if(data.success){				
+			if(data.success){
+				var downloadpage:DownloadPage;
+				if(downloadpageDic[data.dataValue.datavalue[0].li_id] == undefined){
+					downloadpage = new DownloadPage();
+					downloadpageDic[data.dataValue.datavalue[0].li_id] = downloadpage;
+				}
+				downloadpage = downloadpageDic[data.dataValue.datavalue[0].li_id] as DownloadPage;
+				downloadpage.x = 300;
+				downloadpage.y = 225;
+				addChild(downloadpage);
 				downloadpage.visible = true;
 				downloadpage.showData(data.dataValue);
 			}

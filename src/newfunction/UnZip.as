@@ -6,18 +6,22 @@ package newfunction
 	import deng.fzip.FZipFile;
 	
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.ProgressEvent;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.net.URLRequest;
+	import flash.utils.setTimeout;
 
-	public class UnZip
+	public class UnZip extends EventDispatcher
 	{
 		private var fst:FileStream = new FileStream();
 		private var root:File;
 		private var path:String;
 		private var num:uint = 0;
 		private var total:uint = 0;
+		public var progress:String;
 		var zip:FZip = new FZip();
 		public function UnZip(path:String)
 		{
@@ -37,15 +41,15 @@ package newfunction
 			zip.addEventListener(Event.COMPLETE, zipCompleteHandler);
 			zip.load(request);
 			
-			test.text.text += "总数"+total+"\n"
+			//test.text.text += "总数"+total+"\n"
 		}
 		
 		private function onError(e:FZipErrorEvent):void{
-			test.text.text += e.toString();
+			//test.text.text += e.toString();
 		}
 		
 		private function onZipOpen(evt:Event):void {
-			test.text.text +="opened\n";
+			//test.text.text +="opened\n";
 			//total = zip.getFileCount();
 		}
 		
@@ -58,16 +62,23 @@ package newfunction
 
 			}
 			num+=file.sizeCompressed;
-			test.text.text +=(num/total*100+"%\n");
-//			
-//			trace("File loaded: " + file.filename);
-//			trace("  " + file.sizeCompressed);
-//			trace("  " + file.sizeUncompressed);
+			progress =Number(num/total*100).toFixed(2)+"%";
+			trace(progress+"progress!!!");
+			dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS));
 		}
 		
 		private function zipCompleteHandler(evt:Event):void {
-			test.text.text += ("100% comlpete"+zip.getFileCount());
-			new File(path).deleteFile();
+			//test.text.text += ("100% comlpete"+zip.getFileCount());
+			dispatchEvent(new Event(Event.COMPLETE));
+			try{
+				new File(path).deleteFile();
+			}catch(e:Error){
+				setTimeout(function():void{
+					new File(path).deleteFile();
+				},1000);
+				trace(e.message);
+			}
+			
 		}
 	}
 }

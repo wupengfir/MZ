@@ -16,6 +16,7 @@ package
 			addChild(textField);
 			textField.text = _text;
 			this.size = s;
+			textField.selectable = false;
 //			textField.setTextFormat(textFormat);
 		}
 		

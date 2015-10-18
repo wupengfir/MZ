@@ -145,9 +145,9 @@ package com.shangyi.component.scrollerRelated
 			var a:Number;
 			_lines = lines;
 			if(type == 0){
-				size = (scroller.height - (lines - 1)*offset )/lines;
+				size = (scroller.maxHeight - (lines - 1)*offset )/lines;
 			}else{
-				size = (scroller.width - (lines - 1)*offset )/lines;
+				size = (scroller.maxWidth - (lines - 1)*offset )/lines;
 			}
 			_size = size;
 			for each(var path:String in data){

@@ -12,6 +12,8 @@ package user
 		public static var sessionID:String;
 		//public static var userData:SharedObject = SharedObject.getLocal(UserInfo.DATA_KEY);
 		
+		public static var diyDataLoaded:Array;
+		
 		public function UserInfo()
 		{
 		}

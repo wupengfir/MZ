@@ -28,6 +28,7 @@
 	import page.homepages.HomePage;
 	
 	import user.UserConfig;
+	import user.UserInfo;
 
 	
 
@@ -44,6 +45,7 @@
 		
 		public function Main()
 		{
+
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.quality = StageQuality.HIGH;
@@ -51,10 +53,11 @@
 			Common.MAIN = this;
 			Common.SCREEN_WIDTH = 1200;
 			Common.SCREEN_HEIGHT = 900;
-			Common.SCREEN_SCALEX = this.scaleX = 1/3;
-			Common.SCREEN_SCALEY = this.scaleY = 1/3;
+			Common.SCREEN_SCALEX = this.scaleX = 1/1;
+			Common.SCREEN_SCALEY = this.scaleY = 1/1;
 			basePath = File.applicationDirectory.url;
 			init();
+			//drawBack(1200,900,0xff00ff);
 		}
 		
 		
@@ -103,6 +106,31 @@
 				
 				data.data.loginedList = new Array;
 				UserConfig.loginedList = data.data.loginedList;
+				data.flush();
+			}
+			
+			data = UserInfo.userData;
+			if(data.data.userName != null){
+				UserInfo.userName = data.data.userName;
+			}else{
+				UserInfo.userName = "";
+				data.data.userName = "";
+				data.flush();
+			}
+			
+			if(data.data.passWord != null){
+				UserInfo.passWord = data.data.passWord;
+			}else{
+				UserInfo.passWord = "";
+				data.data.passWord = "";
+				data.flush();
+			}
+			
+			if(data.data.diyDataLoaded != null){
+				UserInfo.diyDataLoaded = data.data.diyDataLoaded;
+			}else{
+				UserInfo.diyDataLoaded = new Array();
+				data.data.diyDataLoaded = new Array();
 				data.flush();
 			}
 			

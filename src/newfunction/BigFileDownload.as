@@ -1,6 +1,7 @@
 package newfunction
 {
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.ProgressEvent;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
@@ -12,18 +13,20 @@ package newfunction
 	import flash.utils.ByteArray;
 	import flash.utils.setTimeout;
 
-	public class BigFileDownload
+	public class BigFileDownload extends EventDispatcher
 	{
 		private var contentLength:int;
 		private var startpos:int = 0;
-		private var endpos:int = 0;
+		public var endpos:int = 0;
 		private var file:File;
 		private var fst:FileStream = new FileStream();
-		private var path:String = "http://220.166.63.50:8080/furniture/data/mzchunjing/904a7e8e-d3e7-4b19-80fc-e9572af87017.zip";
+		private var path:String;// = "http://220.166.63.50:8080/furniture/data/mzchunjing/904a7e8e-d3e7-4b19-80fc-e9572af87017.zip";
 		private var nativePath:String;
-		public function BigFileDownload(nativePath:String)
+		private var root:BigFileDownload;
+		public function BigFileDownload(nativePath:String,path:String)
 		{
-			test.syso(nativePath);
+			root = this;
+			this.path = path;
 			this.nativePath = nativePath;
 			var getContentLengthRequest:URLRequest = new URLRequest(path);
 			var getContentLengthLoader:URLLoader = new URLLoader();
@@ -34,10 +37,14 @@ package newfunction
 				downloadByRange();//按照断点续传的方式下载
 			});
 			getContentLengthLoader.load(getContentLengthRequest);
+			file = new File(File.applicationDirectory.resolvePath(nativePath).nativePath);
+			if(file.exists){
+				file.deleteFile();
+			}
 		}
-		
+		private var firstCheck:Boolean = false;
 		private function downloadByRange():void{
-			file = new File(nativePath);
+			file = new File(File.applicationDirectory.resolvePath(nativePath).nativePath);
 			if(file.exists){
 				fst.open(file,FileMode.READ);
 				startpos = fst.bytesAvailable;
@@ -74,15 +81,16 @@ package newfunction
 				fst.writeBytes(bytes, 0, bytes.length);//在文件中写入新下载的数据
 				fst.close();//关闭文件流
 			}
-			test.text.text += endpos+"\n";
+			//test.text.text += endpos+"\n";
 			if(endpos < (contentLength - 1)){
+				root.dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS));
 				downloadByRange();
 			}else{
-				test.text.text += "completeload\n";
-				setTimeout(function():void{
-					new UnZip(nativePath);
-				},2000);
-				
+//				test.text.text += "completeload\n";
+//				setTimeout(function():void{
+//					new UnZip(nativePath);
+//				},2000);
+				root.dispatchEvent(new Event(Event.COMPLETE));
 			}
 		}
 		
