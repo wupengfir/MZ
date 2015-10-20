@@ -245,6 +245,8 @@ package page.homepages
 		
 		//点击广告
 		private function onAdvertiseClick(e:MouseEvent):void{
+			play(Common.url+"furniture/uploadMp4/"+"8bb945cb-ef14-45af-9599-35054382730a.mp4");
+			return;
 			var img:Image = e.currentTarget as Image;
 			switch(img.info.status){
 				case 1:

@@ -51,6 +51,7 @@
 			content.mask = maskSp;
 			addEventListener(MouseEvent.MOUSE_DOWN,down);
 			addEventListener(MouseEvent.MOUSE_UP,up);
+			addEventListener(MouseEvent.MOUSE_OUT,up);
 //			addEventListener(MouseEvent.MOUSE_OUT,up);
 			addEventListener(MouseEvent.CLICK,onClick,true);
 			addChildWithSelf = false;

@@ -15,6 +15,9 @@ package newfunction
 
 	public class BigFileDownload extends EventDispatcher
 	{
+		public static const DATA_JUST_GOT:String = "DATA_JUST_GOT";
+		public static const DATA_GOT:String = "DATA_GOT";
+		
 		private var contentLength:int;
 		private var startpos:int = 0;
 		public var endpos:int = 0;
@@ -43,6 +46,7 @@ package newfunction
 			}
 		}
 		private var firstCheck:Boolean = false;
+		public var continueLoad:Boolean = true;
 		private function downloadByRange():void{
 			file = new File(File.applicationDirectory.resolvePath(nativePath).nativePath);
 			if(file.exists){
@@ -67,7 +71,8 @@ package newfunction
 
 		}
 		
-		private function writefile(e:Event):void{
+		private function writefile(e:Event):void{			
+			dispatchEvent(new Event(DATA_JUST_GOT));
 			var bytes:ByteArray = e.target.data as ByteArray;
 			fst = new FileStream();
 			if(!file.exists){
@@ -84,7 +89,10 @@ package newfunction
 			//test.text.text += endpos+"\n";
 			if(endpos < (contentLength - 1)){
 				root.dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS));
-				downloadByRange();
+				if(continueLoad){
+					downloadByRange();
+				}
+				
 			}else{
 //				test.text.text += "completeload\n";
 //				setTimeout(function():void{
@@ -92,6 +100,9 @@ package newfunction
 //				},2000);
 				root.dispatchEvent(new Event(Event.COMPLETE));
 			}
+			
+			dispatchEvent(new Event(DATA_GOT));
+			
 		}
 		
 	}

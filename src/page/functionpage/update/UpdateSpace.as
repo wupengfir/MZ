@@ -4,9 +4,10 @@ package page.functionpage.update
 	import com.shangyi.component.buttonRelated.SimpleButton;
 	import com.shangyi.component.imageRelated.Image;
 	
-	import flash.events.Event;
-	
 	import fl.controls.CheckBox;
+	
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	import json.JsonData;
 	import json.JsonDecoder;
@@ -17,14 +18,18 @@ package page.functionpage.update
 
 	public class UpdateSpace extends Page
 	{
+		
+		public static const GOT_DATA:String = "GOT_DATA";
+		
 		public var checkBox:CheckBox = new CheckBox();
 		public var image:Image = new Image();
 		public var nameLabel:Label = new Label("",20);
 		public var descLabel:Label = new Label("",16);
 		public var button:SimpleButton = new SimpleButton(100,40,false,0xffffff,1);
 		public var deleteButton:Image = new Image("data/img/delete.jpg");
+		public var updateAble:Boolean = false;
+		public var dataObj:Object;
 		
-		private var dataObj:Object;
 		private var ps:XML = 
 			<root>
 				<object name="checkBox" x="10" y="40"/>
@@ -47,8 +52,15 @@ package page.functionpage.update
 			descLabel.width = 440;
 			descLabel.height = 100;
 			
+			button.addEventListener(MouseEvent.CLICK,onUpdateClick);
 			Common.loadURL("furniture/action/lifeway/iosLifewayEject?lifeNo="+data.li_id,handleLifewayData,null);
-			
+			//addEventListener(GOT_DATA,);
+		}
+		
+		private function onUpdateClick(e:MouseEvent):void{
+			if(updateAble){
+				
+			}
 		}
 		
 		private function handleLifewayData(e:Event):void{
@@ -60,7 +72,7 @@ package page.functionpage.update
 				nameLabel.text = data.datavalue[0].li_name;
 				descLabel.text = data.datavalue[0].li_explain;
 			}
-		//	Common.loadURL("furniture/action/lifeway/iosLifewayUpdatePrompt?JSESSIONID="+UserInfo.sessionID+"&lifeNo="+data.datavalue[0].li_no+"&lastRefreshTime="+UserInfo.updateTimeDic[data.datavalue[0].li_no],handleUpdate,null);
+			dispatchEvent(new Event(GOT_DATA));
 		}
 		
 		

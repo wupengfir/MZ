@@ -7,6 +7,8 @@ package
 	import flash.events.MouseEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 
 	
 	public class Common
@@ -30,11 +32,27 @@ package
 		
 		public static function loadURL(path:String,f:Function,ef:Function):void{
 			var urlLoader:URLLoader = new URLLoader();
-			urlLoader.load(new URLRequest(Common.url+path));
+			var urlRequest:URLRequest = new URLRequest(Common.url + path);
+			urlRequest.method = URLRequestMethod.POST;
+			urlLoader.load(urlRequest);
 			if(f != null)
 			urlLoader.addEventListener(Event.COMPLETE, f);
 			if(ef != null)
 			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, ef);
+		}
+		
+		public static function loadURLWithJSON(path:String,v:URLVariables,f:Function,ef:Function):void{
+			var urlLoader:URLLoader = new URLLoader();
+			var urlRequest:URLRequest = new URLRequest(Common.url + path);
+			urlRequest.method = URLRequestMethod.POST;
+			urlRequest.data = v;			
+			urlLoader.load(urlRequest);
+			
+			
+			if(f != null)
+				urlLoader.addEventListener(Event.COMPLETE, f);
+			if(ef != null)
+				urlLoader.addEventListener(IOErrorEvent.IO_ERROR, ef);
 		}
 		
 		public static function getImageUrljpg(iname:String):String{

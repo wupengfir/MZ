@@ -53,13 +53,23 @@
 			Common.MAIN = this;
 			Common.SCREEN_WIDTH = 1200;
 			Common.SCREEN_HEIGHT = 900;
-			Common.SCREEN_SCALEX = this.scaleX = 1/1.5;
-			Common.SCREEN_SCALEY = this.scaleY = 1/1.5;
+			Common.SCREEN_SCALEX = this.scaleX = 1/2;
+			Common.SCREEN_SCALEY = this.scaleY = 1/2;
 			basePath = File.applicationDirectory.url;
 			init();
-			//drawBack(1200,900,0xff00ff);
+			//stage.addEventListener (Event.RESIZE,test);  
+			//stage.addEventListener(MouseEvent.CLICK,onStageXClick);
 		}
 		
+		private function onStageXClick (e:MouseEvent):void {  
+			stage.nativeWindow.width = 1024+20;
+			stage.nativeWindow.height = 768+42;
+		}
+		
+		private function test (e:Event):void {  
+			Common.SCREEN_SCALEX = this.scaleX = stage.stageWidth/Common.MAX_WIDTH;
+			Common.SCREEN_SCALEY = this.scaleY = stage.stageHeight/Common.MAX_HEIGHT;
+		}
 		
 		private function init():void{
 			loadXml();

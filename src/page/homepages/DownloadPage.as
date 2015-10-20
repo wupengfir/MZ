@@ -148,10 +148,13 @@ package page.homepages
 		private function unzipByIndex(index:int):void{
 			if(index<downloadList.length){
 				var obj:Object = downloadList[index];
-				var zip:UnZip = new UnZip(File.applicationDirectory.resolvePath(currentPath + obj.ui_name).nativePath);
-//				zip.addEventListener(ProgressEvent.PROGRESS,function(e:ProgressEvent):void{
-//					labelProgress.text = "文件解压中"+e.currentTarget.progress;
-//				});
+				try{
+					var zip:UnZip = new UnZip(File.applicationDirectory.resolvePath(currentPath + obj.ui_name).nativePath);
+				}catch(e:Error){
+					labelProgress.text = "解压失败";
+					return;
+				}
+				
 				currentIndex++;
 				zip.addEventListener(Event.COMPLETE,function(e:Event):void{
 					unzipByIndex(currentIndex);

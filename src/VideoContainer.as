@@ -29,11 +29,12 @@ package
 			graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
 			graphics.endFill();
 			textBox = new TextField();  
-			textBox.autoSize = TextFieldAutoSize.CENTER;  
+			//textBox.autoSize = TextFieldAutoSize.CENTER;  
 			textBox.multiline = true;  
-			textBox.x = 100;  
-			textBox.y = 250;  
-			textBox.scaleX = textBox.scaleY = 3;
+			textBox.width = 1000;
+			textBox.x = 0;  
+			textBox.y = 700;  
+			textBox.scaleX = textBox.scaleY = 2;
 			this.addChild(textBox);  
 			
 			this.addEventListener(Event.ENTER_FRAME,onEnterFrame); 
@@ -114,12 +115,12 @@ package
 		private function onEnterFrame(event:Event):void  
 		{  
 			textBox.text = "";  
-			textBox.appendText("酷播cuplayer缓冲区大小是："+ns.bufferTime+"\n");  
-			textBox.appendText("已进入缓冲区的秒数："+ns.bufferLength+"\n");  
-			textBox.appendText("已缓冲的百分比："+ Math.round((ns.bufferLength/ns.bufferTime)*100) +"%\n");  
-			textBox.appendText("已下载的字节数："+ns.bytesLoaded+"\n");  
-			textBox.appendText("酷播cuplayer总字节数："+ns.bytesTotal+"\n");  
-			textBox.appendText("已下载的百分比："+ Math.round((ns.bytesLoaded/ns.bytesTotal)*100) +"%\n");  
+//			textBox.appendText("酷播cuplayer缓冲区大小是："+ns.bufferTime+"\n");  
+//			textBox.appendText("已进入缓冲区的秒数："+ns.bufferLength+"\n");  
+//			textBox.appendText("已缓冲的百分比："+ Math.round((ns.bufferLength/ns.bufferTime)*100) +"%\n");  
+//			textBox.appendText("已下载的字节数："+ns.bytesLoaded+"\n");  
+//			textBox.appendText("酷播cuplayer总字节数："+ns.bytesTotal+"\n");  
+			textBox.appendText("视频缓冲中："+ Math.round((ns.bytesLoaded/ns.bytesTotal)*100) +"%\n");  
 		} 
 		
 	}
