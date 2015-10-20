@@ -25,10 +25,12 @@ package page.homepages
 	public class DownloadPage extends Page
 	{
 		
+		public static const DATA_READY:String = "DATA_READY";
+		
 		public var labelName:Label = new Label("",20);
 		public var imageLogo:Image = new Image();
 		public var labelNeirong:Label = new Label("",20);
-		public var labelNeirongText:Label = new Label("",20);
+		public var labelNeirongText:Label = new Label("",16);
 		public var scroller:SY_Scroller = new SY_Scroller(580,200,570,200,0xffffff,0,false);		
 		public var btnDownload:Image = new Image("data/img/xiazaianniu.png");
 		public var labelProgress:Label = new Label("",20);
@@ -74,7 +76,7 @@ package page.homepages
 			labelNeirongText.height = 100;
 			labelProgress.width = 300;
 			labelNeirongText.textField.wordWrap = true;
-			
+			setCloseBtn(300,0);
 			btnDownload.addEventListener(MouseEvent.CLICK,onDownloadClick);
 		}
 		
@@ -82,33 +84,38 @@ package page.homepages
 			if(loading){
 				return;
 			}
+			labelProgress.text = "下载中";
 			//trace("furniture/action/lifeway/iosLifewayDownload?JSESSIONID="+UserInfo.sessionID+"&lifeNo="+dataObj.datavalue[0].li_no);
 			Common.loadURL("furniture/action/lifeway/iosLifewayDownload?JSESSIONID="+UserInfo.sessionID+"&lifeNo="+dataObj.datavalue[0].li_no,handleDownload,null);
 		}
-		
+		private var dataGot:Boolean = false;
 		private function handleDownload(e:Event):void{
-			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
-			trace(e.currentTarget.data);
-			if(data.success){	
-				progressDic = new Dictionary();
-				completeDic = new Dictionary();
-				downloadList = data.dataValue.lifewayData;
-				totalSize = data.dataValue.filesize;
-				
-				
-				
-				for each(var o:Object in downloadList){
-					var dl:BigFileDownload = new BigFileDownload("data/img/"+o.li_no+"/"+o.ui_name,Common.url+"furniture/data/"+o.li_no+"/"+o.ui_name);
-					dl.addEventListener(ProgressEvent.PROGRESS,onProgress);
-					dl.addEventListener(Event.COMPLETE,onComplete);					
-					liNo = o.li_no;
-					progressDic[dl] = 0;
-					completeDic[dl] = 0;
-					currentPath = "data/img/"+o.li_no+"/";
-					loading = true;
+			if(!dataGot){
+				dataGot = true;
+				var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
+				trace(e.currentTarget.data);
+				if(data.success){	
+					progressDic = new Dictionary();
+					completeDic = new Dictionary();
+					downloadList = data.dataValue.lifewayData;
+					totalSize = data.dataValue.filesize;
+					
+					
+					
+					for each(var o:Object in downloadList){
+						var dl:BigFileDownload = new BigFileDownload("data/img/"+o.li_no+"/"+o.ui_name,Common.url+"furniture/data/"+o.li_no+"/"+o.ui_name);
+						dl.addEventListener(ProgressEvent.PROGRESS,onProgress);
+						dl.addEventListener(Event.COMPLETE,onComplete);					
+						liNo = o.li_no;
+						progressDic[dl] = 0;
+						completeDic[dl] = 0;
+						currentPath = "data/img/"+o.li_no+"/";
+						loading = true;
+					}
+					//unzipByIndex(0);
 				}
-				//unzipByIndex(0);
 			}
+			
 		}
 		
 		private function onComplete(e:Event):void{
@@ -156,7 +163,15 @@ package page.homepages
 				if(UserInfo.diyDataLoaded.indexOf(liNo) == -1){
 					UserInfo.diyDataLoaded.push(liNo);
 					UserInfo.userData.data.diyDataLoaded = UserInfo.diyDataLoaded;
+					//UserInfo.userData.flush();
+					
+					UserInfo.updateTimeDic[liNo] = new Date().getTime().toString();
+					UserInfo.userData.data.updateTimeDic = UserInfo.updateTimeDic;
 					UserInfo.userData.flush();
+					
+					dispatchEvent(new Event(DATA_READY));
+					
+					labelProgress.text = "解压完成";
 				}
 			}
 			
@@ -177,8 +192,11 @@ package page.homepages
 			labelProgress.text = ((loadedTotal/totalSize)*100).toFixed(2)+"%已下载";
 			
 		}
-		
+		public var pageDataLoaded:Boolean = false;
 		public function showData(data:Object):void{
+			if(pageDataLoaded){
+				return;
+			}
 			this.dataObj = data;
 			imageLogo.source = Common.getImageUrljpg(data.datavalue[0].li_logo);
 			labelName.text = data.datavalue[0].li_name;

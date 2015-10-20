@@ -4,15 +4,20 @@ package page.functionpage
 	
 	import flash.events.MouseEvent;
 	
+	import page.functionpage.update.UpdatePage;
+	
 	public class FunctionPage extends Page
 	{
+		
+		//private var updatepage:UpdatePage;
+		
 		public function FunctionPage()
 		{
 			initPage();
 		}
 		
 		private function initPage():void{
-			this.y = 200;
+			this.y = 830;
 			this.backSource = "data/img/ui/gongnengjian3.png";
 			this.x = 200;
 			this.backImage.width = 800;
@@ -37,7 +42,10 @@ package page.functionpage
 				trace("5");
 			}
 			if(Common.checkClick(620/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				trace("6");
+				var updatepage:UpdatePage = new UpdatePage();
+				//updatepage.x = -150;
+				//updatepage.y = -500;
+				Common.MAIN.addChild(updatepage);
 			}
 		}
 		

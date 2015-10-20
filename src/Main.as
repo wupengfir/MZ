@@ -53,8 +53,8 @@
 			Common.MAIN = this;
 			Common.SCREEN_WIDTH = 1200;
 			Common.SCREEN_HEIGHT = 900;
-			Common.SCREEN_SCALEX = this.scaleX = 1/1;
-			Common.SCREEN_SCALEY = this.scaleY = 1/1;
+			Common.SCREEN_SCALEX = this.scaleX = 1/1.5;
+			Common.SCREEN_SCALEY = this.scaleY = 1/1.5;
 			basePath = File.applicationDirectory.url;
 			init();
 			//drawBack(1200,900,0xff00ff);
@@ -131,6 +131,14 @@
 			}else{
 				UserInfo.diyDataLoaded = new Array();
 				data.data.diyDataLoaded = new Array();
+				data.flush();
+			}
+			
+			if(data.data.updateTimeDic != null){
+				UserInfo.updateTimeDic = data.data.updateTimeDic;
+			}else{
+				UserInfo.updateTimeDic = new Dictionary();
+				data.data.updateTimeDic = new Dictionary();
 				data.flush();
 			}
 			

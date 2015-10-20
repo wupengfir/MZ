@@ -17,6 +17,7 @@ package
 			textField.text = _text;
 			this.size = s;
 			textField.selectable = false;
+			textField.wordWrap = true;
 //			textField.setTextFormat(textFormat);
 		}
 		

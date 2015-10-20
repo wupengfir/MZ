@@ -1,6 +1,7 @@
 package user
 {
 	import flash.net.SharedObject;
+	import flash.utils.Dictionary;
 
 	public class UserInfo
 	{
@@ -13,6 +14,7 @@ package user
 		//public static var userData:SharedObject = SharedObject.getLocal(UserInfo.DATA_KEY);
 		
 		public static var diyDataLoaded:Array;
+		public static var updateTimeDic:Object;
 		
 		public function UserInfo()
 		{

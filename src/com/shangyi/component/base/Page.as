@@ -89,6 +89,24 @@
 			clear();
 		}
 		
+		
+		
+		public function setCloseBtn(cx:Number,cy:Number,level:int = 0):void{
+			var cbtn:Image = new Image("data/img/close.png");
+			cbtn.x = cx;
+			cbtn.y = cy;
+			addChild(cbtn);
+			if(level == 0){
+				cbtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
+					e.currentTarget.parent.visible = false;
+				});
+			}else if(level == 1){
+				cbtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
+					close();
+				});
+			}
+		}
+		
 		private function terminate(e:MouseEvent):void{
 			if(!eventAccept){
 				e.stopImmediatePropagation();
@@ -108,10 +126,16 @@
 //			}
 		}
 		
-		public function drawBack(_width:Number = Common.MAX_WIDTH,_height:Number = Common.MAX_HEIGHT,color:uint = 0xffffffff):void{
+		public function drawBack(_width:Number = Common.MAX_WIDTH,_height:Number = Common.MAX_HEIGHT,color:uint = 0xffffff):void{
 			graphics.beginFill(color,1);
 			graphics.drawRect(0,0,_width,_height);
 			graphics.endFill();
+		}
+		
+		public function drawLine(sx:Number,sy:Number,dx:Number,dy:Number,color:uint = 0,thick:Number = 2):void{
+			graphics.lineStyle(thick,color);
+			graphics.moveTo(sx,sy);
+			graphics.lineTo(dx,dy);
 		}
 		
 		public function clearAll(par:DisplayObjectContainer):void{

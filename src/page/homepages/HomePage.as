@@ -168,10 +168,18 @@ package page.homepages
 					img.info = dataList[index];
 					img.addEventListener(MouseEvent.CLICK,onLifeWayClick);
 					img.addEventListener(Image.GET_DATA,function(evt:Event):void{
-						var nameLebel:Label = new Label(evt.currentTarget.info.sp_name,18);
+						
+						var nameLebel:Label = new Label(evt.currentTarget.info.sp_name,18/evt.currentTarget.scaleY);
+						nameLebel.width = 150/evt.currentTarget.scaleY;
+						nameLebel.height = 40/evt.currentTarget.scaleY;
 						nameLebel.x = 3;
-						nameLebel.y = 160;
+						nameLebel.y = 140/evt.currentTarget.scaleY;
 						evt.currentTarget.addChild(nameLebel)
+						
+//						var nameLebel:Label = new Label(evt.currentTarget.info.sp_name,18);
+//						nameLebel.x = 3;
+//						nameLebel.y = 160/evt.currentTarget.scaleY;
+//						evt.currentTarget.addChild(nameLebel)
 					});
 
 					index++;
@@ -193,14 +201,38 @@ package page.homepages
 				var downloadpage:DownloadPage;
 				if(downloadpageDic[data.dataValue.datavalue[0].li_id] == undefined){
 					downloadpage = new DownloadPage();
+					downloadpage.addEventListener(DownloadPage.DATA_READY,onDataReady);
 					downloadpageDic[data.dataValue.datavalue[0].li_id] = downloadpage;
 				}
 				downloadpage = downloadpageDic[data.dataValue.datavalue[0].li_id] as DownloadPage;
 				downloadpage.x = 300;
-				downloadpage.y = 225;
+				downloadpage.y = 150;
 				addChild(downloadpage);
 				downloadpage.visible = true;
 				downloadpage.showData(data.dataValue);
+			}
+		}
+		
+		private function onDataReady(e:Event):void{
+			for each(var img:Image in lifeStyleContainer.scroller.btnArr){
+				if(UserInfo.diyDataLoaded.indexOf(img.info.li_No) == -1){
+//					img.addEventListener(MouseEvent.CLICK,onLoadClick);
+//					img.addEventListener(Image.GET_DATA,function(evt:Event):void{
+//						var nameLebel:Label = new Label(evt.currentTarget.info.li_name,18/evt.currentTarget.scaleY);
+//						nameLebel.width = 150/evt.currentTarget.scaleY;
+//						nameLebel.height = 30/evt.currentTarget.scaleY;
+//						nameLebel.x = 3;
+//						nameLebel.y = 160/evt.currentTarget.scaleY;
+//						evt.currentTarget.addChild(nameLebel)
+//					});
+//					var filter:ColorMatrixFilter = new ColorMatrixFilter([0.3,0.6,0,0,0,0.3,0.6,0,0,0,0.3,0.6,0,0,0,0,0,0,1,0]) ;
+//					img.filters = [filter];
+				}else{
+					img.removeEventListener(MouseEvent.CLICK,onLoadClick);
+					img.removeEventListener(MouseEvent.CLICK,onLifeWayClick);
+					img.addEventListener(MouseEvent.CLICK,onLifeWayClick);
+					img.filters = [];
+				}
 			}
 		}
 		
