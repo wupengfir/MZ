@@ -6,6 +6,7 @@ package page.functionpage.update
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.filesystem.File;
 	import flash.filters.ColorMatrixFilter;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -15,18 +16,68 @@ package page.functionpage.update
 	import json.JsonData;
 	import json.JsonDecoder;
 	
+	import page.homepages.HomePage;
+	
 	import user.UserInfo;
 	
 	public class UpdatePage extends Page
 	{
 		
 		private var scroller:Scroller = new Scroller(Common.MAX_WIDTH,Common.MAX_HEIGHT*3/4);
-		
+		private var quanxuanBtn:Image = new Image("data/img/quanxuan.png");
+		private var shanchuBtn:Image = new Image("data/img/shanchu.png");
 		public function UpdatePage()
 		{
 			drawBack(Common.MAX_WIDTH,Common.MAX_HEIGHT-80);
 			addChild(scroller);
+			shanchuBtn.x = 300;
+			shanchuBtn.y = 740;
+			quanxuanBtn.x = 700;
+			quanxuanBtn.y = 740;
+			quanxuanBtn.width = shanchuBtn.width = 170;
+			quanxuanBtn.height = shanchuBtn.height = 45;
+			addChild(quanxuanBtn);
+			addChild(shanchuBtn);
 			Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,null);
+			
+			shanchuBtn.addEventListener(MouseEvent.CLICK,onShanchu);
+			quanxuanBtn.addEventListener(MouseEvent.CLICK,onQuanxuan);
+			
+		}
+		
+		private function onShanchu(e:MouseEvent):void{
+			for each(var u:UpdateSpace in scroller.btnArr){
+				if(u.checkBox.selected){
+					var liName:String = u.dataObj.datavalue[0].li_no;
+					var file:File = new File(File.applicationDirectory.resolvePath("data/img/" + liName).nativePath);
+					if(file.exists){
+						
+						
+						if(UserInfo.diyDataLoaded.indexOf(liName) != -1){
+							UserInfo.diyDataLoaded.splice(UserInfo.diyDataLoaded.indexOf(liName),1);
+							UserInfo.userData.data.diyDataLoaded = UserInfo.diyDataLoaded;
+							delete UserInfo.updateTimeDic[liName];
+							UserInfo.userData.data.updateTimeDic = UserInfo.updateTimeDic;
+							UserInfo.userData.flush();
+							
+						}			
+						file.deleteDirectory(true);
+					}
+				}
+			}
+			HomePage.homeRoot.onDataReady(null);
+			reFresh();
+		}
+		
+		public function reFresh():void{
+			scroller.clearContent();
+			Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,null);
+		}
+		
+		private function onQuanxuan(e:MouseEvent):void{
+			for each(var u:UpdateSpace in scroller.btnArr){
+				u.checkBox.selected = true;
+			}
 		}
 		
 		private function handleUpdate(e:Event):void{
@@ -69,7 +120,7 @@ package page.functionpage.update
 				var array:Array = new Array();
 				for each(var obj:Object in dl){
 					if(UserInfo.diyDataLoaded.indexOf(obj.li_No) != -1){
-						var o:Object = {"ui_li_no":obj.li_No,"ui_time":Number(UserInfo.updateTimeDic[obj.li_No])/1000};
+						var o:Object = {"ui_li_no":obj.li_No,"ui_time":Number(UserInfo.updateTimeDic[obj.li_No])/1000};//-3600*24*15};
 						array.push(o);
 					}
 					

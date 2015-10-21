@@ -123,7 +123,7 @@
 				UserInfo.sessionID = data.dataValue.JSESSIONID;
 				
 				this.clear();
-				Common.MAIN.addChild(new HomePage);
+				(Common.MAIN as Main).normalLayer.addChild(new HomePage);
 			}
 			
 		} 

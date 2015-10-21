@@ -34,7 +34,6 @@ package page.homepages
 		public var scroller:SY_Scroller = new SY_Scroller(580,200,570,200,0xffffff,0,false);		
 		public var btnDownload:Image = new Image("data/img/xiazaianniu.png");
 		public var labelProgress:Label = new Label("",20);
-		
 		private var totalSize:Number;
 		private var downloadList:Array;
 		private var dataObj:Object;
@@ -67,7 +66,7 @@ package page.homepages
 			initByPageScript(ps);		
 			
 			drawBack(600,550,0x00ffff);
-			
+			btnDownload.buttonMode = true;
 			btnDownload.width = 50;
 			btnDownload.height = 50;
 			imageLogo.width = 180;
@@ -157,9 +156,10 @@ package page.homepages
 				
 				currentIndex++;
 				zip.addEventListener(Event.COMPLETE,function(e:Event):void{
-					unzipByIndex(currentIndex);
 					completeNum++;
 					labelProgress.text = "文件解压中:"+completeNum+"/"+downloadList.length;
+					unzipByIndex(currentIndex);
+					
 				});
 				
 			}else{
@@ -167,7 +167,7 @@ package page.homepages
 					UserInfo.diyDataLoaded.push(liNo);
 					UserInfo.userData.data.diyDataLoaded = UserInfo.diyDataLoaded;
 					//UserInfo.userData.flush();
-					
+					}
 					UserInfo.updateTimeDic[liNo] = new Date().getTime().toString();
 					UserInfo.userData.data.updateTimeDic = UserInfo.updateTimeDic;
 					UserInfo.userData.flush();
@@ -175,7 +175,7 @@ package page.homepages
 					dispatchEvent(new Event(DATA_READY));
 					
 					labelProgress.text = "解压完成";
-				}
+				
 			}
 			
 		}

@@ -27,7 +27,7 @@ package page.homepages
 	{
 		
 		public static var functionBar:FunctionPage = new FunctionPage();
-		
+		public static var homeRoot:HomePage;
 		private var advertiseContainer:SY_Scroller = new SY_Scroller(1200,340,1200,340);
 		private var lifeStyleContainer:SY_Scroller = new SY_Scroller(1200,150,1200,150,0xffffff,0,false);
 		private var spaceContainer:SY_Scroller = new SY_Scroller(1200,130,1200,130);
@@ -44,6 +44,7 @@ package page.homepages
 		//private var downloadpage:DownloadPage = new DownloadPage();
 		public function HomePage()
 		{
+			homeRoot = this;
 			loadData();
 			
 			addChild(advertiseContainer);
@@ -213,7 +214,7 @@ package page.homepages
 			}
 		}
 		
-		private function onDataReady(e:Event):void{
+		public function onDataReady(e:Event):void{
 			for each(var img:Image in lifeStyleContainer.scroller.btnArr){
 				if(UserInfo.diyDataLoaded.indexOf(img.info.li_No) == -1){
 //					img.addEventListener(MouseEvent.CLICK,onLoadClick);

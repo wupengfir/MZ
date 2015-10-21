@@ -34,8 +34,12 @@
 		
 		private var sliderContainer:Sprite = new Sprite();
 		private var rootSroller:Scroller;
+		
+		public static var scrollerList:Array = new Array();
+		public static var listenerAdded:Boolean = false;
 		public function Scroller(_width:int,_height:int,type:int = 0)
 		{
+			scrollerList.push(this);
 			_type =type;
 			maxHeight = _height;
 			maxWidth = _width;
@@ -51,7 +55,7 @@
 			content.mask = maskSp;
 			addEventListener(MouseEvent.MOUSE_DOWN,down);
 			addEventListener(MouseEvent.MOUSE_UP,up);
-			addEventListener(MouseEvent.MOUSE_OUT,up);
+//			addEventListener(MouseEvent.MOUSE_OUT,up);
 //			addEventListener(MouseEvent.MOUSE_OUT,up);
 			addEventListener(MouseEvent.CLICK,onClick,true);
 			addChildWithSelf = false;
@@ -60,6 +64,19 @@
 				rootSroller.stage.removeEventListener(MouseEvent.MOUSE_UP,onSliderUp);
 				rootSroller.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onSliderMove);
 			});
+			addEventListener(Event.ADDED_TO_STAGE,function(e:Event){
+				if(!listenerAdded){
+					rootSroller.stage.addEventListener(MouseEvent.MOUSE_UP,onStageUP);
+					listenerAdded = true;
+				}
+			});
+		}
+		
+		private function onStageUP(e:MouseEvent):void{
+			for each(var s:Scroller in scrollerList){
+				s.up(e);
+				
+			}
 		}
 		
 		public function setmasksize(w:Number,h:Number):void{

@@ -43,6 +43,9 @@
 		
 		private var logo:Image = new Image("data/img/logo.jpg");
 		
+		public var normalLayer:Page = new Page();
+		public var functionLayer:Page = new Page();
+		
 		public function Main()
 		{
 
@@ -53,10 +56,11 @@
 			Common.MAIN = this;
 			Common.SCREEN_WIDTH = 1200;
 			Common.SCREEN_HEIGHT = 900;
-			Common.SCREEN_SCALEX = this.scaleX = 1/2;
-			Common.SCREEN_SCALEY = this.scaleY = 1/2;
+			Common.SCREEN_SCALEX = this.scaleX = 1/1.5;
+			Common.SCREEN_SCALEY = this.scaleY = 1/1.5;
 			basePath = File.applicationDirectory.url;
 			init();
+			
 			//stage.addEventListener (Event.RESIZE,test);  
 			//stage.addEventListener(MouseEvent.CLICK,onStageXClick);
 		}
@@ -74,6 +78,8 @@
 		private function init():void{
 			loadXml();
 			showLogo();
+			addChild(normalLayer);
+			addChild(functionLayer);
 		}
 		
 		private function showLogo():void{

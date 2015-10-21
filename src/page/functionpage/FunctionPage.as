@@ -9,7 +9,7 @@ package page.functionpage
 	public class FunctionPage extends Page
 	{
 		
-		//private var updatepage:UpdatePage;
+		public static var updatepage:UpdatePage;
 		
 		public function FunctionPage()
 		{
@@ -26,6 +26,7 @@ package page.functionpage
 		}
 		
 		private function onthisClick(e:MouseEvent):void{
+			(Common.MAIN as Main).functionLayer.visible = true;
 			if(Common.checkClick(120/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				trace("1");
 			}
@@ -42,10 +43,13 @@ package page.functionpage
 				trace("5");
 			}
 			if(Common.checkClick(620/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				var updatepage:UpdatePage = new UpdatePage();
-				//updatepage.x = -150;
-				//updatepage.y = -500;
-				Common.MAIN.addChild(updatepage);
+				if(!updatepage){
+					updatepage = new UpdatePage();
+				}else{
+					updatepage.visible = true;
+				}
+				
+				(Common.MAIN as Main).functionLayer.addChild(updatepage);
 			}
 		}
 		
