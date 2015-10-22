@@ -16,6 +16,7 @@ package page.functionpage.update
 	import json.JsonData;
 	import json.JsonDecoder;
 	
+	import page.alertpage.Alert;
 	import page.homepages.HomePage;
 	
 	import user.UserInfo;
@@ -72,6 +73,7 @@ package page.functionpage.update
 		public function reFresh():void{
 			scroller.clearContent();
 			Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,null);
+			Alert.alert("删除成功");
 		}
 		
 		private function onQuanxuan(e:MouseEvent):void{
@@ -85,7 +87,6 @@ package page.functionpage.update
 			if(data.success){
 				var dataList:Array = data.dataValue as Array;
 				for each(var obj:Object in dataList){	
-					trace("!!!!!!!!!!!!!!");
 					var update:UpdateSpace = getUpdateSpace(obj.li_no);
 					if(update){
 						if(obj.hasUpdate == 1){

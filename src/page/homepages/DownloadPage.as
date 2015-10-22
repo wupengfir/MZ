@@ -65,7 +65,7 @@ package page.homepages
 		{
 			initByPageScript(ps);		
 			
-			drawBack(600,550,0x00ffff);
+			//drawBack(600,550);
 			btnDownload.buttonMode = true;
 			btnDownload.width = 50;
 			btnDownload.height = 50;
@@ -75,7 +75,7 @@ package page.homepages
 			labelNeirongText.height = 100;
 			labelProgress.width = 300;
 			labelNeirongText.textField.wordWrap = true;
-			setCloseBtn(300,0);
+			setCloseBtn(550,0);
 			btnDownload.addEventListener(MouseEvent.CLICK,onDownloadClick);
 		}
 		

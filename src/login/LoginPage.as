@@ -52,7 +52,7 @@
 		
 		private var halfHourTimer:Timer = new Timer(5*60*1000);
 		
-		private var loginedScroller:Scroller = new Scroller(210,200,1);;
+		private var loginedScroller:Scroller = new Scroller(210,200,1);
 		
 		public function LoginPage()
 		{

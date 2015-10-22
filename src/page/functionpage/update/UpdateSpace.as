@@ -18,6 +18,7 @@ package page.functionpage.update
 	import newfunction.BigFileDownload;
 	import newfunction.UnZip;
 	
+	import page.alertpage.Alert;
 	import page.functionpage.FunctionPage;
 	import page.homepages.DownloadPage;
 	import page.homepages.HomePage;
@@ -87,6 +88,7 @@ package page.functionpage.update
 					FunctionPage.updatepage.reFresh();
 				}
 				file.deleteDirectory(true);
+				Alert.alert("删除成功");
 			}
 		}
 		

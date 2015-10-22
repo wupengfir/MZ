@@ -4,16 +4,22 @@ package page.functionpage
 	
 	import flash.events.MouseEvent;
 	
+	import page.functionpage.changeuser.ChangeUserPage;
+	import page.functionpage.pricesync.PriceSynchronizePage;
 	import page.functionpage.update.UpdatePage;
 	
 	public class FunctionPage extends Page
 	{
 		
 		public static var updatepage:UpdatePage;
+		public static var changeUserpage:ChangeUserPage;
+		public static var syncpage:PriceSynchronizePage;
+		
 		
 		public function FunctionPage()
 		{
 			initPage();
+			
 		}
 		
 		private function initPage():void{
@@ -25,22 +31,53 @@ package page.functionpage
 			this.addEventListener(MouseEvent.CLICK,onthisClick);
 		}
 		
+		public function sync():void{
+			if(!syncpage){
+				syncpage = new PriceSynchronizePage();
+				syncpage.x = 500;
+				syncpage.y = 400;
+				syncpage.graphics.beginFill(0,.5);
+				syncpage.graphics.drawRect(-500,-400,Common.MAX_WIDTH,Common.MAX_HEIGHT);
+				syncpage.graphics.endFill();
+			}else{
+				syncpage.visible = true;
+				syncpage.synchronize();
+			}
+			
+			(Common.MAIN as Main).functionLayer.addChild(syncpage);
+		}
+		
 		private function onthisClick(e:MouseEvent):void{
 			(Common.MAIN as Main).functionLayer.visible = true;
 			if(Common.checkClick(120/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				trace("1");
+				for(var i:int = 0;i<(Common.MAIN as Main).functionLayer.numChildren;i++){
+					(Common.MAIN as Main).functionLayer.getChildAt(i).visible = false;
+				}
+				(Common.MAIN as Main).functionLayer.visible = false;
 			}
 			if(Common.checkClick(220/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				trace("2");
 			}
 			if(Common.checkClick(320/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				trace("3");
+				sync();
 			}
 			if(Common.checkClick(420/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				trace("4");
 			}
 			if(Common.checkClick(520/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				trace("5");
+				if(!changeUserpage){
+					changeUserpage = new ChangeUserPage();
+					changeUserpage.x = 290;
+					changeUserpage.y = 120;
+					changeUserpage.graphics.beginFill(0,.5);
+					changeUserpage.graphics.drawRect(-290,-120,Common.MAX_WIDTH,Common.MAX_HEIGHT);
+					changeUserpage.graphics.endFill();
+					
+				}else{
+					changeUserpage.visible = true;
+				}
+				
+				(Common.MAIN as Main).functionLayer.addChild(changeUserpage);
 			}
 			if(Common.checkClick(620/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				if(!updatepage){

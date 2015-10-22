@@ -110,11 +110,23 @@ package page.homepages
 		private function handleLifewayBefore(e:Event):void{
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
 			if(data.success){
+				var updatePlistFlag:Boolean = false;
 				var urlList:Array = new Array();
 				var dataList:Array = data.dataValue.datavalue as Array;
 				
 				for each(var obj:Object in dataList){
 					urlList.push(Common.url+"furniture/images/"+obj.li_logo+".jpg");
+					if(UserInfo.diyDataLoaded.indexOf(obj.li_No) != -1){
+						if(new File(File.applicationDirectory.resolvePath("data/img/"+obj.li_No+"/"+obj.li_No+"_"+UserInfo.userName+".plist").nativePath).exists){
+						
+						}else{
+							updatePlistFlag = true;
+						}
+					}
+				}
+				
+				if(updatePlistFlag){
+					functionBar.sync();
 				}
 				
 				lifeStyleContainer.dataSource(urlList,290,30,null);
@@ -208,6 +220,15 @@ package page.homepages
 				downloadpage = downloadpageDic[data.dataValue.datavalue[0].li_id] as DownloadPage;
 				downloadpage.x = 300;
 				downloadpage.y = 150;
+				
+				downloadpage.graphics.beginFill(0,.5);
+				downloadpage.graphics.drawRect(-300,-150,Common.MAX_WIDTH,Common.MAX_HEIGHT);
+				downloadpage.graphics.endFill();
+				downloadpage.graphics.beginFill(0xffffff,1);
+				downloadpage.graphics.drawRect(0,0,600,550);
+				downloadpage.graphics.endFill();
+				
+				
 				addChild(downloadpage);
 				downloadpage.visible = true;
 				downloadpage.showData(data.dataValue);
@@ -217,17 +238,7 @@ package page.homepages
 		public function onDataReady(e:Event):void{
 			for each(var img:Image in lifeStyleContainer.scroller.btnArr){
 				if(UserInfo.diyDataLoaded.indexOf(img.info.li_No) == -1){
-//					img.addEventListener(MouseEvent.CLICK,onLoadClick);
-//					img.addEventListener(Image.GET_DATA,function(evt:Event):void{
-//						var nameLebel:Label = new Label(evt.currentTarget.info.li_name,18/evt.currentTarget.scaleY);
-//						nameLebel.width = 150/evt.currentTarget.scaleY;
-//						nameLebel.height = 30/evt.currentTarget.scaleY;
-//						nameLebel.x = 3;
-//						nameLebel.y = 160/evt.currentTarget.scaleY;
-//						evt.currentTarget.addChild(nameLebel)
-//					});
-//					var filter:ColorMatrixFilter = new ColorMatrixFilter([0.3,0.6,0,0,0,0.3,0.6,0,0,0,0.3,0.6,0,0,0,0,0,0,1,0]) ;
-//					img.filters = [filter];
+
 				}else{
 					img.removeEventListener(MouseEvent.CLICK,onLoadClick);
 					img.removeEventListener(MouseEvent.CLICK,onLifeWayClick);

@@ -1,7 +1,10 @@
 package page.functionpage.changeuser
 {
+	import com.greensock.TweenLite;
 	import com.shangyi.component.base.Page;
 	import com.shangyi.component.buttonRelated.Button;
+	import com.shangyi.component.buttonRelated.SimpleButton;
+	import com.shangyi.component.scrollerRelated.Scroller;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -23,13 +26,18 @@ package page.functionpage.changeuser
 		
 		private var userText:TextField = new TextField();
 		private var passText:TextField = new TextField();
-		private var loginBtn:Button = new Button(320,40,440,480);
-		
+		private var loginBtn:Button = new Button(110,70,242,462);
+		private var loginedScroller:Scroller = new Scroller(210,200,1);
+		private var loginedListBtn:Button = new Button(40,40,433,242);
 		public function ChangeUserPage()
 		{
+			addChild(loginedListBtn);
+			loginedListBtn.buttonMode = true;
+			loginedListBtn.addEventListener(MouseEvent.CLICK,onLoginedClick);
+			loginedScroller.visible = false;
 			backSource = "data/img/ui/checkout3.png";
-			backImage.width = 450;
-			backImage.height = 450;
+			backImage.width = 593;
+			backImage.height = 589;
 			
 			userText.type = TextFieldType.INPUT;
 			passText.type = TextFieldType.INPUT;
@@ -37,11 +45,11 @@ package page.functionpage.changeuser
 			userText.border = passText.border = false;
 			userText.width = passText.width = 220;
 			userText.height = passText.height = 30;
-			userText.y = 350;
-			passText.y = 410;
+			userText.y = 235;
+			passText.y = 288;
 			
 			passText.displayAsPassword = true;
-			userText.x = passText.x = 100;
+			userText.x = passText.x = 195;
 			
 			userText.defaultTextFormat = new TextFormat("",20);
 			passText.defaultTextFormat = new TextFormat("",20);
@@ -53,6 +61,39 @@ package page.functionpage.changeuser
 			addChild(loginBtn);
 			loginBtn.buttonMode = true;
 			loginBtn.addEventListener(MouseEvent.CLICK,onMouseClick);
+			setCloseBtn(543,0);
+		}
+		
+		private function onLoginedClick(e:MouseEvent):void{
+			
+			if(loginedScroller.visible){
+				TweenLite.killTweensOf(loginedScroller);
+				loginedScroller.visible = false;
+				return;
+			}
+			loginedScroller.x = 366;
+			loginedScroller.y = 280;
+			loginedScroller.visible = true;
+			loginedScroller.alpha = 0;
+			addChild(loginedScroller);
+			loginedScroller.clearContent();
+			
+			var index:int = 0;
+			for each(var username:String in UserConfig.loginedList){
+				var btn:SimpleButton = new SimpleButton(200,30);
+				btn.label = username;
+				btn.name = username;
+				btn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
+					userText.text = e.currentTarget.name;
+					passText.text = "";
+					loginedScroller.visible = false;
+				});
+				btn.y = index*30;
+				loginedScroller.addChild(btn);
+				index++;
+			}
+			
+			TweenLite.to(loginedScroller,2,{alpha:1});
 			
 		}
 		

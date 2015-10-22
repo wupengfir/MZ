@@ -25,6 +25,7 @@
 	
 	import login.LoginPage;
 	
+	import page.alertpage.Alert;
 	import page.homepages.HomePage;
 	
 	import user.UserConfig;
@@ -45,7 +46,7 @@
 		
 		public var normalLayer:Page = new Page();
 		public var functionLayer:Page = new Page();
-		
+		public var MessageLayer:Page = new Page();
 		public function Main()
 		{
 
@@ -80,6 +81,10 @@
 			showLogo();
 			addChild(normalLayer);
 			addChild(functionLayer);
+			addChild(MessageLayer);
+			
+			MessageLayer.addChild(Alert.a);
+			
 		}
 		
 		private function showLogo():void{

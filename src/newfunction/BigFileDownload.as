@@ -17,7 +17,7 @@ package newfunction
 	{
 		public static const DATA_JUST_GOT:String = "DATA_JUST_GOT";
 		public static const DATA_GOT:String = "DATA_GOT";
-		
+		public var info:Object;
 		private var contentLength:int;
 		private var startpos:int = 0;
 		public var endpos:int = 0;
