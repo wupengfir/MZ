@@ -152,6 +152,10 @@ package com.shangyi.component.scrollerRelated
 			_size = size;
 			for each(var path:String in data){
 				var btn:ImageButton = new ImageButton();
+				btn.index = index;
+				if(relocate){
+					btn.addEventListener(Image.GET_DATA,reLocate);
+				}
 				btn.source = path;
 				if(func){
 					btn.addEventListener(MouseEvent.CLICK,func);
@@ -170,10 +174,10 @@ package com.shangyi.component.scrollerRelated
 					}	
 				}
 
-				btn.index = index;
-				if(relocate){
-					btn.addEventListener(Image.GET_DATA,reLocate);
-				}
+//				btn.index = index;
+//				if(relocate){
+//					btn.addEventListener(Image.GET_DATA,reLocate);
+//				}
 				
 				if(index == selectedIndex){
 					btn.selected = true;

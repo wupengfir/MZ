@@ -7,6 +7,8 @@
 	import com.shangyi.component.imageRelated.Image;
 	import com.shangyi.component.scrollerRelated.Scroller;
 	
+	import fl.controls.CheckBox;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -54,16 +56,26 @@
 		
 		private var loginedScroller:Scroller = new Scroller(210,200,1);
 		
+		public var keepPassBox:CheckBox = new CheckBox();
+		public var autoLoginBox:CheckBox = new CheckBox();
+		
+		public static var loginPage:LoginPage;
 		public function LoginPage()
 		{
+			loginPage = this;
 			autoLogin();
 			initPage();		
 			loginedScroller.visible = false;
 		}
 		
 		private function autoLogin():void{
+			if(UserConfig.keepPass){
+				passText.text = UserInfo.passWord;
+			}
 			if(UserConfig.autoLogin){
-				
+				userText.text = UserInfo.userName;
+				passText.text = UserInfo.passWord;
+				loadPhp();
 			}
 		}
 		
@@ -113,7 +125,7 @@
 			if(data.success){
 				if(UserConfig.loginedList.indexOf(userText.text) == -1){
 					UserConfig.loginedList.push(userText.text);
-					trace(UserConfig.loginedList.length);
+					//trace(UserConfig.loginedList.length);
 					var data1:SharedObject = UserConfig.userConfigData;
 					data1.data.loginedList = UserConfig.loginedList;
 					data1.flush();
@@ -121,8 +133,12 @@
 				
 				UserInfo.userName = data.dataValue.account;
 				UserInfo.sessionID = data.dataValue.JSESSIONID;
-				
-				this.clear();
+				if(UserConfig.keepPass){
+					UserInfo.userData.data.userName = userText.text;
+					UserInfo.userData.data.passWord = UserInfo.passWord = passText.text;
+					UserInfo.userData.flush();
+				}
+				this.visible = false;
 				(Common.MAIN as Main).normalLayer.addChild(new HomePage);
 			}
 			
@@ -201,6 +217,37 @@
 			loginedListBtn.buttonMode = true;
 			loginedListBtn.addEventListener(MouseEvent.CLICK,onLoginedClick);
 			
+			keepPassBox.y = autoLoginBox.y = 420;
+			keepPassBox.x = 780;
+			autoLoginBox.x = 850;
+			keepPassBox.selected = UserConfig.keepPass;
+			autoLoginBox.selected = UserConfig.autoLogin;
+			keepPassBox.addEventListener(Event.CHANGE,onChange);
+			autoLoginBox.addEventListener(Event.CHANGE,onAutoChange);
+			keepPassBox.label = "保存密码";
+			autoLoginBox.label = "自动登录";
+			addChild(keepPassBox);
+			addChild(autoLoginBox);
+			
+		}
+		
+		private function onAutoChange(e:Event){
+			UserConfig.autoLogin = autoLoginBox.selected;
+			UserConfig.userConfigData.data.autoLogin = UserConfig.autoLogin;
+			
+			if(autoLoginBox.selected){
+				keepPassBox.selected = true;
+			}		
+			UserConfig.userConfigData.flush();
+		}
+		
+		private function onChange(e:Event){
+			if(autoLoginBox.selected){
+				keepPassBox.selected = true;
+			}
+			UserConfig.keepPass = keepPassBox.selected;
+			UserConfig.userConfigData.data.keepPass = UserConfig.keepPass;
+			UserConfig.userConfigData.flush();
 		}
 		
 	}

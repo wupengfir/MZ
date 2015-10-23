@@ -7,7 +7,8 @@ package user
 		public static const DATA_CONFIG_KEY:String = "DATA_CONFIG_KEY";
 		
 		public static var autoLogin:Boolean = false;
-		
+		public static var keepPass:Boolean = false;
+		public static var showPrice:Boolean = false;
 		public static var loginedList:Array;
 		public function UserConfig()
 		{

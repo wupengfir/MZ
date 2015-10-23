@@ -91,9 +91,9 @@
 			logo.width = Common.MAX_WIDTH;
 			logo.height = Common.MAX_HEIGHT;
 			logo.alpha = 0;
-			addChild(logo);
+			normalLayer.addChild(logo);
 			TweenLite.to(logo,1,{alpha:1,onComplete:function():void{
-				TweenLite.to(logo,2,{onComplete:function():void{
+				TweenLite.to(logo,1,{onComplete:function():void{
 					logo.clear();
 					addChild(new LoginPage);
 				}});
@@ -118,6 +118,20 @@
 				UserConfig.autoLogin = data.data.autoLogin;
 			}else{
 				data.data.autoLogin = false;
+				data.flush();
+			}
+			
+			if(data.data.keepPass != null){
+				UserConfig.keepPass = data.data.keepPass;
+			}else{
+				data.data.keepPass = false;
+				data.flush();
+			}
+			
+			if(data.data.showPrice != null){
+				UserConfig.showPrice = data.data.showPrice;
+			}else{
+				data.data.showPrice = false;
 				data.flush();
 			}
 			

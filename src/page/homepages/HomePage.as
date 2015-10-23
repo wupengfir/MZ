@@ -144,6 +144,9 @@ package page.homepages
 							nameLebel.y = 160/evt.currentTarget.scaleY;
 							evt.currentTarget.addChild(nameLebel)
 						});
+						if(img.back.bitmapData != null){
+							img.dispatchEvent(new Event(Image.GET_DATA));
+						}
 						var filter:ColorMatrixFilter = new ColorMatrixFilter([0.3,0.6,0,0,0,0.3,0.6,0,0,0,0.3,0.6,0,0,0,0,0,0,1,0]) ;
 						img.filters = [filter];
 					}else{
@@ -156,6 +159,9 @@ package page.homepages
 							nameLebel.y = 160/evt.currentTarget.scaleY;
 							evt.currentTarget.addChild(nameLebel)
 						});
+						if(img.back.bitmapData != null){
+							img.dispatchEvent(new Event(Image.GET_DATA));
+						}
 					}
 					index++;
 				}
@@ -194,7 +200,9 @@ package page.homepages
 //						nameLebel.y = 160/evt.currentTarget.scaleY;
 //						evt.currentTarget.addChild(nameLebel)
 					});
-
+					if(img.back.bitmapData != null){
+						img.dispatchEvent(new Event(Image.GET_DATA));
+					}
 					index++;
 				}
 				

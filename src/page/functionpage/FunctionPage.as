@@ -5,6 +5,7 @@ package page.functionpage
 	import flash.events.MouseEvent;
 	
 	import page.functionpage.changeuser.ChangeUserPage;
+	import page.functionpage.config.ConfigPage;
 	import page.functionpage.pricesync.PriceSynchronizePage;
 	import page.functionpage.update.UpdatePage;
 	
@@ -14,7 +15,7 @@ package page.functionpage
 		public static var updatepage:UpdatePage;
 		public static var changeUserpage:ChangeUserPage;
 		public static var syncpage:PriceSynchronizePage;
-		
+		public static var configpage:ConfigPage;
 		
 		public function FunctionPage()
 		{
@@ -62,7 +63,18 @@ package page.functionpage
 				sync();
 			}
 			if(Common.checkClick(420/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				trace("4");
+				if(!configpage){
+					configpage = new ConfigPage();
+					configpage.x = 0;
+					configpage.y = 760;				
+				}else{
+					configpage.visible = !configpage.visible;
+					if(configpage.stage == null){
+						configpage.visible = true;
+					}
+				}
+				
+				(Common.MAIN as Main).functionLayer.addChild(configpage);
 			}
 			if(Common.checkClick(520/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				if(!changeUserpage){
