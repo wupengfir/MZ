@@ -6,6 +6,7 @@ package page.functionpage
 	
 	import page.functionpage.changeuser.ChangeUserPage;
 	import page.functionpage.config.ConfigPage;
+	import page.functionpage.order.OrderListPage;
 	import page.functionpage.pricesync.PriceSynchronizePage;
 	import page.functionpage.update.UpdatePage;
 	
@@ -16,6 +17,7 @@ package page.functionpage
 		public static var changeUserpage:ChangeUserPage;
 		public static var syncpage:PriceSynchronizePage;
 		public static var configpage:ConfigPage;
+		public static var orderpage:OrderListPage;
 		
 		public function FunctionPage()
 		{
@@ -50,18 +52,33 @@ package page.functionpage
 		
 		private function onthisClick(e:MouseEvent):void{
 			(Common.MAIN as Main).functionLayer.visible = true;
+			
+			
 			if(Common.checkClick(120/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				for(var i:int = 0;i<(Common.MAIN as Main).functionLayer.numChildren;i++){
 					(Common.MAIN as Main).functionLayer.getChildAt(i).visible = false;
 				}
 				(Common.MAIN as Main).functionLayer.visible = false;
 			}
+			
+			
 			if(Common.checkClick(220/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				trace("2");
+				if(!orderpage){
+					orderpage = new OrderListPage();
+				}else{
+					orderpage.visible = true;
+					orderpage.showList();
+				}
+				
+				(Common.MAIN as Main).functionLayer.addChild(orderpage);
 			}
+			
+			
 			if(Common.checkClick(320/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				sync();
 			}
+			
+			
 			if(Common.checkClick(420/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				if(!configpage){
 					configpage = new ConfigPage();
@@ -76,6 +93,8 @@ package page.functionpage
 				
 				(Common.MAIN as Main).functionLayer.addChild(configpage);
 			}
+			
+			
 			if(Common.checkClick(520/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				if(!changeUserpage){
 					changeUserpage = new ChangeUserPage();
@@ -91,6 +110,8 @@ package page.functionpage
 				
 				(Common.MAIN as Main).functionLayer.addChild(changeUserpage);
 			}
+			
+			
 			if(Common.checkClick(620/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				if(!updatepage){
 					updatepage = new UpdatePage();
@@ -100,6 +121,8 @@ package page.functionpage
 				
 				(Common.MAIN as Main).functionLayer.addChild(updatepage);
 			}
+			
+			
 		}
 		
 	}

@@ -8,6 +8,7 @@ package page.homepages
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.filesystem.File;
 	import flash.filters.ColorMatrixFilter;
 	import flash.geom.Rectangle;
@@ -15,6 +16,7 @@ package page.homepages
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.utils.Dictionary;
+	import flash.utils.Timer;
 	
 	import json.JsonData;
 	import json.JsonDecoder;
@@ -41,7 +43,8 @@ package page.homepages
 		private var imageViewer:ImageViewer;
 		
 		private var downloadpageDic:Dictionary = new Dictionary();
-		//private var downloadpage:DownloadPage = new DownloadPage();
+		
+		private var AdverTimer:Timer = new Timer(5000);
 		public function HomePage()
 		{
 			homeRoot = this;
@@ -65,9 +68,14 @@ package page.homepages
 			video.addEventListener(Event.COMPLETE,function(e:Event):void{
 				removeChild(video);
 			});
+			
+			AdverTimer.addEventListener(TimerEvent.TIMER,onTimer);
+			AdverTimer.start();			
 		}
 		
-		
+		private function onTimer(e:TimerEvent):void{
+			
+		}
 		
 		private function play(path:String):void{
 			addChild(video);

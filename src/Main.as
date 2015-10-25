@@ -57,11 +57,10 @@
 			Common.MAIN = this;
 			Common.SCREEN_WIDTH = 1200;
 			Common.SCREEN_HEIGHT = 900;
-			Common.SCREEN_SCALEX = this.scaleX = 1/1.5;
-			Common.SCREEN_SCALEY = this.scaleY = 1/1.5;
+			Common.SCREEN_SCALEX = this.scaleX = 1/1;
+			Common.SCREEN_SCALEY = this.scaleY = 1/1;
 			basePath = File.applicationDirectory.url;
 			init();
-			
 			//stage.addEventListener (Event.RESIZE,test);  
 			//stage.addEventListener(MouseEvent.CLICK,onStageXClick);
 		}
