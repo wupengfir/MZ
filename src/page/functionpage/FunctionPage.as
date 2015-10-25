@@ -6,9 +6,9 @@ package page.functionpage
 	
 	import page.functionpage.changeuser.ChangeUserPage;
 	import page.functionpage.config.ConfigPage;
-	import page.functionpage.order.OrderListPage;
 	import page.functionpage.pricesync.PriceSynchronizePage;
 	import page.functionpage.update.UpdatePage;
+	import page.order.XorderListPage;
 	
 	public class FunctionPage extends Page
 	{
@@ -17,7 +17,7 @@ package page.functionpage
 		public static var changeUserpage:ChangeUserPage;
 		public static var syncpage:PriceSynchronizePage;
 		public static var configpage:ConfigPage;
-		public static var orderpage:OrderListPage;
+		public static var orderpage:XorderListPage;
 		
 		public function FunctionPage()
 		{
@@ -64,7 +64,7 @@ package page.functionpage
 			
 			if(Common.checkClick(220/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
 				if(!orderpage){
-					orderpage = new OrderListPage();
+					orderpage = new XorderListPage();
 				}else{
 					orderpage.visible = true;
 					orderpage.showList();

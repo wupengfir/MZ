@@ -1,14 +1,13 @@
-package page.functionpage.order
+package page.order
 {
 	import com.shangyi.component.base.Page;
 	import com.shangyi.component.scrollerRelated.Scroller;
 	
-	public class OrderListPage extends Page
+	public class XorderListPage extends Page
 	{
-		
-		private var scroller:Scroller = new Scroller();
+		private var scroller:Scroller = new Scroller(Common.MAX_WIDTH,800);
 		private var orderList:Array;
-		public function OrderListPage()
+		public function XorderListPage()
 		{
 			backSource = "data/img/ui/orderlistback.png";
 			backImage.height = 800;
@@ -35,23 +34,11 @@ package page.functionpage.order
 			o.customerName = "司思思";
 			o.customerPhone = "13545672345";
 			o.customerReceiverName = "搜懂得";
-			return [o];	
+			
+			var a:Array = new Array();
+			a.push(o);
+			return a;	
 		}
 		
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\

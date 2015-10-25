@@ -1,4 +1,4 @@
-package page.functionpage.order
+package page.order
 {
 	import com.shangyi.component.base.Page;
 	

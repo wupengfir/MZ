@@ -1,4 +1,4 @@
-package page.functionpage.order
+package page.order
 {
 	import com.shangyi.component.base.Page;
 	import com.shangyi.component.imageRelated.Image;
@@ -10,7 +10,7 @@ package page.functionpage.order
 		public var customerNameLabel:Label = new Label("",18);
 		public var customerAddressLabel:Label = new Label("",18);
 		public var customerPhoneLabel:Label = new Label("",18);
-		public var customerReceiverNameLabel:Label = new ("",18);
+		public var customerReceiverNameLabel:Label = new Label("",18);
 		
 		public var data:OrderData;
 		private var ps:XML = 

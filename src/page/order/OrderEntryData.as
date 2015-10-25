@@ -1,4 +1,4 @@
-package page.functionpage.order
+package page.order
 {
 	public class OrderEntryData
 	{
