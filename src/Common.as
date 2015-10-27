@@ -22,7 +22,7 @@ package
 		public static var SCREEN_SCALEX:Number = 1;
 		public static var SCREEN_SCALEY:Number = 1;
 		
-		public static var MAIN:Page;
+		public static var MAIN:Main;
 		public static var url:String;
 		
 		public function Common()

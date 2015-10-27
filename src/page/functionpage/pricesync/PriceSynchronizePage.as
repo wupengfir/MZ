@@ -6,6 +6,7 @@ package page.functionpage.pricesync
 	import com.shangyi.component.imageRelated.Image;
 	
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.filesystem.File;
 	
 	import json.JsonData;
@@ -25,14 +26,14 @@ package page.functionpage.pricesync
 		public function PriceSynchronizePage()
 		{
 			addChild(image);
+			
+			image.addEventListener(MouseEvent.CLICK,onClick);
+			
 			synchronize();
 		}
 		
-		public function synchronize():void{
-			
-			image.y = 200;
-			TweenLite.to(image,.5,{y:0});
-			
+		private function onClick(e:MouseEvent):void{
+			Common.MAIN.loading = true;
 			var array:Array = new Array();
 			for each(var s:String in UserInfo.diyDataLoaded){
 				if(s==null||s==""){
@@ -42,10 +43,19 @@ package page.functionpage.pricesync
 				array.push(json);
 			}
 			Common.loadURL("furniture/action/product/iosPriceSynchro?JSESSIONID="+UserInfo.sessionID+"&lifeNoJson="+JSON.stringify(array),handleSync,null);
+
+		}
+		
+		public function synchronize():void{
+			
+			image.y = 200;
+			TweenLite.to(image,.5,{y:0});
+			
 		}
 		
 		var total:int = 0;
 		private function handleSync(e:Event):void{
+			Common.MAIN.loading = false;
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
 			trace(e.currentTarget.data);
 			if(data.success){

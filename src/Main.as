@@ -1,6 +1,8 @@
 ﻿package
 {
 
+
+	
 	import com.greensock.TweenLite;
 	import com.shangyi.component.base.Page;
 	import com.shangyi.component.imageRelated.Image;
@@ -47,6 +49,7 @@
 		public var normalLayer:Page = new Page();
 		public var functionLayer:Page = new Page();
 		public var MessageLayer:Page = new Page();
+		public var loadingPage:LoadingMc = new LoadingMc();
 		public function Main()
 		{
 
@@ -83,7 +86,16 @@
 			addChild(MessageLayer);
 			
 			MessageLayer.addChild(Alert.a);
-			
+			MessageLayer.addChild(loadingPage);
+			loadingPage.visible = false;
+		}
+		
+		public function set loading(flag:Boolean):void{
+			if(flag){
+				loadingPage.visible = true;
+			}else{
+				loadingPage.visible = false;
+			}
 		}
 		
 		private function showLogo():void{

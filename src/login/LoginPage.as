@@ -121,6 +121,7 @@
 		
 		private function __completeHandler(evt:Event):void
 		{
+			Common.MAIN.loading = false;
 			var data:JsonData = JsonDecoder.decoderToJsonData(evt.currentTarget.data);
 			if(data.success){
 				if(UserConfig.loginedList.indexOf(userText.text) == -1){
@@ -146,6 +147,7 @@
 		
 		
 		private function loadPhp():void {
+			Common.MAIN.loading = true;
 			var urlLoader:URLLoader = new URLLoader();
 			urlLoader.load(new URLRequest(Common.url+"furniture/action/user/iosLogin?name="+userText.text+"&password="+passText.text+"&change=0"));
 			urlLoader.addEventListener(Event.COMPLETE, __completeHandler);

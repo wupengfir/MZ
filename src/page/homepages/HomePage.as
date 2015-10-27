@@ -121,7 +121,7 @@ package page.homepages
 				var updatePlistFlag:Boolean = false;
 				var urlList:Array = new Array();
 				var dataList:Array = data.dataValue.datavalue as Array;
-				
+				//检测是否需要同步
 				for each(var obj:Object in dataList){
 					urlList.push(Common.url+"furniture/images/"+obj.li_logo+".jpg");
 					if(UserInfo.diyDataLoaded.indexOf(obj.li_No) != -1){
@@ -136,7 +136,7 @@ package page.homepages
 				if(updatePlistFlag){
 					functionBar.sync();
 				}
-				
+				/////////////////////////
 				lifeStyleContainer.dataSource(urlList,290,30,null);
 				
 				var index:int = 0;
@@ -273,8 +273,8 @@ package page.homepages
 		
 		//点击广告
 		private function onAdvertiseClick(e:MouseEvent):void{
-			play(Common.url+"furniture/uploadMp4/"+"8bb945cb-ef14-45af-9599-35054382730a.mp4");
-			return;
+//			play(Common.url+"furniture/uploadMp4/"+"8bb945cb-ef14-45af-9599-35054382730a.mp4");
+//			return;
 			var img:Image = e.currentTarget as Image;
 			switch(img.info.status){
 				case 1:
