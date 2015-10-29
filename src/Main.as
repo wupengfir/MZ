@@ -28,6 +28,7 @@
 	import login.LoginPage;
 	
 	import page.alertpage.Alert;
+	import page.alertpage.Confirm;
 	import page.homepages.HomePage;
 	
 	import user.UserConfig;
@@ -60,10 +61,11 @@
 			Common.MAIN = this;
 			Common.SCREEN_WIDTH = 1200;
 			Common.SCREEN_HEIGHT = 900;
-			Common.SCREEN_SCALEX = this.scaleX = 1/1;
-			Common.SCREEN_SCALEY = this.scaleY = 1/1;
+			Common.SCREEN_SCALEX = this.scaleX = 1/1.3;
+			Common.SCREEN_SCALEY = this.scaleY = 1/1.3;
 			basePath = File.applicationDirectory.url;
 			init();
+			Confirm.confirm("wer",this);
 			//stage.addEventListener (Event.RESIZE,test);  
 			//stage.addEventListener(MouseEvent.CLICK,onStageXClick);
 		}
@@ -86,6 +88,7 @@
 			addChild(MessageLayer);
 			
 			MessageLayer.addChild(Alert.a);
+			MessageLayer.addChild(Confirm.a);
 			MessageLayer.addChild(loadingPage);
 			loadingPage.visible = false;
 		}

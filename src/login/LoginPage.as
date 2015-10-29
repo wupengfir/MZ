@@ -42,7 +42,7 @@
 		private var udid:TextField = new TextField();
 		private var loginBtn:Button = new Button(320,40,440,480);
 		private var loginedListBtn:Button = new Button(40,40,739,356);
-		private var info:TextField = new TextField();
+		private var infox:TextField = new TextField();
 		
 
 
@@ -195,21 +195,21 @@
 			udid.setTextFormat(format1);
 			userText.x = passText.x = udid.x = 500;
 			
-			info.text = "";
-			info.x = 350;
-			info.y = 315;
-			info.width = 1000;
-			info.height = 30;
-			info.setTextFormat(format1);
+			infox.text = "";
+			infox.x = 350;
+			infox.y = 315;
+			infox.width = 1000;
+			infox.height = 30;
+			infox.setTextFormat(format1);
 			
 			userText.defaultTextFormat = new TextFormat("",20);
 			passText.defaultTextFormat = new TextFormat("",20);
 			udid.defaultTextFormat = new TextFormat("",20);
-			info.defaultTextFormat = new TextFormat("",20);
+			infox.defaultTextFormat = new TextFormat("",20);
 			
 			addChild(userText);
 			addChild(passText);
-			addChild(info);
+			addChild(infox);
 			
 			addChild(loginBtn);
 			loginBtn.buttonMode = true;

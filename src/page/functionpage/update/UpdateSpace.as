@@ -19,6 +19,7 @@ package page.functionpage.update
 	import newfunction.UnZip;
 	
 	import page.alertpage.Alert;
+	import page.alertpage.Confirm;
 	import page.functionpage.FunctionPage;
 	import page.homepages.DownloadPage;
 	import page.homepages.HomePage;
@@ -63,13 +64,18 @@ package page.functionpage.update
 			
 			descLabel.width = 440;
 			descLabel.height = 100;
-			
+			deleteButton.buttonMode = true;
 			button.addEventListener(MouseEvent.CLICK,onUpdateClick);
-			deleteButton.addEventListener(MouseEvent.CLICK,onDelete);
+			deleteButton.addEventListener(MouseEvent.CLICK,onItendDelete);
+			deleteButton.addEventListener(Confirm.YES,onDelete);
 			Common.loadURL("furniture/action/lifeway/iosLifewayEject?lifeNo="+data.li_id,handleLifewayData,null);
 		}
 		
-		private function onDelete(e:MouseEvent):void{
+		private function onItendDelete(e:MouseEvent):void{
+			Confirm.confirm("确认删除",deleteButton);
+		}
+		
+		private function onDelete(e:Event):void{
 			var liName:String = dataObj.datavalue[0].li_no;
 			var file:File = new File(File.applicationDirectory.resolvePath("data/img/" + liName).nativePath);
 			if(file.exists){

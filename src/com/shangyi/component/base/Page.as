@@ -30,7 +30,7 @@
 		public static var eventAccept:Boolean = true;
 		public static var eventadded:Boolean = false;
 		
-		
+		public var info:Object;
 		
 		public function Page()
 		{

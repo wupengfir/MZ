@@ -22,6 +22,7 @@ package page.homepages
 	import json.JsonDecoder;
 	
 	import page.functionpage.FunctionPage;
+	import page.room.RoomSelectPage;
 	
 	import user.UserInfo;
 	
@@ -29,6 +30,7 @@ package page.homepages
 	{
 		
 		public static var functionBar:FunctionPage = new FunctionPage();
+		public static var roomSelectpage:RoomSelectPage = new RoomSelectPage();
 		public static var homeRoot:HomePage;
 		private var advertiseContainer:SY_Scroller = new SY_Scroller(1200,340,1200,340);
 		private var lifeStyleContainer:SY_Scroller = new SY_Scroller(1200,150,1200,150,0xffffff,0,false);
@@ -59,9 +61,10 @@ package page.homepages
 			spaceContainer.y = 650;
 			spaceContainer.scroller.setmasksize(0,180);
 			addChild(spaceContainer);
-			
-			
 			addChild(functionBar);
+			addChild(roomSelectpage);
+			roomSelectpage.visible = false;
+			
 			
 			//initFunctionBar();
 			
@@ -193,7 +196,9 @@ package page.homepages
 				var index:int = 0;
 				for each(var img:Image in spaceContainer.scroller.btnArr){
 					img.info = dataList[index];
-					img.addEventListener(MouseEvent.CLICK,onLifeWayClick);
+					img.addEventListener(MouseEvent.CLICK,onSpaceClick);
+					
+					//生成空间名字label
 					img.addEventListener(Image.GET_DATA,function(evt:Event):void{
 						
 						var nameLebel:Label = new Label(evt.currentTarget.info.sp_name,18/evt.currentTarget.scaleY);
@@ -254,7 +259,11 @@ package page.homepages
 		public function onDataReady(e:Event):void{
 			for each(var img:Image in lifeStyleContainer.scroller.btnArr){
 				if(UserInfo.diyDataLoaded.indexOf(img.info.li_No) == -1){
-
+					img.removeEventListener(MouseEvent.CLICK,onLoadClick);
+					img.removeEventListener(MouseEvent.CLICK,onLifeWayClick);
+					img.addEventListener(MouseEvent.CLICK,onLoadClick);
+					var filter:ColorMatrixFilter = new ColorMatrixFilter([0.3,0.6,0,0,0,0.3,0.6,0,0,0,0.3,0.6,0,0,0,0,0,0,1,0]) ;
+					img.filters = [filter];
 				}else{
 					img.removeEventListener(MouseEvent.CLICK,onLoadClick);
 					img.removeEventListener(MouseEvent.CLICK,onLifeWayClick);
@@ -264,12 +273,21 @@ package page.homepages
 			}
 		}
 		
+		
+		
+		
 		//点击普通状态生活方式
 		private function onLifeWayClick(e:MouseEvent):void{
 			var img:Image = e.currentTarget as Image;
-			
+//			roomSelectpage.visible = true;
+//			roomSelectpage.showRooms(e.currentTarget.info.sp_id);
 		}
 		
+		private function onSpaceClick(e:MouseEvent):void{
+			var img:Image = e.currentTarget as Image;
+			roomSelectpage.visible = true;
+			roomSelectpage.showRooms(e.currentTarget.info.sp_id);
+		}
 		
 		//点击广告
 		private function onAdvertiseClick(e:MouseEvent):void{

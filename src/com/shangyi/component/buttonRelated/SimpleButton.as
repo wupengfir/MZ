@@ -5,6 +5,7 @@ package com.shangyi.component.buttonRelated
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	
 	public class SimpleButton extends Sprite
 	{
@@ -15,8 +16,12 @@ package com.shangyi.component.buttonRelated
 		private var rootx:SimpleButton;
 		private var text:TextField = new TextField();
 		public var round:Boolean;
+		private var textFormat:TextFormat;
 		public function SimpleButton(_width:Number,_height:Number,round:Boolean = false,_color:uint = 0x483d8b,_alpha:Number = .8)
 		{
+			textFormat = new TextFormat();
+			textFormat.size = "20";
+			text.setTextFormat(textFormat);
 			this.round = round; 
 			this.graphics.beginFill(_color,_alpha);
 			if(round){
@@ -57,17 +62,21 @@ package com.shangyi.component.buttonRelated
 					rootx.graphics.endFill();
 				});
 			});
+			
+			addChild(text);
 		}
 		
 		public function set label(_label:String):void{
-			text.width = _width/2;
+			text.width = _width;
 			text.height = _height;
 			text.text = _label;
 			text.mouseEnabled = false;
 			text.selectable = false;
-			text.x = (_width - text.textWidth)/2-1;
-			text.y = (_height - text.textHeight)/2-1;
-			addChild(text);
+			
+//			text.x = (_width - text.textWidth)/2-1;
+			text.y = (_height - text.textHeight)/2-1;				
+			text.autoSize = TextFieldAutoSize.CENTER;
+			text.setTextFormat(textFormat);
 		}
 		
 		public function clear():void{
