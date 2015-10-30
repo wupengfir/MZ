@@ -23,6 +23,7 @@ package page.homepages
 	
 	import page.functionpage.FunctionPage;
 	import page.room.RoomSelectPage;
+	import page.room.VideoSelectPage;
 	
 	import user.UserInfo;
 	
@@ -73,7 +74,10 @@ package page.homepages
 			});
 			
 			AdverTimer.addEventListener(TimerEvent.TIMER,onTimer);
-			AdverTimer.start();			
+			AdverTimer.start();		
+			
+			drawBack();
+			
 		}
 		
 		private function onTimer(e:TimerEvent):void{
@@ -279,6 +283,8 @@ package page.homepages
 		//点击普通状态生活方式
 		private function onLifeWayClick(e:MouseEvent):void{
 			var img:Image = e.currentTarget as Image;
+			Common.currentPath = img.info.li_No;
+			Common.MAIN.roomLayer.addChild(new VideoSelectPage());
 //			roomSelectpage.visible = true;
 //			roomSelectpage.showRooms(e.currentTarget.info.sp_id);
 		}

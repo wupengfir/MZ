@@ -47,3 +47,4 @@ bin-debug/
 *.actionScriptProperties
 *.project
 *.prefs
+src/Main-app.xml

@@ -23,7 +23,7 @@ package
 		private var currentNeddImage:String ="img/move.jpg"
 		
 		private var textBox:TextField; 
-		public function VideoContainer()
+		public function VideoContainer(showInfo:Boolean = true)
 		{
 			graphics.beginFill(0xffffff,1);
 			graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
@@ -34,10 +34,11 @@ package
 			textBox.width = 1000;
 			textBox.x = 0;  
 			textBox.y = 700;  
-			textBox.scaleX = textBox.scaleY = 2;
-			this.addChild(textBox);  
-			
-			this.addEventListener(Event.ENTER_FRAME,onEnterFrame); 
+			textBox.scaleX = textBox.scaleY = 2;			
+			if(showInfo){
+				this.addChild(textBox);  
+				this.addEventListener(Event.ENTER_FRAME,onEnterFrame); 
+			}			
 			addSence();
 			
 		}

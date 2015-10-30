@@ -30,6 +30,7 @@
 	import page.alertpage.Alert;
 	import page.alertpage.Confirm;
 	import page.homepages.HomePage;
+	import page.room.VideoSelectPage;
 	
 	import user.UserConfig;
 	import user.UserInfo;
@@ -49,6 +50,7 @@
 		
 		public var normalLayer:Page = new Page();
 		public var functionLayer:Page = new Page();
+		public var roomLayer:Page = new Page();
 		public var MessageLayer:Page = new Page();
 		public var loadingPage:LoadingMc = new LoadingMc();
 		public function Main()
@@ -65,9 +67,10 @@
 			Common.SCREEN_SCALEY = this.scaleY = 1/1.3;
 			basePath = File.applicationDirectory.url;
 			init();
-			Confirm.confirm("wer",this);
+			//Confirm.confirm("wer",this);
 			//stage.addEventListener (Event.RESIZE,test);  
 			//stage.addEventListener(MouseEvent.CLICK,onStageXClick);
+			
 		}
 		
 		private function onStageXClick (e:MouseEvent):void {  
@@ -85,6 +88,7 @@
 			showLogo();
 			addChild(normalLayer);
 			addChild(functionLayer);
+			addChild(roomLayer);
 			addChild(MessageLayer);
 			
 			MessageLayer.addChild(Alert.a);

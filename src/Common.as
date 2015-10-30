@@ -9,6 +9,7 @@ package
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
+	import flash.utils.Dictionary;
 
 	
 	public class Common
@@ -25,10 +26,79 @@ package
 		public static var MAIN:Main;
 		public static var url:String;
 		
+		public static var currentColor:String = "shense";
+		public static var currentPath:String = "mzchunjing";
+		public static var currentRoomData:Dictionary;
+		public static var currentRoomDicDic:Dictionary;
+		
 		public function Common()
 		{
 			
 		}		
+		
+		public static function plistToDictionary(plist:XML):void{
+			var dic:Dictionary = new Dictionary();
+			currentRoomDicDic = new Dictionary();
+			var maindict:XML = plist.dict[0];
+			var currentKey:String;
+			for each(var node:XML in maindict.children()){
+				if(node.localName() == "key"){
+					currentKey = node.text();
+				}else{
+					if(node.localName() == "array"){
+						dic[currentKey] = getArray(node);
+					}else if(node.localName() == "dict"){
+						dic[currentKey] = getDict(node,dic);
+					}else if(node.localName() == "string"){
+						dic[currentKey] = node.text();
+					}
+				}
+			}
+			currentRoomData = dic;
+		}
+		
+//		public static function getDictionary(key:String):Dictionary{
+//			var xml:XML;
+//			while(xml.dict.length>0){
+//				for each(var dic:){
+//					
+//				}
+//			}
+//		}
+		
+		private static function getArray(xml:XML):Array{
+			var array:Array = new Array();
+			for each(var node:XML in xml.children()){
+				if(node.localName() == "dict"){
+					array.push(getDict(node,array));
+				}
+			}
+			return array;
+		}
+		
+		private static function getDict(xml:XML,p:Object):Dictionary{
+			var dict:Dictionary = new Dictionary();
+			var currentKey:String;
+			for each(var node:XML in xml.children()){
+				if(node.localName() == "key"){
+					currentKey = node.text();
+				}else{
+					if(node.localName() == "array"){
+						dict[currentKey] = getArray(node);
+					}else if(node.localName() == "dict"){						
+						dict[currentKey] = getDict(node,dict);
+					}else if(node.localName() == "string"){
+						dict[currentKey] = node.text();
+					}
+					dict["parent"] = p;
+				}
+			}
+			if(dict["source"] != null){
+				currentRoomDicDic[dict["source"]] = dict;
+			}
+			return dict;
+		}
+		
 		
 		public static function loadURL(path:String,f:Function,ef:Function):void{
 			var urlLoader:URLLoader = new URLLoader();
@@ -53,6 +123,14 @@ package
 				urlLoader.addEventListener(Event.COMPLETE, f);
 			if(ef != null)
 				urlLoader.addEventListener(IOErrorEvent.IO_ERROR, ef);
+		}
+		
+		public static function getVideoPath(type:String):String{
+			return Main.basePath+"data/img/"+currentPath+"/"+currentColor+"/video/Video-"+currentColor+"_"+type+".flv";
+		}
+		
+		public static function getImagePath(type:String):String{
+			return Main.basePath+"data/img/"+currentPath+"/"+currentColor+"/bigImg/"+type;//Main.basePath+"img/fengge/"+FenggeSelectPage.currentPath+"/"+Main.currentColor+"/"+type;
 		}
 		
 		public static function getImageUrljpg(iname:String):String{
