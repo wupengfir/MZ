@@ -58,7 +58,7 @@ package page.room
 		
 		private function onPlayEnd(e:Event):void{
 			if(currentDic["type"]=="normal"||currentDic["type"]=="root"){
-				backSource = Common.getImagePath(currentDic["stayat"].toString());
+				backSource = Common.getBigImagePath(currentDic["stayat"].toString());
 				btnContainer.removeChildren();
 				if(currentDic["video"]!=null){
 					for each(var xml:Dictionary in currentDic["video"]){
@@ -71,7 +71,7 @@ package page.room
 					}
 				}			
 			}else if(currentDic["type"]=="final"){
-				//addChild(new YangBanJianPage(Main.basePath + "img/fengge/" + FenggeSelectPage.currentPath +"/"+ Main.currentColor +"/"+currentXml.attribute("name")+"/"));
+				addChild(new RoomPage(e.currentTarget.info["name"]));
 			}
 			setTimeout(function(){video.visible = false;},200);
 		}
@@ -87,6 +87,9 @@ package page.room
 			Common.plistToDictionary(data);
 			currentDic = Common.currentRoomData[Common.currentPath+"_video"];
 			video.playSt(Common.getVideoPath(currentDic["source"]));
+			
+			addChild(new RoomPage("canting"));
+			
 		}	
 		
 	}

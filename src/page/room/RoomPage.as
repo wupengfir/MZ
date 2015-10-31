@@ -9,7 +9,7 @@ package page.room
 	import com.shangyi.component.scrollerRelated.SY_Scroller;
 	import com.shangyi.component.scrollerRelated.ScrollableSprite;
 	import com.shangyi.component.scrollerRelated.Scroller;
-	import flash.text.TextFormat;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
@@ -29,6 +29,7 @@ package page.room
 	import flash.net.URLRequest;
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
+	import flash.text.TextFormat;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
@@ -69,15 +70,15 @@ package page.room
 		private var existProducts:Array = new Array();
 		private var initInfo:Dictionary;
 		
-		private var back:Image = new Image(Main.basePath + "img/back.png");
-		private var closeHotPoint:Image = new Image(Main.basePath + "img/hotpoint.png");
-		private var selectColorBtn:Image = new Image(Main.basePath + "img/color.png");
-		private var selectKongjianBtn:Image = new Image(Main.basePath + "img/kongjian.png");
-		private var pingmianBtn:Image = new Image(Main.basePath + "img/pingmian.png");
-		private var pingleiBtn:Image = new Image(Main.basePath + "img/pinglei.png");
+		private var back:Image = new Image("data/img/roompic/back.png",true);
+		private var closeHotPoint:Image = new Image("data/img/roompic/hotpoint.png",true);
+		private var selectColorBtn:Image = new Image("data/img/roompic/color.png",true);
+		private var selectKongjianBtn:Image = new Image("data/img/roompic/kongjian.png",true);
+		private var pingmianBtn:Image = new Image("data/img/roompic/pingmian.png",true);
+		private var pingleiBtn:Image = new Image("data/img/roompic/pinglei.png",true);
 		private var pingleiMask:Sprite = new Sprite();
-		private var downSelect:Image = new Image(Main.basePath + "img/downselect.jpg");
-		private var saveBtn:Image = new Image(Main.basePath + "img/save.png");
+		private var downSelect:Image = new Image("data/img/roompic/downselect.jpg",true);
+		private var saveBtn:Image = new Image("data/img/roompic/save.png",true);
 		private var downBack:Sprite = new Sprite();
 		
 		private var biaojiBtn:Image = new Image();
@@ -92,26 +93,36 @@ package page.room
 		private var biaojiLabel:Label = new Label("产品暂无存货");
 		private var quxiaobiaojiLabel:Label = new Label("产品已有存货");
 		private var addtoorderLabel:Label = new Label("已加入订单");
-		private var xiadanBtn:Image = new Image(Main.basePath + "img/xiadan.png");
-		private var qingdanBtn:Image = new Image(Main.basePath + "img/qingdan.png");
-		public function RoomPage(path:String,initInfo:Dictionary = null)
+		private var xiadanBtn:Image = new Image("data/img/roompic/xiadan.png",true);
+		private var qingdanBtn:Image = new Image("data/img/roompic/qingdan.png",true);
+		
+		private var roomVideoData:Dictionary;
+		private var roomData:Array;
+		private var roomDefaultData:Dictionary;
+		private var imgCountDic:Dictionary = new Dictionary();
+		private var imgCurrentCountDic:Dictionary = new Dictionary();
+		public function RoomPage(roomName:String,initInfo:Dictionary = null)
 		{
+			
+			getVideo(Common.currentRoomData[Common.currentPath+"_video"],roomName);
+			roomData = Common.currentRoomData[roomName+"_data"];
+			roomDefaultData = Common.currentRoomData[roomName+"_default"];
 			this.alpha = 0;
 			TweenLite.to(this,.7,{alpha:1,onComplete:function():void{
 				NoticePage.notice.show();
 			}});
-			MAIN = this;
-			this.path = path;
+			MAIN = this;	
+			this.path = File.applicationDirectory.resolvePath("data/img/"+Common.currentPath+"/"+Common.currentColor).nativePath;
 			path_1 = path;
-			kongjian = new File(path).name;
+			kongjian = roomName;
 			selectableImageContainer = new Sprite();
 			this.graphics.beginFill(0xffffff,1);
-			this.graphics.drawRect(0,0,1024,768);
+			this.graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
 			this.graphics.endFill();
 			addChild(selectableImageContainer);	
 			//selectableImageContainer.addChild(buttomImg);
-			backImage.source = path+"solid.png";
-			right.addChild(new Image(Main.basePath + "img/cebian.png"));
+			backImage.source = Common.getBigImagePath(Common.currentPath+"_"+kongjian+"_solid.png");
+			right.addChild(new Image("data/img/roompic/cebian.png"));
 			rightScroller.graphics.clear();
 			loadXml();
 			back.x = back.y = 20;
@@ -122,7 +133,7 @@ package page.room
 			addChild(selectColorBtn);
 			selectColorBtn.x = 100;
 			selectColorBtn.y = 20;
-			selectColorBtn.visible = new File(path.replace("shense","qianse")).exists;
+			selectColorBtn.visible = (roomVideoData["shuangse"] == "1");//new File(path.replace("shense","qianse")).exists;
 			selectColorBtn.addEventListener(MouseEvent.CLICK,changeRoomColor);
 			
 			addChild(closeHotPoint);
@@ -138,7 +149,7 @@ package page.room
 			addChild(pingmianBtn);
 			pingmianBtn.x = 180;
 			pingmianBtn.y = 20;
-			pingmianBtn.visible = new File(path.substr(0,path.length - 1) + "_pingmian/").exists;
+			pingmianBtn.visible = (roomVideoData["pingmian"] == "1");
 			pingmianBtn.addEventListener(MouseEvent.CLICK,addpingmian);
 			
 			addChild(pingleiBtn);
@@ -161,89 +172,114 @@ package page.room
 			//			},2000);
 			
 		}
-		private var orderImageForSave:BitmapData;
-		private function showqingdan(e:MouseEvent):void{
-			addChild(saveContainer);
-			saveContainer.visible = true;
-			saveState.visible = true;
-			
-			productInfoScroller.clearContent();
-			var i:int = 0;
-			for(var key:String in orderInfoDic){
-				var array:Array = sharedObject.data.array;
-				var list:Dictionary = orderInfoDic[key];
-				var label:Label = new Label(Main.yangbanjianNameInfo.yangbanjian.(@id == key.split("_")[1])[0].attribute("name").toString());
-				label.size = 20;
-				label.y = i*50;
-				i++;
-				productInfoScroller.addChild(label);
-				for(var innerKey:String in list){
-					var xml1:XML = list[innerKey];
-					if(key == FenggeSelectPage.currentPath+"_"+kongjian){
-						var xml:XML = hotPointXmlDic[innerKey];
-						var soldOut:Boolean = false;
-						if(!xml.hasOwnProperty("@relatedTo")){
-							var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(innerKey).info.fileName;						
-							sharedObject = SharedObject.getLocal("product");
-							
-							if(array.indexOf(imagePath)==-1){
-								soldOut = false;
-								xml1.@soldout = "false";
-							}else{
-								soldOut = true;
-								xml1.@soldout = "true";
-							}
-						}else{
-							var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(xml.attribute("relatedTo").toString()).info.fileName;						
-							sharedObject = SharedObject.getLocal("product");
-							if(array.indexOf(imagePath)==-1){
-								soldOut = false;
-								xml1.@soldout = "false";
-							}else{
-								soldOut = true;
-								xml1.@soldout = "true";
-							}
-						}
-					}else{
-						if(xml1.hasOwnProperty("@soldout")){
-							soldOut = xml1.attribute("soldout").toString() == "true";
-						}else{
-							soldOut = false;
-						}
-					}					
-					var info:ProductInfo = new ProductInfo(xml1,innerKey,soldOut);
-					info.addEventListener("deleted",function(e:Event){
-						var pi:ProductInfo = e.currentTarget as ProductInfo;
-						delete orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian][pi.type];
-						showqingdan(null);
-					});
-					info.y = i*50;
-					i++;
-					productInfoScroller.addChild(info);
+		
+		private function getVideo(dic:Dictionary,s:String):void{
+			if(dic["name"] == s){
+				roomVideoData = dic;
+				return;
+			}
+			if(dic["video"] != null){
+				for each(var d:Dictionary in dic["video"]){
+					getVideo(d,s);
 				}
 			}
-			setZongjia();
+		}
+		
+		private function getBigImagePath(fileName:String):String{
+			return Common.getBigImagePath(Common.currentPath+"_"+kongjian+"_bigImg_"+fileName+".png");
+		}
+		
+		private function getThumbImagePath(fileName:String):String{
+			return Common.getThumbImagePath(Common.currentPath+"_"+kongjian+"_thumb_"+fileName+".png");
+		}
+		
+		private function getZoomImagePath(fileName:String):String{
+			return Common.getZoomImagePath(Common.currentPath+"_"+kongjian+"_zoomout_"+fileName+".png");
+		}
+		
+		private var orderImageForSave:BitmapData;
+		private function showqingdan(e:MouseEvent):void{
+//			addChild(saveContainer);
+//			saveContainer.visible = true;
+//			saveState.visible = true;
+//			
+//			productInfoScroller.clearContent();
+//			var i:int = 0;
+//			for(var key:String in orderInfoDic){
+//				var array:Array = sharedObject.data.array;
+//				var list:Dictionary = orderInfoDic[key];
+//				var label:Label = new Label(Main.yangbanjianNameInfo.yangbanjian.(@id == key.split("_")[1])[0].attribute("name").toString());
+//				label.size = 20;
+//				label.y = i*50;
+//				i++;
+//				productInfoScroller.addChild(label);
+//				for(var innerKey:String in list){
+//					var xml1:XML = list[innerKey];
+//					if(key == FenggeSelectPage.currentPath+"_"+kongjian){
+//						var xml:XML = hotPointXmlDic[innerKey];
+//						var soldOut:Boolean = false;
+//						if(!xml.hasOwnProperty("@relatedTo")){
+//							var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(innerKey).info.fileName;						
+//							sharedObject = SharedObject.getLocal("product");
+//							
+//							if(array.indexOf(imagePath)==-1){
+//								soldOut = false;
+//								xml1.@soldout = "false";
+//							}else{
+//								soldOut = true;
+//								xml1.@soldout = "true";
+//							}
+//						}else{
+//							var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(xml.attribute("relatedTo").toString()).info.fileName;						
+//							sharedObject = SharedObject.getLocal("product");
+//							if(array.indexOf(imagePath)==-1){
+//								soldOut = false;
+//								xml1.@soldout = "false";
+//							}else{
+//								soldOut = true;
+//								xml1.@soldout = "true";
+//							}
+//						}
+//					}else{
+//						if(xml1.hasOwnProperty("@soldout")){
+//							soldOut = xml1.attribute("soldout").toString() == "true";
+//						}else{
+//							soldOut = false;
+//						}
+//					}					
+//					var info:ProductInfo = new ProductInfo(xml1,innerKey,soldOut);
+//					info.addEventListener("deleted",function(e:Event){
+//						var pi:ProductInfo = e.currentTarget as ProductInfo;
+//						delete orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian][pi.type];
+//						showqingdan(null);
+//					});
+//					info.y = i*50;
+//					i++;
+//					productInfoScroller.addChild(info);
+//				}
+//			}
+//			setZongjia();
 		}
 		
 		public static var orderInfoDic:Dictionary = new Dictionary();
 		private var productInfoData:XML;
 		private function xiadan(e:MouseEvent):void{
-			orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian] = new Dictionary();
-			for each(var p:pointMc in hotPointDic){
-				if(!p.visible)continue;
-				var img:Image = getImageByName(p.name);
-				if(img == null){
-					img = getImageByName(hotPointXmlDic[p.name].attribute("relatedTo").toString());
-				}
-				var idx:String = new File(img.sourceURL).name.split(".")[0];
-				var proData:XML = productInfoData.product.(@name == p.name).(@id == idx)[0];
-				orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian][p.name] = proData;
-			}
-			
-			saveData.draw(selectableImageContainer);
-			saveImage.bitmapData = saveData;saveImage.scaleX = saveImage.scaleY = 1;saveImage.x = saveImage.y = 0;
-			stage.addChild(saveImage);
-			TweenLite.to(saveImage,1,{x:xiadanBtn.x+20,y:xiadanBtn.y+20,scaleX:0,scaleY:0});
+//			orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian] = new Dictionary();
+//			for each(var p:pointMc in hotPointDic){
+//				if(!p.visible)continue;
+//				var img:Image = getImageByName(p.name);
+//				if(img == null){
+//					img = getImageByName(hotPointXmlDic[p.name].attribute("relatedTo").toString());
+//				}
+//				var idx:String = new File(img.sourceURL).name.split(".")[0];
+//				var proData:XML = productInfoData.product.(@name == p.name).(@id == idx)[0];
+//				orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian][p.name] = proData;
+//			}
+//			
+//			saveData.draw(selectableImageContainer);
+//			saveImage.bitmapData = saveData;saveImage.scaleX = saveImage.scaleY = 1;saveImage.x = saveImage.y = 0;
+//			stage.addChild(saveImage);
+//			TweenLite.to(saveImage,1,{x:xiadanBtn.x+20,y:xiadanBtn.y+20,scaleX:0,scaleY:0});
 		}
 		
 		private var showed:Boolean = false;
@@ -260,72 +296,72 @@ package page.room
 		private var kongjianContainer:Sprite;
 		private var kongjianScroller:SY_Scroller = new SY_Scroller(1024,414,904,385);
 		private function showKongjian(e:MouseEvent):void{
-			if(!kongjianContainer){
-				kongjianContainer = new Sprite();
-				kongjianContainer.graphics.beginFill(0,.6);
-				kongjianContainer.graphics.drawRect(0,0,1024,768);
-				kongjianContainer.graphics.endFill();
-				kongjianScroller.y = 200;
-				kongjianScroller.selectAble = false;
-				kongjianContainer.addChild(kongjianScroller);
-				kongjianScroller.setLeftArrowY(178);
-				
-				var file:File = new File(Main.basePath+"img/fengge/"+FenggeSelectPage.currentPath+"/shense");
-				var array:Array = new Array();
-				for each(var f:File in file.getDirectoryListing()){
-					if(f.isDirectory&&f.name.indexOf("_pingmian")==-1){
-						array.push(f.url + ".png");
-					}
-				}
-				kongjianScroller.dataSource(array,100,30,function(e:MouseEvent):void{
-					Main.currentColor = "shense";
-					var img:ImageButton = e.currentTarget as ImageButton;
-					var tp:String = img.sourceURL.replace(".png","")+"/";
-					YangBanJianPage.MAIN.remove();	
-					Common.MAIN.addChild(new YangBanJianPage(tp));
-					
-				});
-				addChild(kongjianContainer);
-				addChild(selectKongjianBtn);
-			}else{
-				kongjianContainer.visible = !kongjianContainer.visible;
-			}					
+//			if(!kongjianContainer){
+//				kongjianContainer = new Sprite();
+//				kongjianContainer.graphics.beginFill(0,.6);
+//				kongjianContainer.graphics.drawRect(0,0,1024,768);
+//				kongjianContainer.graphics.endFill();
+//				kongjianScroller.y = 200;
+//				kongjianScroller.selectAble = false;
+//				kongjianContainer.addChild(kongjianScroller);
+//				kongjianScroller.setLeftArrowY(178);
+//				
+//				var file:File = new File(Main.basePath+"img/fengge/"+FenggeSelectPage.currentPath+"/shense");
+//				var array:Array = new Array();
+//				for each(var f:File in file.getDirectoryListing()){
+//					if(f.isDirectory&&f.name.indexOf("_pingmian")==-1){
+//						array.push(f.url + ".png");
+//					}
+//				}
+//				kongjianScroller.dataSource(array,100,30,function(e:MouseEvent):void{
+//					Main.currentColor = "shense";
+//					var img:ImageButton = e.currentTarget as ImageButton;
+//					var tp:String = img.sourceURL.replace(".png","")+"/";
+//					YangBanJianPage.MAIN.remove();	
+//					Common.MAIN.addChild(new YangBanJianPage(tp));
+//					
+//				});
+//				addChild(kongjianContainer);
+//				addChild(selectKongjianBtn);
+//			}else{
+//				kongjianContainer.visible = !kongjianContainer.visible;
+//			}					
 		}
 		
 		
 		
 		private function initPage():void{
 			selectableImageContainer.addEventListener(MouseEvent.CLICK,onImageClick);
-			var tempPath:String = path + "bigImg";
-			var dir:File = new File(path + "bigImg");
-			var dirs:Array = dir.getDirectoryListing();
-			for each(var f:File in dirs){
-				if(f.isDirectory){
-					existProducts.push(f.name);
-				}
-			}
+//			var tempPath:String = path + "bigImg";
+//			var dir:File = new File(path + "bigImg");
+//			var dirs:Array = dir.getDirectoryListing();
+//			for each(var f:File in dirs){
+//				if(f.isDirectory){
+//					existProducts.push(f.name);
+//				}
+//			}
 			//createBtns();
 			createImages();
-			createHotPoint();
-			initRightScroller();
-			createArrowBtn();
-			createSave();
-			createKongjianBtn();
+//			createHotPoint();
+//			initRightScroller();
+//			createArrowBtn();
+//			createSave();
+//			createKongjianBtn();
 			
 		}
 		
 		private function addpingmian(e:MouseEvent):void{
-			var dic:Dictionary = new Dictionary();
-			for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
-				var img:Image = selectableImageContainer.getChildAt(i) as Image;
-				try{
-					dic[img.info.name] = img.info.fileName;
-				}catch(e:Error){
-					continue;
-				}
-				
-			}
-			addChild(new PingmianPage(path.substr(0,path.length - 1) + "_pingmian/",dic));
+//			var dic:Dictionary = new Dictionary();
+//			for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
+//				var img:Image = selectableImageContainer.getChildAt(i) as Image;
+//				try{
+//					dic[img.info.name] = img.info.fileName;
+//				}catch(e:Error){
+//					continue;
+//				}
+//				
+//			}
+//			addChild(new PingmianPage(path.substr(0,path.length - 1) + "_pingmian/",dic));
 		}
 		
 		public function changeItem(dic:Dictionary):void{
@@ -359,20 +395,20 @@ package page.room
 		}
 		
 		private function changeRoomColor(e:MouseEvent):void{
-			Main.currentColor = Main.currentColor == "qianse"?"shense":"qianse";
-			var dic:Dictionary = new Dictionary();
-			for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
-				var img:Image = selectableImageContainer.getChildAt(i) as Image;
-				try{
-					dic[img.info.name] = img.info.fileName;
-				}catch(e:Error){
-					continue;
-				}
-				
-			}
-			YangBanJianPage.MAIN.remove();
-			var tp:String = Main.basePath + "img/fengge/" + FenggeSelectPage.currentPath +"/"+ Main.currentColor +"/"+kongjian+"/";
-			Common.MAIN.addChild(new YangBanJianPage(tp,dic));
+//			Main.currentColor = Main.currentColor == "qianse"?"shense":"qianse";
+//			var dic:Dictionary = new Dictionary();
+//			for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
+//				var img:Image = selectableImageContainer.getChildAt(i) as Image;
+//				try{
+//					dic[img.info.name] = img.info.fileName;
+//				}catch(e:Error){
+//					continue;
+//				}
+//				
+//			}
+//			YangBanJianPage.MAIN.remove();
+//			var tp:String = Main.basePath + "img/fengge/" + FenggeSelectPage.currentPath +"/"+ Main.currentColor +"/"+kongjian+"/";
+//			Common.MAIN.addChild(new YangBanJianPage(tp,dic));
 		}
 		
 		private var hotClosed:Boolean = false;
@@ -396,9 +432,9 @@ package page.room
 		}
 		
 		private function onBack(e:MouseEvent):void{		
-			YangBanJianPage.MAIN.remove();
+			RoomPage.MAIN.remove();
 			VideoSelectPage.vpage.back.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-			Main.currentColor = "shense";
+			Common.currentColor = "shense";
 		}
 		
 		public function remove():void{
@@ -420,14 +456,14 @@ package page.room
 		
 		private function loadXml():void{
 			
-			var urlLoader:URLLoader = new URLLoader();
-			urlLoader.load(new URLRequest(path + "default.xml"));
-			urlLoader.addEventListener(Event.COMPLETE,onLoadComplete);
-			
-			var urlLoader1:URLLoader = new URLLoader();
-			urlLoader1.load(new URLRequest(path + "data.xml"));
-			urlLoader1.addEventListener(Event.COMPLETE,onLoadComplete1);
-			
+//			var urlLoader:URLLoader = new URLLoader();
+//			urlLoader.load(new URLRequest(path + "default.xml"));
+//			urlLoader.addEventListener(Event.COMPLETE,onLoadComplete);
+//			
+//			var urlLoader1:URLLoader = new URLLoader();
+//			urlLoader1.load(new URLRequest(path + "data.xml"));
+//			urlLoader1.addEventListener(Event.COMPLETE,onLoadComplete1);
+			initPage();
 		}
 		
 		
@@ -797,20 +833,20 @@ package page.room
 				sharedObject.flush();
 			}	
 			
-			addToOrderBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{		
-				var img:Image = getImageByName(currentPMC.name);
-				if(img == null){
-					img = getImageByName(hotPointXmlDic[currentPMC.name].attribute("relatedTo").toString());
-				}
-				var idx:String = new File(img.sourceURL).name.split(".")[0];
-				var proData:XML = productInfoData.product.(@name == currentPMC.name).(@id == idx)[0];
-				if(orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian] == null){
-					orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian] = new Dictionary();
-				}
-				orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian][currentPMC.name] = proData;
-				addtoorderLabel.visible = true;
-				setTimeout(function(){addtoorderLabel.visible = false},1000);
-			});
+//			addToOrderBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{		
+//				var img:Image = getImageByName(currentPMC.name);
+//				if(img == null){
+//					img = getImageByName(hotPointXmlDic[currentPMC.name].attribute("relatedTo").toString());
+//				}
+//				var idx:String = new File(img.sourceURL).name.split(".")[0];
+//				var proData:XML = productInfoData.product.(@name == currentPMC.name).(@id == idx)[0];
+//				if(orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian] == null){
+//					orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian] = new Dictionary();
+//				}
+//				orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian][currentPMC.name] = proData;
+//				addtoorderLabel.visible = true;
+//				setTimeout(function(){addtoorderLabel.visible = false},1000);
+//			});
 			
 			biaojiBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
 				if(biaojied){
@@ -1096,56 +1132,56 @@ package page.room
 				
 				
 				var i:int = 0;
-				for(var key:String in orderInfoDic){
-					var array:Array = sharedObject.data.array;
-					var list:Dictionary = orderInfoDic[key];
-					var label:Label = new Label(Main.yangbanjianNameInfo.yangbanjian.(@id == key.split("_")[1])[0].attribute("name").toString());
-					label.size = 12;
-					label.x = 480;
-					label.y = i*50;
-					i++;
-					sp.addChild(label);
-					for(var innerKey:String in list){
-						var xml1:XML = list[innerKey];
-						if(key == FenggeSelectPage.currentPath+"_"+kongjian){
-							var xml:XML = hotPointXmlDic[innerKey];
-							var soldOut:Boolean = false;
-							if(!xml.hasOwnProperty("@relatedTo")){
-								var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(innerKey).info.fileName;						
-								sharedObject = SharedObject.getLocal("product");
-								
-								if(array.indexOf(imagePath)==-1){
-									soldOut = false;
-									xml1.@soldout = "false";
-								}else{
-									soldOut = true;
-									xml1.@soldout = "true";
-								}
-							}else{
-								var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(xml.attribute("relatedTo").toString()).info.fileName;						
-								sharedObject = SharedObject.getLocal("product");
-								if(array.indexOf(imagePath)==-1){
-									soldOut = false;
-									xml1.@soldout = "false";
-								}else{
-									soldOut = true;
-									xml1.@soldout = "true";
-								}
-							}
-						}else{
-							if(xml1.hasOwnProperty("@soldout")){
-								soldOut = xml1.attribute("soldout").toString() == "true";
-							}else{
-								soldOut = false;
-							}
-						}					
-						var info:ProductInfo = new ProductInfo(xml1,innerKey,soldOut,"save");
-						info.x = 100;
-						info.y = i*50;
-						i++;
-						sp.addChild(info);
-					}
-				}
+//				for(var key:String in orderInfoDic){
+//					var array:Array = sharedObject.data.array;
+//					var list:Dictionary = orderInfoDic[key];
+//					var label:Label = new Label(Main.yangbanjianNameInfo.yangbanjian.(@id == key.split("_")[1])[0].attribute("name").toString());
+//					label.size = 12;
+//					label.x = 480;
+//					label.y = i*50;
+//					i++;
+//					sp.addChild(label);
+//					for(var innerKey:String in list){
+//						var xml1:XML = list[innerKey];
+//						if(key == FenggeSelectPage.currentPath+"_"+kongjian){
+//							var xml:XML = hotPointXmlDic[innerKey];
+//							var soldOut:Boolean = false;
+//							if(!xml.hasOwnProperty("@relatedTo")){
+//								var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(innerKey).info.fileName;						
+//								sharedObject = SharedObject.getLocal("product");
+//								
+//								if(array.indexOf(imagePath)==-1){
+//									soldOut = false;
+//									xml1.@soldout = "false";
+//								}else{
+//									soldOut = true;
+//									xml1.@soldout = "true";
+//								}
+//							}else{
+//								var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(xml.attribute("relatedTo").toString()).info.fileName;						
+//								sharedObject = SharedObject.getLocal("product");
+//								if(array.indexOf(imagePath)==-1){
+//									soldOut = false;
+//									xml1.@soldout = "false";
+//								}else{
+//									soldOut = true;
+//									xml1.@soldout = "true";
+//								}
+//							}
+//						}else{
+//							if(xml1.hasOwnProperty("@soldout")){
+//								soldOut = xml1.attribute("soldout").toString() == "true";
+//							}else{
+//								soldOut = false;
+//							}
+//						}					
+//						var info:ProductInfo = new ProductInfo(xml1,innerKey,soldOut,"save");
+//						info.x = 100;
+//						info.y = i*50;
+//						i++;
+//						sp.addChild(info);
+//					}
+//				}
 				
 				
 				
@@ -1351,65 +1387,68 @@ package page.room
 		//创建产品图片
 		private function createImages():void{
 			if(initInfo == null){
-				for each(var xml:XML in data.image){
-					var img:Image = new Image(path + "bigImg/" + xml.attribute("name").toString() + "/"+ xml.attribute("source").toString());
-					img.info = {name:xml.attribute("name").toString(),fileName:xml.attribute("source").toString()};
+				for each(var xml:Dictionary in roomDefaultData.image){
+					var img:Image = new Image(getBigImagePath(xml["source"]));
+					img.info = {name:xml["name"],fileName:xml["source"]};
+					
+					imgCountDic[xml["name"]] = Number(xml["imgCout"]);
+					imgCurrentCountDic[xml["name"]] = 1;
 					selectableImageContainer.addChild(img);
 					img.addEventListener(CHANGE,onChange);
 				}
-				var image:Image;
-				var xml:XML;
-				for (var j:int = 0; j < data.image.length(); j++) 
-				{
-					xml = data.image[j];
-					if(xml.hasOwnProperty("@relatedTo")){
-						if(xml.hasOwnProperty("@disappear")){
-							var tempImage:Image = getImageByName(xml.attribute("relatedTo").toString());
-							var names:Array = xml.attribute("disappear").toString().split(",");
-							for each(var tempName:String in names){
-								if(tempName == tempImage.info.fileName.split(".")[0]){
-									image = getImageByName(xml.attribute("name").toString());
-									image.visible = false;
-								}else{
-									image = getImageByName(xml.attribute("name").toString());
-									image.visible = true;
-								}
-							}
-						}
-					}
-					
-				}
+//				var image:Image;
+//				var xml:XML;
+//				for (var j:int = 0; j < data.image.length(); j++) 
+//				{
+//					xml = data.image[j];
+//					if(xml.hasOwnProperty("@relatedTo")){
+//						if(xml.hasOwnProperty("@disappear")){
+//							var tempImage:Image = getImageByName(xml.attribute("relatedTo").toString());
+//							var names:Array = xml.attribute("disappear").toString().split(",");
+//							for each(var tempName:String in names){
+//								if(tempName == tempImage.info.fileName.split(".")[0]){
+//									image = getImageByName(xml.attribute("name").toString());
+//									image.visible = false;
+//								}else{
+//									image = getImageByName(xml.attribute("name").toString());
+//									image.visible = true;
+//								}
+//							}
+//						}
+//					}
+//					
+//				}
 			}
 			else{
-				for each(var xml:XML in data.image){
-					var img:Image = new Image();
-					img.source = path + "bigImg/" + xml.attribute("name").toString() + "/"+ initInfo[xml.attribute("name").toString()];
-					img.info = {name:xml.attribute("name").toString(),fileName:initInfo[xml.attribute("name").toString()]};
-					selectableImageContainer.addChild(img);
-					img.addEventListener(CHANGE,onChange);
-				}
-				var image:Image;
-				var xml:XML;
-				for (var j:int = 0; j < data.image.length(); j++) 
-				{
-					xml = data.image[j];
-					if(xml.hasOwnProperty("@relatedTo")){
-						if(xml.hasOwnProperty("@disappear")){
-							var tempImage:Image = getImageByName(xml.attribute("relatedTo").toString());
-							var names:Array = xml.attribute("disappear").toString().split(",");
-							for each(var tempName:String in names){
-								if(tempName == tempImage.info.fileName.split(".")[0]){
-									image = getImageByName(xml.attribute("name").toString());
-									image.visible = false;
-								}else{
-									image = getImageByName(xml.attribute("name").toString());
-									image.visible = true;
-								}
-							}
-						}
-					}
-					
-				}
+//				for each(var xml:Dictionary in roomDefaultData.image){
+//					var img:Image = new Image();
+//					img.source = path + "bigImg/" + xml.attribute("name").toString() + "/"+ initInfo[xml.attribute("name").toString()];
+//					img.info = {name:xml.attribute("name").toString(),fileName:initInfo[xml.attribute("name").toString()]};
+//					selectableImageContainer.addChild(img);
+//					img.addEventListener(CHANGE,onChange);
+//				}
+//				var image:Image;
+//				var xml:XML;
+//				for (var j:int = 0; j < data.image.length(); j++) 
+//				{
+//					xml = data.image[j];
+//					if(xml.hasOwnProperty("@relatedTo")){
+//						if(xml.hasOwnProperty("@disappear")){
+//							var tempImage:Image = getImageByName(xml.attribute("relatedTo").toString());
+//							var names:Array = xml.attribute("disappear").toString().split(",");
+//							for each(var tempName:String in names){
+//								if(tempName == tempImage.info.fileName.split(".")[0]){
+//									image = getImageByName(xml.attribute("name").toString());
+//									image.visible = false;
+//								}else{
+//									image = getImageByName(xml.attribute("name").toString());
+//									image.visible = true;
+//								}
+//							}
+//						}
+//					}
+//					
+//				}
 			}
 		}
 		
@@ -1426,82 +1465,71 @@ package page.room
 		private function onChange(e:Event):void{
 			var img:Image = e.currentTarget as Image;
 			var currentDir:String = e.currentTarget.info.name;
-			//			if(products[currentDir].parent != null){
-			//				if(getImageByName(products[currentDir].parent)){
-			//					currentDir = currentDir + "/" + getImageByName(products[currentDir].parent).info.fileName.split(".",1)[0];
-			//				}
-			//				
-			//			}
-			var fileDir:File = new File(path + "bigImg/" + currentDir);
+//			var fileDir:File = new File(path + "bigImg/" + currentDir);
 			var flag:Boolean = false;
-			var temp:File = fileDir.getDirectoryListing()[0];
-			for each(var file:File in fileDir.getDirectoryListing()){
-				if(!file.isDirectory&&(file.name.split(".")[1] =="png"||file.name.split(".")[1] =="jpg")){
-					if(flag){
-						temp = file;
-						break;
-					}
-					if(img.info.fileName == file.name){
-						flag = true;
-					}
-				}		
+			var first:Boolean = true;
+			var temp:Dictionary = null;//fileDir.getDirectoryListing()[0];
+//			for each(var file:Dictionary in roomData){
+//				if(file["name"] == currentDir){
+//					if(first){
+//						temp = file;
+//						first = false;
+//					}
+//					if(flag){
+//						temp = file;
+//						break;
+//					}
+//					if(img.info.fileName == file["id"]){
+//						flag = true;
+//					}
+//				}		
+//			}
+			if(imgCurrentCountDic[currentDir] == imgCountDic[currentDir]){
+				imgCurrentCountDic[currentDir] = 1;
+			}else{
+				imgCurrentCountDic[currentDir]++;			
 			}
+			var next:String = currentDir + "_0" + imgCurrentCountDic[currentDir];
 			
-			img.info.fileName = temp.name;
+			img.info.fileName = next;
 			eventAccept = false;
 			TweenLite.to(img,.4,{alpha:0,onComplete:function():void{
 				img.addEventListener(Image.GET_DATA,onGetData);
-				if(img.sourceURL == temp.url){
+				if(img.sourceURL == getBigImagePath(next)){
 					img.dispatchEvent(new Event(Image.GET_DATA));
 					return;
 				}
-				img.source = temp.url;
-				sharedObject = SharedObject.getLocal("product");
-				var array:Array = sharedObject.data.array;
-				if(array.indexOf(temp.url.replace("bigImg","zoomout"))!=-1){
-					soldOutlabel.visible = true;
-					setTimeout(function(){soldOutlabel.visible = false},1000);
-				}
+				img.source = getBigImagePath(next);
+//				sharedObject = SharedObject.getLocal("product");
+//				var array:Array = sharedObject.data.array;
+//				if(array.indexOf(temp.url.replace("bigImg","zoomout"))!=-1){
+//					soldOutlabel.visible = true;
+//					setTimeout(function(){soldOutlabel.visible = false},1000);
+//				}
 				
-			}});
+			}});		
 			
-			//			if(products[e.currentTarget.info.name].child != null){
-			//				var tempImg:Image;
-			//				for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
-			//					var img:Image = selectableImageContainer.getChildAt(i) as Image;
-			//					if(img.info.name == products[e.currentTarget.info.name].child){
-			//						tempImg = img;
-			//						break;
-			//					}
-			//				}
-			//				var ss:File = new File(path + "bigImg/" + products[e.currentTarget.info.name].child +"/"+ (e.currentTarget.info.fileName.split(".",1))[0]);
-			//				tempImg.source = ss.getDirectoryListing()[0].url;
-			//				tempImg.info.fileName = ss.getDirectoryListing()[0].name;
-			//			}
-			
-			
-			
-			var image:Image;
-			var xml:XML;
-			for (var j:int = 0; j < data.image.length(); j++) 
-			{
-				xml = data.image[j];
-				if(xml.attribute("relatedTo").toString() == img.info.name){
-					if(xml.hasOwnProperty("@disappear")){
-						var tempImage:Image = img;
-						var names:Array = xml.attribute("disappear").toString().split(",");
-						for each(var tempName:String in names){
-							if(tempName == img.info.fileName.split(".")[0]){
-								image = getImageByName(xml.attribute("name").toString());
-								image.visible = false;
-							}else{
-								image = getImageByName(xml.attribute("name").toString());
-								image.visible = true;
-							}
-						}
-					}
-				}
-			}
+//			var image:Image;
+//			var xml:XML;
+//			for (var j:int = 0; j < data.image.length(); j++) 
+//			{
+//				xml = data.image[j];
+//				if(xml.attribute("relatedTo").toString() == img.info.name){
+//					if(xml.hasOwnProperty("@disappear")){
+//						var tempImage:Image = img;
+//						var names:Array = xml.attribute("disappear").toString().split(",");
+//						for each(var tempName:String in names){
+//							if(tempName == img.info.fileName.split(".")[0]){
+//								image = getImageByName(xml.attribute("name").toString());
+//								image.visible = false;
+//							}else{
+//								image = getImageByName(xml.attribute("name").toString());
+//								image.visible = true;
+//							}
+//						}
+//					}
+//				}
+//			}
 			
 			
 		}

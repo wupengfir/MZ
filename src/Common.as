@@ -50,7 +50,7 @@ package
 					}else if(node.localName() == "dict"){
 						dic[currentKey] = getDict(node,dic);
 					}else if(node.localName() == "string"){
-						dic[currentKey] = node.text();
+						dic[currentKey] = node.text().toString();
 					}
 				}
 			}
@@ -88,7 +88,7 @@ package
 					}else if(node.localName() == "dict"){						
 						dict[currentKey] = getDict(node,dict);
 					}else if(node.localName() == "string"){
-						dict[currentKey] = node.text();
+						dict[currentKey] = node.text().toString();
 					}
 					dict["parent"] = p;
 				}
@@ -129,8 +129,16 @@ package
 			return Main.basePath+"data/img/"+currentPath+"/"+currentColor+"/video/Video-"+currentColor+"_"+type+".flv";
 		}
 		
-		public static function getImagePath(type:String):String{
+		public static function getBigImagePath(type:String):String{
 			return Main.basePath+"data/img/"+currentPath+"/"+currentColor+"/bigImg/"+type;//Main.basePath+"img/fengge/"+FenggeSelectPage.currentPath+"/"+Main.currentColor+"/"+type;
+		}
+		
+		public static function getThumbImagePath(type:String):String{
+			return Main.basePath+"data/img/"+currentPath+"/"+currentColor+"/thumb/"+type;//Main.basePath+"img/fengge/"+FenggeSelectPage.currentPath+"/"+Main.currentColor+"/"+type;
+		}
+		
+		public static function getZoomImagePath(type:String):String{
+			return Main.basePath+"data/img/"+currentPath+"/"+currentColor+"/zoomout/"+type;//Main.basePath+"img/fengge/"+FenggeSelectPage.currentPath+"/"+Main.currentColor+"/"+type;
 		}
 		
 		public static function getImageUrljpg(iname:String):String{

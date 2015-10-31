@@ -12,7 +12,7 @@
 	{
 		
 		public static var notice:NoticePage = new NoticePage();
-		private var sign3:Image = new Image(File.documentsDirectory.url+"/data/" + "img/click.png");
+		private var sign3:Image = new Image("data/img/roompic/click.png");
 		public function NoticePage()
 		{
 			graphics.beginFill(0,.6);
@@ -33,7 +33,7 @@
 		
 		private var i:uint;
 		public function show():void{
-			Common.MAIN.stage.addChild(notice);
+			Common.MAIN.roomLayer.addChild(notice);
 			i = setTimeout(hide,4000);
 			
 			RoomPage.MAIN.rightBtn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));

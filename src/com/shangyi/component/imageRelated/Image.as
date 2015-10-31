@@ -42,7 +42,7 @@ package com.shangyi.component.imageRelated
 		
 		protected var _selectAble:Boolean = true;
 		
-		public function Image(source:String = null)
+		public function Image(source:String = null,bm:Boolean = false)
 		{
 			back = new Bitmap();
 			back.smoothing = true;
@@ -51,6 +51,9 @@ package com.shangyi.component.imageRelated
 			addChild(shape);
 			if(source){
 				this.source = source;
+			}
+			if(bm){
+				this.buttonMode = true;
 			}
 		}
 		
