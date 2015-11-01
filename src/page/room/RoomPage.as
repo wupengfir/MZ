@@ -103,7 +103,7 @@ package page.room
 		private var imgCurrentCountDic:Dictionary = new Dictionary();
 		public function RoomPage(roomName:String,initInfo:Dictionary = null)
 		{
-			
+			backImage.scaleMax();
 			getVideo(Common.currentRoomData[Common.currentPath+"_video"],roomName);
 			roomData = Common.currentRoomData[roomName+"_data"];
 			roomDefaultData = Common.currentRoomData[roomName+"_default"];
@@ -122,49 +122,49 @@ package page.room
 			addChild(selectableImageContainer);	
 			//selectableImageContainer.addChild(buttomImg);
 			backImage.source = Common.getBigImagePath(Common.currentPath+"_"+kongjian+"_solid.png");
-			right.addChild(new Image("data/img/roompic/cebian.png"));
+			right.addChild(new Image("data/img/roompic/cebian.png",false,0,Common.MAX_HEIGHT,true));
 			rightScroller.graphics.clear();
 			loadXml();
-			back.x = back.y = 20;
+			back.x = back.y = 20*Common.MAX_HEIGHT/768;
 			addChild(back);
 			back.addEventListener(MouseEvent.CLICK,onBack);
 			this.initInfo = initInfo;
 			
 			addChild(selectColorBtn);
-			selectColorBtn.x = 100;
-			selectColorBtn.y = 20;
+			selectColorBtn.x = 100*Common.MAX_HEIGHT/768;
+			selectColorBtn.y = 20*Common.MAX_HEIGHT/768;
 			selectColorBtn.visible = (roomVideoData["shuangse"] == "1");//new File(path.replace("shense","qianse")).exists;
 			selectColorBtn.addEventListener(MouseEvent.CLICK,changeRoomColor);
 			
 			addChild(closeHotPoint);
-			closeHotPoint.x = 20;
-			closeHotPoint.y = yindex;
+			closeHotPoint.x = 20*Common.MAX_HEIGHT/768;
+			closeHotPoint.y = yindex*Common.MAX_HEIGHT/768;
 			closeHotPoint.addEventListener(MouseEvent.CLICK,closePoints);
 			
 			addChild(selectKongjianBtn);
-			selectKongjianBtn.x = 100;
-			selectKongjianBtn.y = yindex;
+			selectKongjianBtn.x = 100*Common.MAX_HEIGHT/768;
+			selectKongjianBtn.y = yindex*Common.MAX_HEIGHT/768;
 			selectKongjianBtn.addEventListener(MouseEvent.CLICK,showKongjian);
 			
 			addChild(pingmianBtn);
-			pingmianBtn.x = 180;
-			pingmianBtn.y = 20;
+			pingmianBtn.x = 180*Common.MAX_HEIGHT/768;
+			pingmianBtn.y = 20*Common.MAX_HEIGHT/768;
 			pingmianBtn.visible = (roomVideoData["pingmian"] == "1");
 			pingmianBtn.addEventListener(MouseEvent.CLICK,addpingmian);
 			
 			addChild(pingleiBtn);
-			pingleiBtn.x = 180;
-			pingleiBtn.y = yindex;
+			pingleiBtn.x = 180*Common.MAX_HEIGHT/768;
+			pingleiBtn.y = yindex*Common.MAX_HEIGHT/768;
 			pingleiBtn.addEventListener(MouseEvent.CLICK,showpinglei);
 			
 			addChild(xiadanBtn);
-			xiadanBtn.x = 954;
-			xiadanBtn.y = yindex;
+			xiadanBtn.x = 954*Common.MAX_HEIGHT/768;
+			xiadanBtn.y = yindex*Common.MAX_HEIGHT/768;
 			xiadanBtn.addEventListener(MouseEvent.CLICK,xiadan);
 			
 			addChild(qingdanBtn);
-			qingdanBtn.x = 874;
-			qingdanBtn.y = yindex;
+			qingdanBtn.x = 874*Common.MAX_HEIGHT/768;
+			qingdanBtn.y = yindex*Common.MAX_HEIGHT/768;
 			qingdanBtn.addEventListener(MouseEvent.CLICK,showqingdan);
 			
 			//			setTimeout(function(){
@@ -343,8 +343,8 @@ package page.room
 			//createBtns();
 			createImages();
 //			createHotPoint();
-//			initRightScroller();
-//			createArrowBtn();
+			initRightScroller();
+			createArrowBtn();
 //			createSave();
 //			createKongjianBtn();
 			
@@ -447,7 +447,7 @@ package page.room
 		}
 		
 		private function createArrowBtn():void{
-			rightBtn.buttonSource = [Main.basePath + "img/fangxiangjiantou.png"];
+			rightBtn.buttonSource = ["data/img/roompic/fangxiangjiantou.png"];
 			rightBtn.x = -28;
 			rightBtn.y = 350;
 			right.addChild(rightBtn);
@@ -1390,7 +1390,8 @@ package page.room
 				for each(var xml:Dictionary in roomDefaultData.image){
 					var img:Image = new Image(getBigImagePath(xml["source"]));
 					img.info = {name:xml["name"],fileName:xml["source"]};
-					
+					img.width = Common.MAX_WIDTH;
+					img.height = Common.MAX_HEIGHT;
 					imgCountDic[xml["name"]] = Number(xml["imgCout"]);
 					imgCurrentCountDic[xml["name"]] = 1;
 					selectableImageContainer.addChild(img);
@@ -1536,7 +1537,7 @@ package page.room
 		
 		private function initRightScroller():void{
 			
-			right.x = 1024-190;
+			right.x = Common.MAX_WIDTH-190;
 			rightScroller.setLeftArrowX(15);
 			//rightScroller.rightArrowBaseX = 65;
 			addChild(right);
@@ -1550,10 +1551,10 @@ package page.room
 		}
 		//右侧缩进
 		private function onRight(e:MouseEvent):void{
-			if(right.x <=855){
-				TweenLite.to(right,.6,{x:1024});
+			if(right.x <=(Common.MAX_WIDTH-185*Common.MAX_HEIGHT/768)){
+				TweenLite.to(right,.6,{x:Common.MAX_WIDTH});
 			}else{
-				TweenLite.to(right,.6,{x:(1024-185)});
+				TweenLite.to(right,.6,{x:(Common.MAX_WIDTH-185*Common.MAX_HEIGHT/768)});
 			}
 		}
 		

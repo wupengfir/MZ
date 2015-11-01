@@ -24,7 +24,8 @@
 //			sign3.y = 300;
 
 			addChild(sign3);
-			
+			sign3.width = Common.MAX_WIDTH;
+			sign3.height = Common.MAX_HEIGHT;
 			addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
 				clearTimeout(i);
 				hide();

@@ -53,6 +53,9 @@
 		public var roomLayer:Page = new Page();
 		public var MessageLayer:Page = new Page();
 		public var loadingPage:LoadingMc = new LoadingMc();
+		
+		private var maskp:Page = new Page();
+		
 		public function Main()
 		{
 
@@ -67,6 +70,10 @@
 			Common.SCREEN_SCALEY = this.scaleY = 1/3;
 			basePath = File.applicationDirectory.url;
 			init();
+			
+			maskp.drawBack();
+			addChild(maskp);
+			this.mask = maskp;
 			//Confirm.confirm("wer",this);
 			//stage.addEventListener (Event.RESIZE,test);  
 			//stage.addEventListener(MouseEvent.CLICK,onStageXClick);

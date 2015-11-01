@@ -42,7 +42,8 @@ package com.shangyi.component.imageRelated
 		
 		protected var _selectAble:Boolean = true;
 		
-		public function Image(source:String = null,bm:Boolean = false)
+		public var keepRatio:Boolean = false;
+		public function Image(source:String = null,bm:Boolean = false,_w:Number = 0,_h:Number = 0,keep:Boolean = false)
 		{
 			back = new Bitmap();
 			back.smoothing = true;
@@ -55,6 +56,13 @@ package com.shangyi.component.imageRelated
 			if(bm){
 				this.buttonMode = true;
 			}
+			if(_w!=0){
+				width = _w;
+			}
+			if(_h!=0){
+				height = _h;
+			}
+			keepRatio = keep;
 		}
 		
 //		public function clearData():void{
@@ -64,7 +72,10 @@ package com.shangyi.component.imageRelated
 //			}
 //		}
 		
-
+		public function scaleMax():void{
+			width = Common.MAX_WIDTH;
+			height = Common.MAX_HEIGHT;
+		}
 		
 		public function set selectAble(flag:Boolean):void{
 			_selectAble = flag;
@@ -157,7 +168,12 @@ package com.shangyi.component.imageRelated
 			this._width = _width;
 			if(this.back.bitmapData != null){
 				try{
-					this.scaleX = _width/this.back.bitmapData.width;
+					if(keepRatio){
+						this.scaleX = this.scaleY = _width/this.back.bitmapData.width;
+					}else{
+						this.scaleX = _width/this.back.bitmapData.width;
+					}
+					
 				}catch(e:Error){
 					
 				}				
@@ -172,7 +188,12 @@ package com.shangyi.component.imageRelated
 			this._height = _height;
 			if(this.back.bitmapData != null){				
 				try{
-					this.scaleY = _height/this.back.bitmapData.height;
+					if(keepRatio){
+						this.scaleX = this.scaleY = _height/this.back.bitmapData.height;
+					}else{
+						this.scaleY = _height/this.back.bitmapData.height;
+					}
+					
 				}catch(e:Error){
 					
 				}
