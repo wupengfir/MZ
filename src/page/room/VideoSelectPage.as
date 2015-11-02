@@ -22,12 +22,12 @@ package page.room
 		private var state:String;
 		private var currentDic:Dictionary;
 		private var btnContainer:Sprite = new Sprite;
-		public var back:Image = new Image(Main.basePath + "img/back.png");
+		public var back:Image = new Image("data/img/roompic/back.png",true);
 		public function VideoSelectPage()
 		{
 			vpage = this;
 			state="normal";
-
+			backImage.scaleMax();
 			addChild(video);
 			addChild(btnContainer);
 			back.x = back.y = 10;
@@ -47,7 +47,7 @@ package page.room
 			}
 			video.visible = true;
 			video.playSt(Common.getVideoPath(currentDic["source"]+"_back"));
-			currentDic = Common.currentRoomDicDic[currentDic["source"]];
+			currentDic = Common.currentRoomDicDic[currentDic["prent"]];
 		}
 		
 		private function loadXml():void{
@@ -62,7 +62,7 @@ package page.room
 				btnContainer.removeChildren();
 				if(currentDic["video"]!=null){
 					for each(var xml:Dictionary in currentDic["video"]){
-						var btn:Image = new Image(Main.basePath + xml.attribute("btnsource"));
+						var btn:Image = new Image("data/img/videopic/" + xml["btnsource"]);
 						btn.x = Number(xml["x"]);
 						btn.y = Number(xml["y"]);
 						btnContainer.addChild(btn);
@@ -71,7 +71,7 @@ package page.room
 					}
 				}			
 			}else if(currentDic["type"]=="final"){
-				addChild(new RoomPage(e.currentTarget.info["name"]));
+				addChild(new RoomPage(currentDic["name"]));
 			}
 			setTimeout(function(){video.visible = false;},200);
 		}
@@ -88,7 +88,7 @@ package page.room
 			currentDic = Common.currentRoomData[Common.currentPath+"_video"];
 			video.playSt(Common.getVideoPath(currentDic["source"]));
 			
-			addChild(new RoomPage("canting"));
+		//	addChild(new RoomPage("canting"));
 			
 		}	
 		

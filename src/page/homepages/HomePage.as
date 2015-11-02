@@ -7,6 +7,7 @@ package page.homepages
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.filesystem.File;
@@ -95,12 +96,25 @@ package page.homepages
 		}
 		
 		private function loadData():void{
+			Common.loadURL("furniture/action/davert/iosAdvert",handleAdvertise,reload1);
+			Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,reload2);
+			Common.loadURL("furniture/action/space/iosSpaceBefore",handleSpace,reload3);
+		}
+		
+		private function reload1(e:IOErrorEvent):void{
 			Common.loadURL("furniture/action/davert/iosAdvert",handleAdvertise,null);
+		}
+		
+		private function reload2(e:IOErrorEvent):void{
 			Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,null);
+		}
+		
+		private function reload3(e:IOErrorEvent):void{
 			Common.loadURL("furniture/action/space/iosSpaceBefore",handleSpace,null);
 		}
 		
 		private function handleAdvertise(e:Event):void{
+			trace("adver");
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
 			//trace(e.currentTarget.data);
 			if(data.success){
@@ -122,7 +136,17 @@ package page.homepages
 			}
 		}
 		
+		public function clickLifewayByName(no:String):void{
+			for each(var img:Image in lifeStyleContainer.scroller.btnArr){
+				if(img.info.li_No == no){
+					img.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+					break;
+				}
+			}
+		}
+		
 		private function handleLifewayBefore(e:Event):void{
+			trace("lifeway");
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
 			if(data.success){
 				var updatePlistFlag:Boolean = false;
@@ -185,8 +209,8 @@ package page.homepages
 		}
 		
 		private function handleSpace(e:Event):void{
+			trace("space");
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
-			trace(e.currentTarget.data);
 			if(data.success){
 				var urlList:Array = new Array();
 				var dataList:Array = data.dataValue.datavalue as Array;

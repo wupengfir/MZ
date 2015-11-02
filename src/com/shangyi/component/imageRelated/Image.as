@@ -11,6 +11,7 @@ package com.shangyi.component.imageRelated
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.filters.ColorMatrixFilter;
 	import flash.net.URLRequest;
 	import flash.system.System;
 	import flash.utils.Dictionary;
@@ -71,6 +72,15 @@ package com.shangyi.component.imageRelated
 //				delete Image.imageDic[this.sourceURL];
 //			}
 //		}
+		
+		public function setGray():void{
+			var filter:ColorMatrixFilter = new ColorMatrixFilter([0.3,0.6,0,0,0,0.3,0.6,0,0,0,0.3,0.6,0,0,0,0,0,0,1,0]) ;
+			this.filters = [filter];
+		}
+		
+		public function cancelGray():void{
+			this.filters = [];
+		}
 		
 		public function scaleMax():void{
 			width = Common.MAX_WIDTH;

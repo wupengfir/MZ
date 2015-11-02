@@ -80,7 +80,9 @@ package com.shangyi.component.buttonRelated
 		}
 		
 		public function clear():void{
-			
+			if(parent){
+				parent.removeChild(this);
+			}
 		}
 		
 	}

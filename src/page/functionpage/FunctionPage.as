@@ -40,7 +40,7 @@ package page.functionpage
 				syncpage.x = 500;
 				syncpage.y = 400;
 				syncpage.graphics.beginFill(0,.5);
-				syncpage.graphics.drawRect(-500,-400,Common.MAX_WIDTH,Common.MAX_HEIGHT);
+				syncpage.graphics.drawRect(-500,-400,Common.MAX_WIDTH,Common.MAX_HEIGHT-80);
 				syncpage.graphics.endFill();
 			}else{
 				syncpage.visible = true;

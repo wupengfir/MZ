@@ -8,10 +8,18 @@ package page.room
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	
 	import json.JsonData;
 	import json.JsonDecoder;
+	
+	import page.alertpage.Confirm;
+	import page.homepages.HomePage;
+	
+	import user.UserInfo;
 	
 	public class RoomSelectPage extends Page
 	{
@@ -37,6 +45,15 @@ package page.room
 			Common.loadURL("furniture/action/space/iosLifewayAndSpace?spaceid="+id,handleSelect,null);
 		}
 		
+		private function showLoadAlert(e:MouseEvent):void{
+			Confirm.confirm("返回首页下载？",e.currentTarget as EventDispatcher);
+		}
+		
+		private function onload(e:Event):void{
+			this.visible = false;
+			HomePage.homeRoot.clickLifewayByName(e.currentTarget.info.li_no);
+		}
+		
 		private function handleSelect(e:Event):void{
 			scroller.clearContent();
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
@@ -60,6 +77,13 @@ package page.room
 					for each(var img:Image in roomScroller.scroller.btnArr){
 						img.info = obj.spaces[index];
 						index++;
+						if(UserInfo.diyDataLoaded.indexOf(img.info.li_no) == -1){
+							img.removeEventListener(MouseEvent.CLICK,onRoomClick);
+							img.addEventListener(MouseEvent.CLICK,showLoadAlert);
+							img.addEventListener(Confirm.YES,onload);
+							img.setGray();
+						}
+						
 					}
 					logo.width = 100;
 					logo.height = 75;
@@ -77,11 +101,23 @@ package page.room
 				}
 			}
 		}
-		
+		private var currentImg:Image;
 		private function onRoomClick(e:MouseEvent):void{
-			
+			currentImg = e.currentTarget as Image;
+			Common.currentPath = currentImg.info.li_no;
+			var urlLoader:URLLoader = new URLLoader();
+			urlLoader.load(new URLRequest(Main.basePath+"data/img/"+Common.currentPath+"/"+Common.currentPath+"_"+UserInfo.userName+".plist"));
+			urlLoader.addEventListener(Event.COMPLETE,onLoadComplete);
 		}
 		
+		private function onLoadComplete(e:Event):void{
+			Common.plistToDictionary(new XML(e.target.data));
+//			currentDic = Common.currentRoomData[Common.currentPath+"_video"];
+//			video.playSt(Common.getVideoPath(currentDic["source"]));
+			
+			addChild(new RoomPage(currentImg.info.sp_No,null,false));
+			
+		}	
 		
 	}
 }

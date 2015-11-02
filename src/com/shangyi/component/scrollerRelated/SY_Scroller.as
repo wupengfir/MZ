@@ -199,7 +199,7 @@ package com.shangyi.component.scrollerRelated
 		}
 		
 		private function reLocate(e:Event):void{
-			trace("ordered......");
+			//trace("ordered......");
 			var btn:ImageButton = e.currentTarget as ImageButton;
 			if(type == 0){
 				btn.width = (_size/btn.height)*btn.width;
@@ -207,8 +207,9 @@ package com.shangyi.component.scrollerRelated
 				btn.x = (Math.floor(btn.index/_lines))*(this.offset+btn.width);
 				btn.y = (btn.index%_lines)*(_size + offset);
 			}else{
-				btn.width = _size;
 				btn.height = (_size/btn.width)*btn.height;
+				btn.width = _size;
+				
 				btn.x = (btn.index%_lines)*(_size + offset);
 				btn.y = (Math.floor(btn.index/_lines))*(this.offset+btn.height);
 			}

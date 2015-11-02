@@ -5,6 +5,7 @@ package page.room
 	import com.shangyi.component.base.Page;
 	import com.shangyi.component.buttonRelated.Button;
 	import com.shangyi.component.buttonRelated.ImageButton;
+	import com.shangyi.component.buttonRelated.SimpleButton;
 	import com.shangyi.component.imageRelated.Image;
 	import com.shangyi.component.scrollerRelated.SY_Scroller;
 	import com.shangyi.component.scrollerRelated.ScrollableSprite;
@@ -54,13 +55,13 @@ package page.room
 		//不变层
 		private var buttomImg:Image = new Image();
 		
-		private var btnScroller:Scroller = new Scroller(190,180,1);
+		private var btnScroller:Scroller = new Scroller(190*Common.MAX_WIDTH/1024,180*Common.MAX_HEIGHT/768,1);
 		
 		private var right:Sprite = new Sprite();
 		private var buttom:Sprite = new Sprite();
 		private var up:Sprite = new Sprite();
 		
-		private var rightScroller:SY_Scroller = new SY_Scroller(170,530,135,445,0xffffff,1);
+		private var rightScroller:SY_Scroller = new SY_Scroller(170*Common.MAX_WIDTH/1024,530*Common.MAX_HEIGHT/768,135*Common.MAX_WIDTH/1024,445*Common.MAX_HEIGHT/768,0xffffff,1);
 		public var rightBtn:Button = new Button(80,30,860,15);
 		
 		
@@ -101,9 +102,11 @@ package page.room
 		private var roomDefaultData:Dictionary;
 		private var imgCountDic:Dictionary = new Dictionary();
 		private var imgCurrentCountDic:Dictionary = new Dictionary();
-		public function RoomPage(roomName:String,initInfo:Dictionary = null)
+		private var backtoVideo:Boolean;
+		public function RoomPage(roomName:String,initInfo:Dictionary = null,backtoVideo:Boolean = true)
 		{
 			backImage.scaleMax();
+			this.backtoVideo = backtoVideo;
 			getVideo(Common.currentRoomData[Common.currentPath+"_video"],roomName);
 			roomData = Common.currentRoomData[roomName+"_data"];
 			roomDefaultData = Common.currentRoomData[roomName+"_default"];
@@ -190,7 +193,7 @@ package page.room
 		}
 		
 		private function getThumbImagePath(fileName:String):String{
-			return Common.getThumbImagePath(Common.currentPath+"_"+kongjian+"_thumb_"+fileName+".png");
+			return Common.getThumbImagePath(Common.currentPath+"_"+kongjian+"_thumb_"+fileName+".jpg");
 		}
 		
 		private function getZoomImagePath(fileName:String):String{
@@ -346,7 +349,7 @@ package page.room
 			initRightScroller();
 			createArrowBtn();
 //			createSave();
-//			createKongjianBtn();
+			createKongjianBtn();
 			
 		}
 		
@@ -433,7 +436,9 @@ package page.room
 		
 		private function onBack(e:MouseEvent):void{		
 			RoomPage.MAIN.remove();
-			VideoSelectPage.vpage.back.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+			if(backtoVideo){
+				VideoSelectPage.vpage.back.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+			}		
 			Common.currentColor = "shense";
 		}
 		
@@ -516,15 +521,15 @@ package page.room
 			addChild(pingleiMask);
 			downBack.mask = pingleiMask;
 			var dic:Dictionary = new Dictionary();
-			for each(var xml:XML in data.image){
-				var type:String = xml.attribute("type").toString();
+			for each(var xml:Dictionary in roomDefaultData["image"]){
+				var type:String = xml["type"];
 				dic[type] = 1;
 			}
-			jiajuBtn.buttonSource = [Main.basePath + "img/jiaju.png"];
-			qiangmianBtn.buttonSource = [Main.basePath + "img/qiangmian.png"];
-			dimianBtn.buttonSource = [Main.basePath + "img/dimian.png"];
-			shipinBtn.buttonSource = [Main.basePath + "img/shipin.png"];
-			jiancaiBtn.buttonSource = [Main.basePath + "img/jiancai.png"];
+			jiajuBtn.buttonSource = ["data/img/roompic/jiaju.png"];
+			qiangmianBtn.buttonSource = ["data/img/roompic/qiangmian.png"];
+			dimianBtn.buttonSource = ["data/img/roompic/dimian.png"];
+			shipinBtn.buttonSource = ["data/img/roompic/shipin.png"];
+			jiancaiBtn.buttonSource = ["data/img/roompic/jiancai.png"];
 			var xIndex:Number = 40;
 			if(dic["jiaju"] == 1){
 				jiajuBtn.x = xIndex;
@@ -582,22 +587,24 @@ package page.room
 					btnScroller.clearContent();
 					var index:int = 0;
 					var clicked:Boolean = false;					
-					for each(var xml:XML in data.image.(@type == "jiaju")){
-					var btn:Button = new Button(133,35,30,index*45);
-					var fileName:String = xml.attribute("name").toString();
-					btn.buttonSource = [Main.basePath + "img/btn/"+fileName+"_1.png",Main.basePath + "img/btn/"+fileName+"_2.png"];
-					btn.name = fileName;
-					btn.addEventListener(MouseEvent.CLICK,onBtnClick);
-					btnScroller.addChild(btn);
-					index++;
-					if(!clicked){
-						btn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-						clicked = true;
+					for each(var dic:Dictionary in roomDefaultData["image"]){
+					if(dic["type"] == "jiaju"){
+						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.y = index*45;
+						btnsim.label = dic["nametext"];
+						btnsim.name = dic["name"];
+						btnsim.addEventListener(MouseEvent.CLICK,onBtnClick);
+						btnScroller.addChild(btnsim);
+						index++;
+						if(!clicked){
+							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							clicked = true;
+						}
 					}
+					
 				}
 					
 					btnScroller.y = 30;
-					btnScroller.x = -15;
 					right.addChild(btnScroller);
 					downSelect.x = 5;
 					downSelect.y = 20;
@@ -607,22 +614,24 @@ package page.room
 					btnScroller.clearContent();
 					var index:int = 0;
 					var clicked:Boolean = false;					
-					for each(var xml:XML in data.image.(@type == "jiancai")){
-					var btn:Button = new Button(133,35,30,index*45);
-					var fileName:String = xml.attribute("name").toString();
-					btn.buttonSource = [Main.basePath + "img/btn/"+fileName+"_1.png",Main.basePath + "img/btn/"+fileName+"_2.png"];
-					btn.name = fileName;
-					btn.addEventListener(MouseEvent.CLICK,onBtnClick);
-					btnScroller.addChild(btn);
-					index++;
-					if(!clicked){
-						btn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-						clicked = true;
+					for each(var dic:Dictionary in roomDefaultData["image"]){
+					if(dic["type"] == "jiancai"){
+						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.y = index*45;
+						btnsim.label = dic["nametext"];
+						btnsim.name = dic["name"];
+						btnsim.addEventListener(MouseEvent.CLICK,onBtnClick);
+						btnScroller.addChild(btnsim);
+						index++;
+						if(!clicked){
+							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							clicked = true;
+						}
 					}
+					
 				}
 					
 					btnScroller.y = 30;
-					btnScroller.x = -15;
 					right.addChild(btnScroller);
 					downSelect.x = 120;
 					downSelect.y = 20;
@@ -632,22 +641,24 @@ package page.room
 					btnScroller.clearContent();
 					var index:int = 0;
 					var clicked:Boolean = false;					
-					for each(var xml:XML in data.image.(@type == "shipin")){
-					var btn:Button = new Button(133,35,30,index*45);
-					var fileName:String = xml.attribute("name").toString();
-					btn.buttonSource = [Main.basePath + "img/btn/"+fileName+"_1.png",Main.basePath + "img/btn/"+fileName+"_2.png"];
-					btn.name = fileName;
-					btn.addEventListener(MouseEvent.CLICK,onBtnClick);
-					btnScroller.addChild(btn);
-					index++;
-					if(!clicked){
-						btn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-						clicked = true;
+					for each(var dic:Dictionary in roomDefaultData["image"]){
+					if(dic["type"] == "shipin"){
+						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.y = index*45;
+						btnsim.label = dic["nametext"];
+						btnsim.name = dic["name"];
+						btnsim.addEventListener(MouseEvent.CLICK,onBtnClick);
+						btnScroller.addChild(btnsim);
+						index++;
+						if(!clicked){
+							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							clicked = true;
+						}
 					}
+					
 				}
 					
 					btnScroller.y = 30;
-					btnScroller.x = -15;
 					right.addChild(btnScroller);
 					downSelect.x = 120;
 					downSelect.y = 20;
@@ -657,22 +668,24 @@ package page.room
 					btnScroller.clearContent();
 					var index:int = 0;
 					var clicked:Boolean = false;					
-					for each(var xml:XML in data.image.(@type == "qiangmian")){
-					var btn:Button = new Button(133,35,30,index*45);
-					var fileName:String = xml.attribute("name").toString();
-					btn.buttonSource = [Main.basePath + "img/btn/"+fileName+"_1.png",Main.basePath + "img/btn/"+fileName+"_2.png"];
-					btn.name = fileName;
-					btn.addEventListener(MouseEvent.CLICK,onBtnClick);
-					btnScroller.addChild(btn);
-					index++;
-					if(!clicked){
-						btn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-						clicked = true;
+					for each(var dic:Dictionary in roomDefaultData["image"]){
+					if(dic["type"] == "qiangmian"){
+						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.y = index*45;
+						btnsim.label = dic["nametext"];
+						btnsim.name = dic["name"];
+						btnsim.addEventListener(MouseEvent.CLICK,onBtnClick);
+						btnScroller.addChild(btnsim);
+						index++;
+						if(!clicked){
+							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							clicked = true;
+						}
 					}
+					
 				}
 					
 					btnScroller.y = 30;
-					btnScroller.x = -15;
 					right.addChild(btnScroller);
 					downSelect.x = 240;
 					downSelect.y = 20;
@@ -682,22 +695,24 @@ package page.room
 					btnScroller.clearContent();
 					var index:int = 0;
 					var clicked:Boolean = false;					
-					for each(var xml:XML in data.image.(@type == "dimian")){
-					var btn:Button = new Button(133,35,30,index*45);
-					var fileName:String = xml.attribute("name").toString();
-					btn.buttonSource = [Main.basePath + "img/btn/"+fileName+"_1.png",Main.basePath + "img/btn/"+fileName+"_2.png"];
-					btn.name = fileName;
-					btn.addEventListener(MouseEvent.CLICK,onBtnClick);
-					btnScroller.addChild(btn);
-					index++;
-					if(!clicked){
-						btn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-						clicked = true;
+					for each(var dic:Dictionary in roomDefaultData["image"]){
+					if(dic["type"] == "dimian"){
+						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.y = index*45;
+						btnsim.label = dic["nametext"];
+						btnsim.name = dic["name"];
+						btnsim.addEventListener(MouseEvent.CLICK,onBtnClick);
+						btnScroller.addChild(btnsim);
+						index++;
+						if(!clicked){
+							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							clicked = true;
+						}
 					}
+					
 				}
 					
 					btnScroller.y = 30;
-					btnScroller.x = -15;
 					right.addChild(btnScroller);
 					downSelect.x = 355;
 					downSelect.y = 20;
@@ -1275,30 +1290,29 @@ package page.room
 		}
 		
 		private function onBtnClick(e:MouseEvent):void{
-			for each(var b:Button in btnScroller.btnArr){
-				b.selected = false;
-			}
-			e.currentTarget.selected = true;
+//			for each(var b:Button in btnScroller.btnArr){
+//				b.selected = false;
+//			}
+//			e.currentTarget.selected = true;
 			var currentDir:String = e.currentTarget.name;
 			rightScroller.scroller.clearContent();
-			//			if(products[currentDir].parent != null){
-			//				for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
-			//					var img:Image = selectableImageContainer.getChildAt(i) as Image;
-			//					if(img.info.name == products[currentDir].parent){
-			//						currentDir = currentDir + "/" + (img.info.fileName.split(".",1))[0];
-			//						break;
-			//					}
-			//				}
-			//			}
-			var fileDir:File = new File(path + "thumb/" + currentDir);
+//			var fileDir:File = new File(path + "thumb/" + currentDir);
 			var arr:Array = new Array();
 			var arr1:Array = new Array();
-			for each(var file:File in fileDir.getDirectoryListing()){
-				if(!file.isDirectory){
-					arr1.push(file);
-					arr.push(file.url);
-				}		
+//			for each(var file:File in fileDir.getDirectoryListing()){
+//				if(!file.isDirectory){
+//					arr1.push(file);
+//					arr.push(file.url);
+//				}		
+//			}
+			
+			for (var i:int = 1; i <= imgCountDic[currentDir]; i++) 
+			{
+				arr.push(getThumbImagePath(currentDir + "_0" + i));
+				arr1.push(i);
 			}
+			
+			
 			rightScroller.dataSource(arr,140,15,onRightGuitiThumbClick);
 			for(var index:int = 0;index<rightScroller.scroller.btnArr.length;index++){
 				(rightScroller.scroller.btnArr[index] as ImageButton).info = arr1[index];
@@ -1307,6 +1321,7 @@ package page.room
 		}
 		private var soldOutlabel:Label = new Label("该商品已售完");
 		private function onRightGuitiThumbClick(e:MouseEvent):void{
+			return;
 			var currentChangeImg:Image;
 			for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
 				var img:Image = selectableImageContainer.getChildAt(i) as Image;
@@ -1356,23 +1371,7 @@ package page.room
 					}
 				}
 			}
-			
-			//currentChangeImg.source = ts;
 			currentChangeImg.info.fileName = (e.currentTarget.info as File).name.replace("jpg","png");
-			//			if(products[e.currentTarget.name].child != null){
-			//				var temp:Image;
-			//				for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
-			//					var img:Image = selectableImageContainer.getChildAt(i) as Image;
-			//					if(img.info.name == products[e.currentTarget.name].child){
-			//						temp = img;
-			//						break;
-			//					}
-			//				}
-			//				var ss:File = new File(path + "bigImg/" + products[e.currentTarget.name].child +"/"+ ((e.currentTarget.info as File).name.split(".",1))[0]);
-			//
-			//				temp.source = ss.getDirectoryListing()[0].url;
-			//				temp.info.fileName = ss.getDirectoryListing()[0].name;
-			//			}
 			for each(var p:pointMc in hotPointDic){
 				p.dispatchEvent(new Event(CHANGE));
 			}
