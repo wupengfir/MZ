@@ -21,6 +21,7 @@ package com.shangyi.component.buttonRelated
 		{
 			textFormat = new TextFormat();
 			textFormat.size = "20";
+			textFormat.font = "SimHei"
 			text.setTextFormat(textFormat);
 			this.round = round; 
 			this.graphics.beginFill(_color,_alpha);
@@ -64,6 +65,11 @@ package com.shangyi.component.buttonRelated
 			});
 			
 			addChild(text);
+		}
+		
+		public function set textColor(color:uint):void{
+			textFormat.color = color;
+			text.setTextFormat(textFormat);
 		}
 		
 		public function set label(_label:String):void{

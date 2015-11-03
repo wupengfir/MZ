@@ -41,7 +41,8 @@ package page.room
 		public static var products:Dictionary = new Dictionary();
 		public static const CHANGE:String = "change";
 		public static var MAIN:RoomPage;
-		
+		public static const scx:Number = Common.MAX_WIDTH/1024;
+		public static const scy:Number = Common.MAX_HEIGHT/768;
 		//		public static var DownBar:DownBarPage;
 		//logo
 		public static var logo:Image = new Image();
@@ -103,6 +104,8 @@ package page.room
 		private var imgCountDic:Dictionary = new Dictionary();
 		private var imgCurrentCountDic:Dictionary = new Dictionary();
 		private var backtoVideo:Boolean;
+		
+		private var hotPointLayer:Sprite = new Sprite();
 		public function RoomPage(roomName:String,initInfo:Dictionary = null,backtoVideo:Boolean = true)
 		{
 			backImage.scaleMax();
@@ -123,6 +126,7 @@ package page.room
 			this.graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
 			this.graphics.endFill();
 			addChild(selectableImageContainer);	
+			addChild(hotPointLayer);
 			//selectableImageContainer.addChild(buttomImg);
 			backImage.source = Common.getBigImagePath(Common.currentPath+"_"+kongjian+"_solid.png");
 			right.addChild(new Image("data/img/roompic/cebian.png",false,0,Common.MAX_HEIGHT,true));
@@ -297,38 +301,44 @@ package page.room
 		}
 		
 		private var kongjianContainer:Sprite;
-		private var kongjianScroller:SY_Scroller = new SY_Scroller(1024,414,904,385);
+		private var kongjianScroller:SY_Scroller = new SY_Scroller(Common.MAX_WIDTH,414,Common.MAX_WIDTH-100,385);
 		private function showKongjian(e:MouseEvent):void{
-//			if(!kongjianContainer){
-//				kongjianContainer = new Sprite();
-//				kongjianContainer.graphics.beginFill(0,.6);
-//				kongjianContainer.graphics.drawRect(0,0,1024,768);
-//				kongjianContainer.graphics.endFill();
-//				kongjianScroller.y = 200;
-//				kongjianScroller.selectAble = false;
-//				kongjianContainer.addChild(kongjianScroller);
-//				kongjianScroller.setLeftArrowY(178);
-//				
-//				var file:File = new File(Main.basePath+"img/fengge/"+FenggeSelectPage.currentPath+"/shense");
-//				var array:Array = new Array();
-//				for each(var f:File in file.getDirectoryListing()){
-//					if(f.isDirectory&&f.name.indexOf("_pingmian")==-1){
-//						array.push(f.url + ".png");
-//					}
-//				}
-//				kongjianScroller.dataSource(array,100,30,function(e:MouseEvent):void{
-//					Main.currentColor = "shense";
-//					var img:ImageButton = e.currentTarget as ImageButton;
-//					var tp:String = img.sourceURL.replace(".png","")+"/";
-//					YangBanJianPage.MAIN.remove();	
-//					Common.MAIN.addChild(new YangBanJianPage(tp));
-//					
-//				});
-//				addChild(kongjianContainer);
-//				addChild(selectKongjianBtn);
-//			}else{
-//				kongjianContainer.visible = !kongjianContainer.visible;
-//			}					
+			if(!kongjianContainer){
+				kongjianContainer = new Sprite();
+				kongjianContainer.graphics.beginFill(0,.6);
+				kongjianContainer.graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
+				kongjianContainer.graphics.endFill();
+				kongjianScroller.y = 240;
+				kongjianScroller.selectAble = false;
+				kongjianContainer.addChild(kongjianScroller);
+				kongjianScroller.setLeftArrowY(178);
+				
+				var file:Array = Common.currentRoomData["space"];
+				var array:Array = new Array();
+				var dataarray:Array = new Array();
+				for each(var f:Dictionary in file){
+					array.push(Common.getBigImagePath(Common.currentPath+"_"+f["name"]+".png"));
+					dataarray.push(f);
+				}
+				var index:int = 0;
+				
+				kongjianScroller.dataSource(array,100,30,function(e:MouseEvent):void{
+					//Main.currentColor = "shense";
+					var img:ImageButton = e.currentTarget as ImageButton;
+					var tp:String = img.info["name"];
+					RoomPage.MAIN.remove();	
+					Common.MAIN.roomLayer.addChild(new RoomPage(tp,null,RoomPage.MAIN.backtoVideo));
+					
+				});
+				for each(var i:ImageButton in kongjianScroller.scroller.btnArr){
+					i.info = dataarray[index];
+					index++;
+				}
+				addChild(kongjianContainer);
+				addChild(selectKongjianBtn);
+			}else{
+				kongjianContainer.visible = !kongjianContainer.visible;
+			}					
 		}
 		
 		
@@ -345,12 +355,12 @@ package page.room
 //			}
 			//createBtns();
 			createImages();
-//			createHotPoint();
+			
 			initRightScroller();
 			createArrowBtn();
 //			createSave();
 			createKongjianBtn();
-			
+			createHotPoint();
 		}
 		
 		private function addpingmian(e:MouseEvent):void{
@@ -416,22 +426,23 @@ package page.room
 		
 		private var hotClosed:Boolean = false;
 		public function closePoints(e:MouseEvent):void{
-			if(hotClosed){
-				for each(var p:pointMc in hotPointDic){
-					p.scaleX = p.scaleY = 1;
-					TweenLite.to(p,.6,{x:hotPointPosDic[p.name].x,y:hotPointPosDic[p.name].y});
-				}
-				hotClosed = false;
-			}else{
-				for each(var p:pointMc in hotPointDic){
-					TweenLite.to(p,.6,{x:closeHotPoint.x + 10,y:closeHotPoint.y + 10,onComplete:function():void{
-						for each(var p1:pointMc in hotPointDic){
-							p1.scaleX = p1.scaleY = 0;
-						}
-					}});
-				}
-				hotClosed = true;
-			}		
+//			if(hotClosed){
+//				for each(var p:pointMc in hotPointDic){
+//					p.scaleX = p.scaleY = 1;
+//					TweenLite.to(p,.6,{x:hotPointPosDic[p.name].x,y:hotPointPosDic[p.name].y});
+//				}
+//				hotClosed = false;
+//			}else{
+//				for each(var p:pointMc in hotPointDic){
+//					TweenLite.to(p,.6,{x:closeHotPoint.x + 10,y:closeHotPoint.y + 10,onComplete:function():void{
+//						for each(var p1:pointMc in hotPointDic){
+//							p1.scaleX = p1.scaleY = 0;
+//						}
+//					}});
+//				}
+//				hotClosed = true;
+//			}	
+			hotPointLayer.visible = !hotPointLayer.visible;
 		}
 		
 		private function onBack(e:MouseEvent):void{		
@@ -446,9 +457,12 @@ package page.room
 			clearAll(this);
 			saveData.dispose();
 			parent.removeChild(this);
-			for each(var p:pointMc in hotPointDic){
-				p.removeEventListener(MouseEvent.CLICK,onHotPointClick);
+			for each(var a:Array in hotPointDic){
+				for each(var p:pointMc in a){
+					p.removeEventListener(MouseEvent.CLICK,onHotPointClick);
+				}
 			}
+			
 		}
 		
 		private function createArrowBtn():void{
@@ -490,12 +504,11 @@ package page.room
 				var img:Image = selectableImageContainer.getChildAt(i) as Image;
 				try{
 					if((img.back.bitmapData.getPixel32(e.localX,e.localY)>>24&255) > 200){
-						//trace(img.info.name+"__clicked"+(img.back.bitmapData.getPixel32(e.localX,e.localY)>>24&255));
 						img.dispatchEvent(new Event(CHANGE));
 						flag = true;
-						for each(var p:pointMc in hotPointDic){
-							p.dispatchEvent(new Event(CHANGE));
-						}
+//						for each(var p:pointMc in hotPointDic){
+//							p.dispatchEvent(new Event(CHANGE));
+//						}
 						break;
 					}
 				}catch(e:Error){
@@ -590,6 +603,7 @@ package page.room
 					for each(var dic:Dictionary in roomDefaultData["image"]){
 					if(dic["type"] == "jiaju"){
 						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.textColor = 0xffffff;
 						btnsim.y = index*45;
 						btnsim.label = dic["nametext"];
 						btnsim.name = dic["name"];
@@ -617,6 +631,7 @@ package page.room
 					for each(var dic:Dictionary in roomDefaultData["image"]){
 					if(dic["type"] == "jiancai"){
 						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.textColor = 0xffffff;
 						btnsim.y = index*45;
 						btnsim.label = dic["nametext"];
 						btnsim.name = dic["name"];
@@ -644,6 +659,7 @@ package page.room
 					for each(var dic:Dictionary in roomDefaultData["image"]){
 					if(dic["type"] == "shipin"){
 						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.textColor = 0xffffff;
 						btnsim.y = index*45;
 						btnsim.label = dic["nametext"];
 						btnsim.name = dic["name"];
@@ -671,6 +687,7 @@ package page.room
 					for each(var dic:Dictionary in roomDefaultData["image"]){
 					if(dic["type"] == "qiangmian"){
 						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.textColor = 0xffffff;
 						btnsim.y = index*45;
 						btnsim.label = dic["nametext"];
 						btnsim.name = dic["name"];
@@ -698,6 +715,7 @@ package page.room
 					for each(var dic:Dictionary in roomDefaultData["image"]){
 					if(dic["type"] == "dimian"){
 						var btnsim:SimpleButton = new SimpleButton(160,35);
+						btnsim.textColor = 0xffffff;
 						btnsim.y = index*45;
 						btnsim.label = dic["nametext"];
 						btnsim.name = dic["name"];
@@ -756,97 +774,110 @@ package page.room
 		private var addToOrderBtn:Image = new Image(Main.basePath + "img/addtoorder.png");
 		private var sharedObject:SharedObject;
 		private var biaojied:Boolean = false;
+		
+		private var hotpointFunctionsContainer:Sprite = new Sprite();
+		private var storyBtn:Image = new Image("data/img/roompic/txt.png");
+		private var zoomInfoBtn:Image = new Image("data/img/roompic/out.png");
+		private var jiageBack:Image = new Image("data/img/roompic/jiage1.png");
+		private var jiageLabel:Label = new Label("",20);
 		private function createHotPoint():void{
-			closeZoomBtn.buttonSource = [Main.basePath + "img/close.png"];
-			animeBtn.buttonSource = [Main.basePath + "img/anime.png"];
-			for each(var xml:XML in data.hotpoint){
-				var p:pointMc = createPointMc();
-				
-				var xStr:String = xml.attribute("x").toString();
-				if(xStr.indexOf("*") == -1){
-					p.x = Number(xStr);
-				}else{
-					p.x = Number(xStr.split("*")[0])*Number(xStr.split("*")[1]);
-				}
-				var yStr:String = xml.attribute("y").toString();
-				if(yStr.indexOf("*") == -1){
-					p.y = Number(yStr);
-				}else{
-					p.y = Number(yStr.split("*")[0])*Number(yStr.split("*")[1]);
-				}	
-				p.name = xml.attribute("name").toString();
-				hotPointXmlDic[p.name] = xml;
-				p.addEventListener(MouseEvent.CLICK,onHotPointClick);
-				hotPointDic[p.name] = p;
-				hotPointPosDic[p.name] = new Point(p.x,p.y);
-				if(xml.hasOwnProperty("@appear")){
-					appearPointDic[p.name] = xml.attribute("appear").toString().split(",");
-					p.addEventListener(CHANGE,onBaseImageChange);
-					p.dispatchEvent(new Event(CHANGE));
-				}
-				addChild(p);
-			}
+//			closeZoomBtn.buttonSource = ["data/img/close.png"];
+			//animeBtn.buttonSource = [Main.basePath + "img/anime.png"];
+//			for each(var xml:XML in data.hotpoint){
+//				var p:pointMc = createPointMc();
+//				
+//				var xStr:String = xml.attribute("x").toString();
+//				if(xStr.indexOf("*") == -1){
+//					p.x = Number(xStr);
+//				}else{
+//					p.x = Number(xStr.split("*")[0])*Number(xStr.split("*")[1]);
+//				}
+//				var yStr:String = xml.attribute("y").toString();
+//				if(yStr.indexOf("*") == -1){
+//					p.y = Number(yStr);
+//				}else{
+//					p.y = Number(yStr.split("*")[0])*Number(yStr.split("*")[1]);
+//				}	
+//				p.name = xml.attribute("name").toString();
+//				hotPointXmlDic[p.name] = xml;
+//				p.addEventListener(MouseEvent.CLICK,onHotPointClick);
+//				hotPointDic[p.name] = p;
+//				hotPointPosDic[p.name] = new Point(p.x,p.y);
+//				if(xml.hasOwnProperty("@appear")){
+//					appearPointDic[p.name] = xml.attribute("appear").toString().split(",");
+//					p.addEventListener(CHANGE,onBaseImageChange);
+//					p.dispatchEvent(new Event(CHANGE));
+//				}
+//				addChild(p);
+//			}
 			zoomContainer.visible = false;
 			zoomContainer.graphics.beginFill(0,.6);
 			zoomContainer.graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
 			zoomContainer.graphics.endFill();
 			addChild(zoomContainer);
-			//			zoomImage.x = 115;
-			//			zoomImage.y = 25;
+			
+			zoomInfoBtn.y = 50;
+			jiageBack.y = 100;
+			jiageLabel.x = 60;
+			jiageLabel.y = 110;
+			hotpointFunctionsContainer.addChild(storyBtn);
+			hotpointFunctionsContainer.addChild(zoomInfoBtn);
+			hotpointFunctionsContainer.addChild(jiageBack);
+			hotpointFunctionsContainer.addChild(jiageLabel);
+			zoomContainer.addChild(hotpointFunctionsContainer);
+			
 			zoomScroller.y = 24;
 			zoomContainer.addChild(zoomScroller);
 			zoomScroller.addChild(zoomImage);
-			video.y = 24;
-			zoomContainer.addChild(video);
+//			video.y = 24;
+//			zoomContainer.addChild(video);
 			closeZoomBtn.x = 965;
 			closeZoomBtn.y = 24;
 			zoomContainer.addChild(closeZoomBtn);
 			
-			animeBtn.x = 20;
-			animeBtn.y = 708;
-			zoomContainer.addChild(animeBtn);
+//			animeBtn.x = 20;
+//			animeBtn.y = 708;
+//			zoomContainer.addChild(animeBtn);
 			
 			
-			biaojiBtn.x = 944;
-			biaojiBtn.y = 708;
-			zoomContainer.addChild(biaojiBtn);
-			addToOrderBtn.x = 564+250;
-			addToOrderBtn.y = 708;
-			zoomContainer.addChild(addToOrderBtn);
-			biaojiLabel.x = 447;
-			biaojiLabel.y = 334;
-			biaojiLabel.color = "0xFF0000";
-			biaojiLabel.size = "20";
-			//biaojiLabel.text = "已标记";
-			biaojiLabel.visible = false;
-			zoomContainer.addChild(biaojiLabel);
+//			biaojiBtn.x = 944;
+//			biaojiBtn.y = 708;
+//			zoomContainer.addChild(biaojiBtn);
+//			addToOrderBtn.x = 564+250;
+//			addToOrderBtn.y = 708;
+//			zoomContainer.addChild(addToOrderBtn);
+//			biaojiLabel.x = 447;
+//			biaojiLabel.y = 334;
+//			biaojiLabel.color = "0xFF0000";
+//			biaojiLabel.size = "20";
+//			biaojiLabel.visible = false;
+//			zoomContainer.addChild(biaojiLabel);
 			
-			quxiaobiaojiLabel.x = 447;
-			quxiaobiaojiLabel.y = 334;
-			quxiaobiaojiLabel.color = "0xFF0000";
-			quxiaobiaojiLabel.size = "20";
-			//quxiaobiaojiLabel.text = "已取消标记";
-			quxiaobiaojiLabel.visible = false;
-			zoomContainer.addChild(quxiaobiaojiLabel);
-			
-			addtoorderLabel.x = 447;
-			addtoorderLabel.y = 334;
-			addtoorderLabel.color = "0xFF0000";
-			addtoorderLabel.size = "20";
-			addtoorderLabel.visible = false;
-			zoomContainer.addChild(addtoorderLabel);
-			
-			soldOutlabel.x = 100;
-			soldOutlabel.y = yindex-100;
-			soldOutlabel.color = "0xFF0000";
-			soldOutlabel.size = "20";
-			soldOutlabel.visible = false;
-			addChild(soldOutlabel);
-			sharedObject = SharedObject.getLocal("product");
-			if(sharedObject.data.array == null||sharedObject.data.array == undefined){
-				sharedObject.data.array = new Array();
-				sharedObject.flush();
-			}	
+//			quxiaobiaojiLabel.x = 447;
+//			quxiaobiaojiLabel.y = 334;
+//			quxiaobiaojiLabel.color = "0xFF0000";
+//			quxiaobiaojiLabel.size = "20";
+//			quxiaobiaojiLabel.visible = false;
+//			zoomContainer.addChild(quxiaobiaojiLabel);
+//			
+//			addtoorderLabel.x = 447;
+//			addtoorderLabel.y = 334;
+//			addtoorderLabel.color = "0xFF0000";
+//			addtoorderLabel.size = "20";
+//			addtoorderLabel.visible = false;
+//			zoomContainer.addChild(addtoorderLabel);
+//			
+//			soldOutlabel.x = 100;
+//			soldOutlabel.y = yindex-100;
+//			soldOutlabel.color = "0xFF0000";
+//			soldOutlabel.size = "20";
+//			soldOutlabel.visible = false;
+//			addChild(soldOutlabel);
+//			sharedObject = SharedObject.getLocal("product");
+//			if(sharedObject.data.array == null||sharedObject.data.array == undefined){
+//				sharedObject.data.array = new Array();
+//				sharedObject.flush();
+//			}	
 			
 //			addToOrderBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{		
 //				var img:Image = getImageByName(currentPMC.name);
@@ -863,29 +894,29 @@ package page.room
 //				setTimeout(function(){addtoorderLabel.visible = false},1000);
 //			});
 			
-			biaojiBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
-				if(biaojied){
-					sharedObject = SharedObject.getLocal("product");
-					var array:Array = sharedObject.data.array;
-					array.splice(array.indexOf(zoomImage.sourceURL),1);
-					sharedObject.flush();
-					quxiaobiaojiLabel.visible = true;
-					biaojiBtn.source = Main.basePath + "img/biaoji.png";
-					biaojied = !biaojied;
-					setTimeout(function(){quxiaobiaojiLabel.visible = false},1000);
-				}else{
-					sharedObject = SharedObject.getLocal("product");
-					var array:Array = sharedObject.data.array;
-					array.push(zoomImage.sourceURL);
-					sharedObject.flush();
-					biaojiLabel.visible = true;
-					biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
-					biaojied = !biaojied;
-					setTimeout(function(){biaojiLabel.visible = false},1000);
-					
-				}
-				
-			});
+//			biaojiBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
+//				if(biaojied){
+//					sharedObject = SharedObject.getLocal("product");
+//					var array:Array = sharedObject.data.array;
+//					array.splice(array.indexOf(zoomImage.sourceURL),1);
+//					sharedObject.flush();
+//					quxiaobiaojiLabel.visible = true;
+//					biaojiBtn.source = Main.basePath + "img/biaoji.png";
+//					biaojied = !biaojied;
+//					setTimeout(function(){quxiaobiaojiLabel.visible = false},1000);
+//				}else{
+//					sharedObject = SharedObject.getLocal("product");
+//					var array:Array = sharedObject.data.array;
+//					array.push(zoomImage.sourceURL);
+//					sharedObject.flush();
+//					biaojiLabel.visible = true;
+//					biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
+//					biaojied = !biaojied;
+//					setTimeout(function(){biaojiLabel.visible = false},1000);
+//					
+//				}
+//				
+//			});
 			closeZoomBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
 				zoomContainer.visible = false;
 				right.visible = true;
@@ -898,9 +929,9 @@ package page.room
 					downBack.visible = true;
 				}				
 			});
-			animeBtn.addEventListener(MouseEvent.CLICK,playAnime);
-			video.visible = false;
-			video.addEventListener(VideoContainer.COMPLETE,onPlayEnd);
+//			animeBtn.addEventListener(MouseEvent.CLICK,playAnime);
+//			video.visible = false;
+//			video.addEventListener(VideoContainer.COMPLETE,onPlayEnd);
 		}
 		
 		private function playAnime(e:MouseEvent):void{
@@ -929,84 +960,90 @@ package page.room
 		private var currentPMC:pointMc = null;
 		private var animePath:String = "";
 		private function onHotPointClick(e:MouseEvent):void{
+			(e.currentTarget as pointMc).drawLine();
+			currentPMC = (e.currentTarget as pointMc);
 			zoomContainer.visible = true;
-			right.visible = false;
-			downBack.visible = false;
-			var pName:String = e.currentTarget.name;
-			var imagePath:String = "";
-			var xml:XML = hotPointXmlDic[pName];
-			currentPMC = e.currentTarget as pointMc;
-			if(xml.attribute("type").toString() == "solid"){
-				imagePath = path_1 + "zoomout/" + pName + "/" +pName+ ".jpg";
-				zoomImage.source = imagePath;
-				animePath = imagePath.replace(".png",".flv");
-				animeBtn.visible = new File(animePath).exists;
-				sharedObject = SharedObject.getLocal("product");
-				var array:Array = sharedObject.data.array;
-				if(array.indexOf(imagePath)==-1){
-					biaojied = false;
-					biaojiBtn.source = Main.basePath + "img/biaoji.png";
-				}else{
-					biaojied = true;
-					biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
-				}
-				return;
-			}
-			if(!xml.hasOwnProperty("@relatedTo")){
-				imagePath = path_1 + "zoomout/" + pName + "/" + getImageByName(pName).info.fileName;
-				zoomImage.source = imagePath;
-				animePath = imagePath.replace(".png",".flv");
-				animeBtn.visible = new File(animePath).exists;
-				sharedObject = SharedObject.getLocal("product");
-				var array:Array = sharedObject.data.array;
-				if(array.indexOf(imagePath)==-1){
-					biaojied = false;
-					biaojiBtn.source = Main.basePath + "img/biaoji.png";
-				}else{
-					biaojied = true;
-					biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
-				}
-				return;
-			}
-			var image:Image;
-			var xml1:XML;
-			for (var j:int = 0; j < data.image.length(); j++) 
-			{
-				xml1 = data.image[j];
-				image = getImageByName(pName);
-				if(image == null)
-					break;
-				if(image.info.name == xml1.attribute("name").toString()){
-					imagePath = path_1 + "zoomout/" + pName + "/" + getImageByName(pName).info.fileName;
-					zoomImage.source = imagePath;
-					animePath = imagePath.replace(".png",".flv");
-					animeBtn.visible = new File(animePath).exists;
-					sharedObject = SharedObject.getLocal("product");
-					var array:Array = sharedObject.data.array;
-					if(array.indexOf(imagePath)==-1){
-						biaojied = false;
-						biaojiBtn.source = Main.basePath + "img/biaoji.png";
-					}else{
-						biaojied = true;
-						biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
-					}
-					return;
-				}
-			}
-			
-			imagePath = path_1 + "zoomout/" + pName + "/" + getImageByName(xml.attribute("relatedTo").toString()).info.fileName;
-			animePath = imagePath.replace(".png",".flv");
-			animeBtn.visible = new File(animePath).exists;
-			zoomImage.source = imagePath;
-			sharedObject = SharedObject.getLocal("product");
-			var array:Array = sharedObject.data.array;
-			if(array.indexOf(imagePath)==-1){
-				biaojied = false;
-				biaojiBtn.source = Main.basePath + "img/biaoji.png";
-			}else{
-				biaojied = true;
-				biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
-			}
+			hotpointFunctionsContainer.alpha = 0;			
+			hotpointFunctionsContainer.x = Number(currentPMC.info["endX"]);
+			hotpointFunctionsContainer.y = Number(currentPMC.info["endY"]);
+//			zoomContainer.visible = true;
+//			right.visible = false;
+//			downBack.visible = false;
+//			var pName:String = e.currentTarget.name;
+//			var imagePath:String = "";
+//			var xml:XML = hotPointXmlDic[pName];
+//			currentPMC = e.currentTarget as pointMc;
+//			if(xml.attribute("type").toString() == "solid"){
+//				imagePath = path_1 + "zoomout/" + pName + "/" +pName+ ".jpg";
+//				zoomImage.source = imagePath;
+//				animePath = imagePath.replace(".png",".flv");
+//				animeBtn.visible = new File(animePath).exists;
+//				sharedObject = SharedObject.getLocal("product");
+//				var array:Array = sharedObject.data.array;
+//				if(array.indexOf(imagePath)==-1){
+//					biaojied = false;
+//					biaojiBtn.source = Main.basePath + "img/biaoji.png";
+//				}else{
+//					biaojied = true;
+//					biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
+//				}
+//				return;
+//			}
+//			if(!xml.hasOwnProperty("@relatedTo")){
+//				imagePath = path_1 + "zoomout/" + pName + "/" + getImageByName(pName).info.fileName;
+//				zoomImage.source = imagePath;
+//				animePath = imagePath.replace(".png",".flv");
+//				animeBtn.visible = new File(animePath).exists;
+//				sharedObject = SharedObject.getLocal("product");
+//				var array:Array = sharedObject.data.array;
+//				if(array.indexOf(imagePath)==-1){
+//					biaojied = false;
+//					biaojiBtn.source = Main.basePath + "img/biaoji.png";
+//				}else{
+//					biaojied = true;
+//					biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
+//				}
+//				return;
+//			}
+//			var image:Image;
+//			var xml1:XML;
+//			for (var j:int = 0; j < data.image.length(); j++) 
+//			{
+//				xml1 = data.image[j];
+//				image = getImageByName(pName);
+//				if(image == null)
+//					break;
+//				if(image.info.name == xml1.attribute("name").toString()){
+//					imagePath = path_1 + "zoomout/" + pName + "/" + getImageByName(pName).info.fileName;
+//					zoomImage.source = imagePath;
+//					animePath = imagePath.replace(".png",".flv");
+//					animeBtn.visible = new File(animePath).exists;
+//					sharedObject = SharedObject.getLocal("product");
+//					var array:Array = sharedObject.data.array;
+//					if(array.indexOf(imagePath)==-1){
+//						biaojied = false;
+//						biaojiBtn.source = Main.basePath + "img/biaoji.png";
+//					}else{
+//						biaojied = true;
+//						biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
+//					}
+//					return;
+//				}
+//			}
+//			
+//			imagePath = path_1 + "zoomout/" + pName + "/" + getImageByName(xml.attribute("relatedTo").toString()).info.fileName;
+//			animePath = imagePath.replace(".png",".flv");
+//			animeBtn.visible = new File(animePath).exists;
+//			zoomImage.source = imagePath;
+//			sharedObject = SharedObject.getLocal("product");
+//			var array:Array = sharedObject.data.array;
+//			if(array.indexOf(imagePath)==-1){
+//				biaojied = false;
+//				biaojiBtn.source = Main.basePath + "img/biaoji.png";
+//			}else{
+//				biaojied = true;
+//				biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
+//			}
 		}
 		
 		private function  createPointMc():pointMc{
@@ -1290,22 +1327,10 @@ package page.room
 		}
 		
 		private function onBtnClick(e:MouseEvent):void{
-//			for each(var b:Button in btnScroller.btnArr){
-//				b.selected = false;
-//			}
-//			e.currentTarget.selected = true;
 			var currentDir:String = e.currentTarget.name;
 			rightScroller.scroller.clearContent();
-//			var fileDir:File = new File(path + "thumb/" + currentDir);
 			var arr:Array = new Array();
-			var arr1:Array = new Array();
-//			for each(var file:File in fileDir.getDirectoryListing()){
-//				if(!file.isDirectory){
-//					arr1.push(file);
-//					arr.push(file.url);
-//				}		
-//			}
-			
+			var arr1:Array = new Array();			
 			for (var i:int = 1; i <= imgCountDic[currentDir]; i++) 
 			{
 				arr.push(getThumbImagePath(currentDir + "_0" + i));
@@ -1321,60 +1346,17 @@ package page.room
 		}
 		private var soldOutlabel:Label = new Label("该商品已售完");
 		private function onRightGuitiThumbClick(e:MouseEvent):void{
-			return;
-			var currentChangeImg:Image;
-			for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
-				var img:Image = selectableImageContainer.getChildAt(i) as Image;
-				if(img.info.name == e.currentTarget.name){
-					currentChangeImg = img;
-					break;
-				}
-			}
+			var currentChangeImg:Image = getImageByName(e.currentTarget.name);
+			var pinlei:String = e.currentTarget.name;
 			if(currentChangeImg == null)return;
-			var ts:String = (e.currentTarget.info as File).url.replace("thumb","bigImg").replace("jpg","png");
 			
-			eventAccept = false;
-			TweenLite.to(currentChangeImg,.4,{alpha:0,onComplete:function():void{
-				currentChangeImg.addEventListener(Image.GET_DATA,onGetData);
-				if(currentChangeImg.sourceURL == ts){
-					currentChangeImg.dispatchEvent(new Event(Image.GET_DATA));
-					return;
-				}
-				currentChangeImg.source = ts;
-				sharedObject = SharedObject.getLocal("product");
-				var array:Array = sharedObject.data.array;
-				if(array.indexOf(ts.replace("bigImg","zoomout"))!=-1){
-					
-					soldOutlabel.visible = true;
-					setTimeout(function(){soldOutlabel.visible = false},1000);
-				}
-			}});
+			if(Number(e.currentTarget.info) == 1){
+				imgCurrentCountDic[pinlei] = imgCountDic[pinlei];
+			}else{
+				imgCurrentCountDic[pinlei] = Number(e.currentTarget.info) - 1;
+			}
 			
-			var image:Image;
-			var xml:XML;
-			for (var j:int = 0; j < data.image.length(); j++) 
-			{
-				xml = data.image[j];
-				if(xml.attribute("relatedTo").toString() == e.currentTarget.name){
-					if(xml.hasOwnProperty("@disappear")){
-						var tempImage:Image = currentChangeImg;
-						var names:Array = xml.attribute("disappear").toString().split(",");
-						for each(var tempName:String in names){
-							if(tempName == e.currentTarget.info.name.split(".jpg")[0]){
-								image = getImageByName(xml.attribute("name").toString());
-								image.visible = false;
-							}else{
-								image = getImageByName(xml.attribute("name").toString());
-								image.visible = true;
-							}
-						}
-					}
-				}
-			}
-			currentChangeImg.info.fileName = (e.currentTarget.info as File).name.replace("jpg","png");
-			for each(var p:pointMc in hotPointDic){
-				p.dispatchEvent(new Event(CHANGE));
-			}
+			currentChangeImg.dispatchEvent(new Event(CHANGE));
 		}
 		
 		private function onGetData(e:Event):void{
@@ -1382,12 +1364,74 @@ package page.room
 			e.currentTarget.removeEventListener(Image.GET_DATA,onGetData);
 			eventAccept = true;
 		}
+		//换图刷新热点
+		private function onImageGetDataChangeHotPoint(e:Event):void{
+			var img:Image = e.target as Image;
+			var pinlei:String = img.info.name;
+			var id:String = img.info.fileName;
+			var dic:Dictionary = getHotPontDicById(id);
+			if(dic == null)return;
+			for each(var op:pointMc in hotPointDic[pinlei]){
+				op.clear();
+			}
+			var np:pointMc;
+			hotPointDic[pinlei] = new Array();
+			if((dic["child"] as Array).length>0){
+				for each(var d:Dictionary in dic["child"]){
+				 	np = new pointMc();
+					np.info = d;
+					np.parentInfo = dic;
+					np.x = Number(d["x"])*scx;
+					np.y = Number(d["y"])*scy; 
+					hotPointLayer.addChild(np);
+					hotPointDic[pinlei].push(np);
+					np.addEventListener(MouseEvent.CLICK,onHotPointClick);
+					np.addEventListener(Event.COMPLETE,onHotPointLineComplete);
+				}
+			}
+			np = new pointMc();
+			np.info = dic;
+			np.x = Number(dic["x"])*scx;
+			np.y = Number(dic["y"])*scy; 
+			hotPointLayer.addChild(np);
+			hotPointDic[pinlei].push(np);
+			np.addEventListener(MouseEvent.CLICK,onHotPointClick);
+			np.addEventListener(Event.COMPLETE,onHotPointLineComplete);
+		}
+		
+		private function onHotPointLineComplete(e:Event):void{
+			TweenLite.to(hotpointFunctionsContainer,1,{alpha:1});
+		}
+		
+		private function getHotPontDicById(id:String):Dictionary{
+			var flag:Boolean = false;
+			var result:Dictionary = null;
+			for each(var dic:Dictionary in roomDefaultData["hotpoint"]){
+				if(flag)break;
+				if(dic["zoomout"] == id){
+					result = dic;
+					break;
+				}
+				if(dic["child"].length>0){
+					for each(var dic1:Dictionary in dic["child"]){
+						if(dic1["zoomout"] == id){
+							result = dic1;
+							flag = true;
+							break;
+						}
+					}
+				}
+			}
+			return result;
+		}
 		
 		//创建产品图片
 		private function createImages():void{
 			if(initInfo == null){
 				for each(var xml:Dictionary in roomDefaultData.image){
-					var img:Image = new Image(getBigImagePath(xml["source"]));
+					var img:Image = new Image();
+					img.addEventListener(Image.GET_DATA,onImageGetDataChangeHotPoint);
+					img.source = getBigImagePath(xml["source"]);
 					img.info = {name:xml["name"],fileName:xml["source"]};
 					img.width = Common.MAX_WIDTH;
 					img.height = Common.MAX_HEIGHT;
@@ -1395,6 +1439,7 @@ package page.room
 					imgCurrentCountDic[xml["name"]] = 1;
 					selectableImageContainer.addChild(img);
 					img.addEventListener(CHANGE,onChange);
+					
 				}
 //				var image:Image;
 //				var xml:XML;
@@ -1465,25 +1510,9 @@ package page.room
 		private function onChange(e:Event):void{
 			var img:Image = e.currentTarget as Image;
 			var currentDir:String = e.currentTarget.info.name;
-//			var fileDir:File = new File(path + "bigImg/" + currentDir);
 			var flag:Boolean = false;
 			var first:Boolean = true;
-			var temp:Dictionary = null;//fileDir.getDirectoryListing()[0];
-//			for each(var file:Dictionary in roomData){
-//				if(file["name"] == currentDir){
-//					if(first){
-//						temp = file;
-//						first = false;
-//					}
-//					if(flag){
-//						temp = file;
-//						break;
-//					}
-//					if(img.info.fileName == file["id"]){
-//						flag = true;
-//					}
-//				}		
-//			}
+			var temp:Dictionary = null;
 			if(imgCurrentCountDic[currentDir] == imgCountDic[currentDir]){
 				imgCurrentCountDic[currentDir] = 1;
 			}else{
@@ -1499,14 +1528,7 @@ package page.room
 					img.dispatchEvent(new Event(Image.GET_DATA));
 					return;
 				}
-				img.source = getBigImagePath(next);
-//				sharedObject = SharedObject.getLocal("product");
-//				var array:Array = sharedObject.data.array;
-//				if(array.indexOf(temp.url.replace("bigImg","zoomout"))!=-1){
-//					soldOutlabel.visible = true;
-//					setTimeout(function(){soldOutlabel.visible = false},1000);
-//				}
-				
+				img.source = getBigImagePath(next);				
 			}});		
 			
 //			var image:Image;
