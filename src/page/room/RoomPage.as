@@ -34,6 +34,8 @@ package page.room
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
+	
+	import user.UserConfig;
 
 	
 	public class RoomPage extends Page
@@ -131,7 +133,7 @@ package page.room
 			backImage.source = Common.getBigImagePath(Common.currentPath+"_"+kongjian+"_solid.png");
 			right.addChild(new Image("data/img/roompic/cebian.png",false,0,Common.MAX_HEIGHT,true));
 			rightScroller.graphics.clear();
-			loadXml();
+//			loadXml();
 			back.x = back.y = 20*Common.MAX_HEIGHT/768;
 			addChild(back);
 			back.addEventListener(MouseEvent.CLICK,onBack);
@@ -174,10 +176,7 @@ package page.room
 			qingdanBtn.y = yindex*Common.MAX_HEIGHT/768;
 			qingdanBtn.addEventListener(MouseEvent.CLICK,showqingdan);
 			
-			//			setTimeout(function(){
-			//				rightBtn.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-			//			},2000);
-			
+			loadXml();
 		}
 		
 		private function getVideo(dic:Dictionary,s:String):void{
@@ -202,6 +201,14 @@ package page.room
 		
 		private function getZoomImagePath(fileName:String):String{
 			return Common.getZoomImagePath(Common.currentPath+"_"+kongjian+"_zoomout_"+fileName+".png");
+		}
+		
+		private function getStoryPath(fileName:String):String{
+			return Common.getZoomImagePath(Common.currentPath+"_"+kongjian+"_"+fileName+".png");
+		}
+		
+		private function getVideoPath(fileName:String):String{
+			return Common.getZoomImagePath(Common.currentPath+"_"+kongjian+"_"+fileName+".flv");
 		}
 		
 		private var orderImageForSave:BitmapData;
@@ -759,13 +766,15 @@ package page.room
 			saveAble = true;
 		}
 		
-		private var zoomContainer:Sprite = new Sprite();
-		private var zoomScroller:Scroller = new Scroller(1024,715);
+		public var zoomContainer:Sprite = new Sprite();
+		private var zoomScroller:Scroller = new Scroller(Common.MAX_WIDTH,715);
 		private var zoomImage:Image = new Image();
-		private var closeZoomBtn:Button = new Button(100,50,800,700);
-		
+		private var closeZoomBtn:Image = new Image("data/img/close.png");
+		private var closeStoryBtn:Image = new Image("data/img/close.png");
 		private var animeBtn:Button = new Button(100,50,500,700);
-		private var video:VideoContainer = new VideoContainer();
+		private var video:VideoContainer = new VideoContainer(false,false);
+		private var storyContainer:Sprite = new Sprite();
+		private var storyImage:Image = new Image();
 		
 		private var hotPointDic:Dictionary = new Dictionary();//存储热点	
 		private var hotPointPosDic:Dictionary = new Dictionary();//存储热点	
@@ -781,157 +790,85 @@ package page.room
 		private var jiageBack:Image = new Image("data/img/roompic/jiage1.png");
 		private var jiageLabel:Label = new Label("",20);
 		private function createHotPoint():void{
-//			closeZoomBtn.buttonSource = ["data/img/close.png"];
-			//animeBtn.buttonSource = [Main.basePath + "img/anime.png"];
-//			for each(var xml:XML in data.hotpoint){
-//				var p:pointMc = createPointMc();
-//				
-//				var xStr:String = xml.attribute("x").toString();
-//				if(xStr.indexOf("*") == -1){
-//					p.x = Number(xStr);
-//				}else{
-//					p.x = Number(xStr.split("*")[0])*Number(xStr.split("*")[1]);
-//				}
-//				var yStr:String = xml.attribute("y").toString();
-//				if(yStr.indexOf("*") == -1){
-//					p.y = Number(yStr);
-//				}else{
-//					p.y = Number(yStr.split("*")[0])*Number(yStr.split("*")[1]);
-//				}	
-//				p.name = xml.attribute("name").toString();
-//				hotPointXmlDic[p.name] = xml;
-//				p.addEventListener(MouseEvent.CLICK,onHotPointClick);
-//				hotPointDic[p.name] = p;
-//				hotPointPosDic[p.name] = new Point(p.x,p.y);
-//				if(xml.hasOwnProperty("@appear")){
-//					appearPointDic[p.name] = xml.attribute("appear").toString().split(",");
-//					p.addEventListener(CHANGE,onBaseImageChange);
-//					p.dispatchEvent(new Event(CHANGE));
-//				}
-//				addChild(p);
-//			}
+
 			zoomContainer.visible = false;
 			zoomContainer.graphics.beginFill(0,.6);
 			zoomContainer.graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
 			zoomContainer.graphics.endFill();
 			addChild(zoomContainer);
 			
-			zoomInfoBtn.y = 50;
-			jiageBack.y = 100;
+			zoomInfoBtn.y = 70;
+			jiageBack.y = 140;
 			jiageLabel.x = 60;
-			jiageLabel.y = 110;
+			jiageLabel.y = 150;
 			hotpointFunctionsContainer.addChild(storyBtn);
 			hotpointFunctionsContainer.addChild(zoomInfoBtn);
 			hotpointFunctionsContainer.addChild(jiageBack);
 			hotpointFunctionsContainer.addChild(jiageLabel);
+			storyBtn.buttonMode = zoomInfoBtn.buttonMode = true;
+			storyBtn.addEventListener(MouseEvent.CLICK,onStoryClick);
+			zoomInfoBtn.addEventListener(MouseEvent.CLICK,onZoomInfoClick);
 			zoomContainer.addChild(hotpointFunctionsContainer);
 			
-			zoomScroller.y = 24;
-			zoomContainer.addChild(zoomScroller);
+			zoomScroller.y = 120;
+			zoomContainer.addChild(zoomScroller);		
 			zoomScroller.addChild(zoomImage);
+			zoomScroller.visible = false;
+			
+			storyContainer.addChild(storyImage);
+			storyContainer.addChild(video);
+			zoomContainer.addChild(storyContainer);
+			storyContainer.visible = false;
+			
 //			video.y = 24;
 //			zoomContainer.addChild(video);
-			closeZoomBtn.x = 965;
-			closeZoomBtn.y = 24;
-			zoomContainer.addChild(closeZoomBtn);
-			
-//			animeBtn.x = 20;
-//			animeBtn.y = 708;
-//			zoomContainer.addChild(animeBtn);
-			
-			
-//			biaojiBtn.x = 944;
-//			biaojiBtn.y = 708;
-//			zoomContainer.addChild(biaojiBtn);
-//			addToOrderBtn.x = 564+250;
-//			addToOrderBtn.y = 708;
-//			zoomContainer.addChild(addToOrderBtn);
-//			biaojiLabel.x = 447;
-//			biaojiLabel.y = 334;
-//			biaojiLabel.color = "0xFF0000";
-//			biaojiLabel.size = "20";
-//			biaojiLabel.visible = false;
-//			zoomContainer.addChild(biaojiLabel);
-			
-//			quxiaobiaojiLabel.x = 447;
-//			quxiaobiaojiLabel.y = 334;
-//			quxiaobiaojiLabel.color = "0xFF0000";
-//			quxiaobiaojiLabel.size = "20";
-//			quxiaobiaojiLabel.visible = false;
-//			zoomContainer.addChild(quxiaobiaojiLabel);
-//			
-//			addtoorderLabel.x = 447;
-//			addtoorderLabel.y = 334;
-//			addtoorderLabel.color = "0xFF0000";
-//			addtoorderLabel.size = "20";
-//			addtoorderLabel.visible = false;
-//			zoomContainer.addChild(addtoorderLabel);
-//			
-//			soldOutlabel.x = 100;
-//			soldOutlabel.y = yindex-100;
-//			soldOutlabel.color = "0xFF0000";
-//			soldOutlabel.size = "20";
-//			soldOutlabel.visible = false;
-//			addChild(soldOutlabel);
-//			sharedObject = SharedObject.getLocal("product");
-//			if(sharedObject.data.array == null||sharedObject.data.array == undefined){
-//				sharedObject.data.array = new Array();
-//				sharedObject.flush();
-//			}	
-			
-//			addToOrderBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{		
-//				var img:Image = getImageByName(currentPMC.name);
-//				if(img == null){
-//					img = getImageByName(hotPointXmlDic[currentPMC.name].attribute("relatedTo").toString());
-//				}
-//				var idx:String = new File(img.sourceURL).name.split(".")[0];
-//				var proData:XML = productInfoData.product.(@name == currentPMC.name).(@id == idx)[0];
-//				if(orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian] == null){
-//					orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian] = new Dictionary();
-//				}
-//				orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian][currentPMC.name] = proData;
-//				addtoorderLabel.visible = true;
-//				setTimeout(function(){addtoorderLabel.visible = false},1000);
-//			});
-			
-//			biaojiBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
-//				if(biaojied){
-//					sharedObject = SharedObject.getLocal("product");
-//					var array:Array = sharedObject.data.array;
-//					array.splice(array.indexOf(zoomImage.sourceURL),1);
-//					sharedObject.flush();
-//					quxiaobiaojiLabel.visible = true;
-//					biaojiBtn.source = Main.basePath + "img/biaoji.png";
-//					biaojied = !biaojied;
-//					setTimeout(function(){quxiaobiaojiLabel.visible = false},1000);
-//				}else{
-//					sharedObject = SharedObject.getLocal("product");
-//					var array:Array = sharedObject.data.array;
-//					array.push(zoomImage.sourceURL);
-//					sharedObject.flush();
-//					biaojiLabel.visible = true;
-//					biaojiBtn.source = Main.basePath + "img/quxiaobiaoji.png";
-//					biaojied = !biaojied;
-//					setTimeout(function(){biaojiLabel.visible = false},1000);
-//					
-//				}
-//				
-//			});
+			zoomImage.width = storyImage.width = 1024*scx;
+			zoomImage.height = storyImage.height = 510*scy;
+			storyImage.y = 120;
+			video.setSize(800,600);
+			video.x = 200;video.y = 150;
+			closeZoomBtn.x = closeStoryBtn.x = 1140/scx;
+			closeZoomBtn.y = closeStoryBtn.y = 0;
+			zoomImage.addChild(closeZoomBtn);
+			storyImage.addChild(closeStoryBtn);
+
+
 			closeZoomBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
-				zoomContainer.visible = false;
-				right.visible = true;
-				downBack.visible = true;
+				zoomScroller.visible = false;
+				
+
+			});
+			
+			closeStoryBtn.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
+				storyContainer.visible = false;				
 			});
 			zoomContainer.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
 				if(e.target == zoomContainer){
 					zoomContainer.visible = false;
 					right.visible = true;
 					downBack.visible = true;
+					currentPMC.lineLayer.graphics.clear();
 				}				
 			});
-//			animeBtn.addEventListener(MouseEvent.CLICK,playAnime);
-//			video.visible = false;
-//			video.addEventListener(VideoContainer.COMPLETE,onPlayEnd);
+
+			video.addEventListener(VideoContainer.COMPLETE,onPlayEnd);
+		}
+		
+		private function onStoryClick(e:MouseEvent):void{
+			storyContainer.visible = true;
+			storyImage.visible = video.visible = false;
+			if(currentPMC.info["storyisvideo"] == "0"){
+				storyImage.visible = true;
+				storyImage.source = getStoryPath(currentPMC.info["story"]);
+			}else{
+				video.visible = true;
+				video.playSt(getVideoPath(currentPMC.info["story"]));;
+			}
+		}
+		
+		private function onZoomInfoClick(e:MouseEvent):void{
+			zoomScroller.visible = true;
+			zoomImage.source = getZoomImagePath(currentPMC.info["zoomout"]);
 		}
 		
 		private function playAnime(e:MouseEvent):void{
@@ -1399,7 +1336,22 @@ package page.room
 			np.addEventListener(Event.COMPLETE,onHotPointLineComplete);
 		}
 		
+		private function getProductDataById(id:String):Dictionary{
+			for each(var d:Dictionary in roomData){
+				if(d["id"] == id){
+					return d;
+				}
+			}
+			return null;
+		}
+		
 		private function onHotPointLineComplete(e:Event):void{
+			if(!UserConfig.showPrice){
+				jiageBack.visible = jiageLabel.visible = false;								
+			}else{
+				jiageBack.visible = jiageLabel.visible = true;
+				jiageLabel.text = getProductDataById(currentPMC.info["zoomout"])["price"];
+			}
 			TweenLite.to(hotpointFunctionsContainer,1,{alpha:1});
 		}
 		

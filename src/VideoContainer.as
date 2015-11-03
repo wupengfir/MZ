@@ -23,11 +23,14 @@ package
 		private var currentNeddImage:String ="img/move.jpg"
 		
 		private var textBox:TextField; 
-		public function VideoContainer(showInfo:Boolean = true)
+		public function VideoContainer(showInfo:Boolean = true,back:Boolean = true)
 		{
-			graphics.beginFill(0xffffff,1);
-			graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
-			graphics.endFill();
+			if(back){
+				graphics.beginFill(0xffffff,1);
+				graphics.drawRect(0,0,Common.MAX_WIDTH,Common.MAX_HEIGHT);
+				graphics.endFill();
+			}
+			
 			textBox = new TextField();  
 			//textBox.autoSize = TextFieldAutoSize.CENTER;  
 			textBox.multiline = true;  
@@ -42,6 +45,12 @@ package
 			addSence();
 			
 		}
+		
+		public function setSize(_w:Number,_h:Number):void{
+			sence.width = _w;
+			sence.height = _h;
+		}
+		
 		private function addSence():void
 		{
 			sence = new Video  ;

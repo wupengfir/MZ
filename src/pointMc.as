@@ -22,7 +22,7 @@ package
 		private var timer:Timer;
 		private var pic_1:Sprite = new Sprite();
 		private var pic_2:Sprite = new Sprite();
-		private var lineLayer:Sprite = new Sprite();
+		public var lineLayer:Sprite = new Sprite();
 		public function pointMc()
 		{
 			addChild(pic_2);
@@ -44,7 +44,7 @@ package
 			pic_1.graphics.endFill();
 			beginBig();
 			
-			Common.MAIN.roomLayer.addChild(lineLayer);
+			RoomPage.MAIN.zoomContainer.addChildAt(lineLayer,1);
 			timer = new Timer(1000/rate);
 			timer.addEventListener(TimerEvent.TIMER,onTimer);
 		}
