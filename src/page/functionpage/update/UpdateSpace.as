@@ -61,7 +61,7 @@ package page.functionpage.update
 			checkBox.label = "";
 			image.width = 125;
 			image.height = 100;
-			
+			nameLabel.width = 130;
 			descLabel.width = 440;
 			descLabel.height = 100;
 			deleteButton.buttonMode = true;

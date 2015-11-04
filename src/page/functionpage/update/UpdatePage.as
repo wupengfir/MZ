@@ -17,6 +17,7 @@ package page.functionpage.update
 	import json.JsonDecoder;
 	
 	import page.alertpage.Alert;
+	import page.alertpage.Confirm;
 	import page.homepages.HomePage;
 	
 	import user.UserInfo;
@@ -41,12 +42,30 @@ package page.functionpage.update
 			addChild(shanchuBtn);
 			Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,null);
 			
-			shanchuBtn.addEventListener(MouseEvent.CLICK,onShanchu);
+			shanchuBtn.addEventListener(MouseEvent.CLICK,onItendDelete);
+			shanchuBtn.addEventListener(Confirm.YES,onShanchu);
+			
 			quanxuanBtn.addEventListener(MouseEvent.CLICK,onQuanxuan);
 			
 		}
-		
-		private function onShanchu(e:MouseEvent):void{
+		private function onItendDelete(e:MouseEvent):void{
+			var flag:Boolean = false;
+			for each(var u:UpdateSpace in scroller.btnArr){
+				if(u.checkBox.selected){
+					flag = true;
+					break;
+				}
+			}
+			
+			if(flag){
+				Confirm.confirm("确认删除",shanchuBtn);
+			}else{
+				Alert.alert("请选择需删除项");
+			}
+			
+		}
+		private function onShanchu(e:Event):void{
+
 			for each(var u:UpdateSpace in scroller.btnArr){
 				if(u.checkBox.selected){
 					var liName:String = u.dataObj.datavalue[0].li_no;
@@ -145,7 +164,7 @@ package page.functionpage.update
 						var update:UpdateSpace = new UpdateSpace(obj);
 						update.addEventListener(UpdateSpace.GOT_DATA,intendupdate);
 						totalload++;
-						update.y = index*120;
+						update.y = index*150;
 						scroller.addChild(update);
 						index++;
 //						var o:Object = {"ui_li_no":obj.li_No,"ui_time":Number(UserInfo.updateTimeDic[obj.li_No])/1000};

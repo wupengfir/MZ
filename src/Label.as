@@ -19,6 +19,7 @@ package
 			textField.selectable = false;
 			textField.wordWrap = true;
 //			textField.setTextFormat(textFormat);
+			this.font = "simHei";
 		}
 		
 		override public function set width(_width:Number):void{

@@ -299,6 +299,13 @@ package page.room
 		private var showed:Boolean = false;
 		private function showpinglei(e:MouseEvent):void{
 			if(!showed){
+				
+				if(right.x <=(Common.MAX_WIDTH-185*Common.MAX_HEIGHT/768)){
+
+				}else{
+					TweenLite.to(right,.6,{x:(Common.MAX_WIDTH-185*Common.MAX_HEIGHT/768)});
+				}
+				
 				TweenLite.to(downBack,1,{x:pingleiBtn.x+30});
 				showed = true
 			}else{
@@ -368,9 +375,15 @@ package page.room
 //			createSave();
 			createKongjianBtn();
 			createHotPoint();
+			pingmianImage.backImage.scaleMax();
+			pingmianImage.setCloseBtn(Common.MAX_WIDTH-50,0);
 		}
-		
+		private var pingmianImage:Page = new Page();
 		private function addpingmian(e:MouseEvent):void{
+			
+			pingmianImage.backSource = Common.getBigImagePath(Common.currentPath+"_"+kongjian+"_pingmian.png");
+			pingmianImage.visible = true;
+			addChild(pingmianImage);
 //			var dic:Dictionary = new Dictionary();
 //			for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
 //				var img:Image = selectableImageContainer.getChildAt(i) as Image;
@@ -415,7 +428,7 @@ package page.room
 		}
 		
 		private function changeRoomColor(e:MouseEvent):void{
-//			Main.currentColor = Main.currentColor == "qianse"?"shense":"qianse";
+			Common.currentColor = Common.currentColor == "qianse"?"shense":"qianse";
 //			var dic:Dictionary = new Dictionary();
 //			for(var i:int = selectableImageContainer.numChildren-1;i>=0;i--){
 //				var img:Image = selectableImageContainer.getChildAt(i) as Image;
@@ -426,9 +439,9 @@ package page.room
 //				}
 //				
 //			}
-//			YangBanJianPage.MAIN.remove();
-//			var tp:String = Main.basePath + "img/fengge/" + FenggeSelectPage.currentPath +"/"+ Main.currentColor +"/"+kongjian+"/";
-//			Common.MAIN.addChild(new YangBanJianPage(tp,dic));
+			RoomPage.MAIN.remove();
+			//var tp:String = Main.basePath + "img/fengge/" + FenggeSelectPage.currentPath +"/"+ Main.currentColor +"/"+kongjian+"/";
+			Common.MAIN.addChild(new RoomPage(kongjian,imgCurrentCountDic));
 		}
 		
 		private var hotClosed:Boolean = false;
@@ -531,13 +544,13 @@ package page.room
 			downSelect.alpha = 0;
 			downSelect.mouseEnabled = downSelect.mouseChildren = false;
 			addChild(downBack);
-			downBack.y = yindex;
+			downBack.y = yindex*scy;
 			downBack.x = -200;
 			pingleiMask.graphics.beginFill(0,0);
 			pingleiMask.graphics.drawRect(0,0,500,50);
 			pingleiMask.graphics.endFill();
 			pingleiMask.x = 250;
-			pingleiMask.y = yindex;
+			pingleiMask.y = yindex*scy;
 			addChild(pingleiMask);
 			downBack.mask = pingleiMask;
 			var dic:Dictionary = new Dictionary();
@@ -1417,13 +1430,19 @@ package page.room
 //				}
 			}
 			else{
-//				for each(var xml:Dictionary in roomDefaultData.image){
-//					var img:Image = new Image();
-//					img.source = path + "bigImg/" + xml.attribute("name").toString() + "/"+ initInfo[xml.attribute("name").toString()];
-//					img.info = {name:xml.attribute("name").toString(),fileName:initInfo[xml.attribute("name").toString()]};
-//					selectableImageContainer.addChild(img);
-//					img.addEventListener(CHANGE,onChange);
-//				}
+				for each(var xml:Dictionary in roomDefaultData.image){
+					var img:Image = new Image();
+					img.addEventListener(Image.GET_DATA,onImageGetDataChangeHotPoint);
+					img.source = getBigImagePath(xml["name"] + "_0" + initInfo[xml["name"]]);
+					img.info = {name:xml["name"],fileName:xml["name"] + "_0" + initInfo[xml["name"]]};
+					img.width = Common.MAX_WIDTH;
+					img.height = Common.MAX_HEIGHT;
+					imgCountDic[xml["name"]] = Number(xml["imgCout"]);
+					imgCurrentCountDic[xml["name"]] = initInfo[xml["name"]];
+					selectableImageContainer.addChild(img);
+					img.addEventListener(CHANGE,onChange);
+					
+				}
 //				var image:Image;
 //				var xml:XML;
 //				for (var j:int = 0; j < data.image.length(); j++) 
