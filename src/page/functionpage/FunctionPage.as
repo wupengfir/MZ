@@ -63,14 +63,14 @@ package page.functionpage
 			
 			
 			if(Common.checkClick(220/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				if(!orderpage){
-					orderpage = new XorderListPage();
-				}else{
-					orderpage.visible = true;
-					orderpage.showList();
-				}
-				
-				(Common.MAIN as Main).functionLayer.addChild(orderpage);
+//				if(!orderpage){
+//					orderpage = new XorderListPage();
+//				}else{
+//					orderpage.visible = true;
+//					orderpage.showList();
+//				}
+//				
+//				(Common.MAIN as Main).functionLayer.addChild(orderpage);
 			}
 			
 			

@@ -115,7 +115,7 @@ package page.room
 //			currentDic = Common.currentRoomData[Common.currentPath+"_video"];
 //			video.playSt(Common.getVideoPath(currentDic["source"]));
 			
-			addChild(new RoomPage(currentImg.info.sp_No,null,false));
+			Common.MAIN.roomLayer.addChild(new RoomPage(currentImg.info.sp_No,null,false));
 			
 		}	
 		

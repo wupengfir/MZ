@@ -25,13 +25,14 @@ package
 		public var lineLayer:Sprite = new Sprite();
 		public function pointMc()
 		{
+			buttonMode = true;
 			addChild(pic_2);
-			pic_2.graphics.beginFill(0,.6);
-			pic_2.graphics.drawCircle(0,0,10);
+			pic_2.graphics.beginFill(0xffffff,1);
+			pic_2.graphics.drawCircle(0,0,5);
 			pic_2.graphics.endFill();
-			pic_2.graphics.lineStyle(3,0xffffff,1);
-			pic_2.graphics.drawCircle(0,0,11);
-			pic_2.graphics.endFill();
+//			pic_2.graphics.lineStyle(3,0xffffff,1);
+//			pic_2.graphics.drawCircle(0,0,11);
+//			pic_2.graphics.endFill();
 			
 			addChild(touchPad);
 			touchPad.graphics.beginFill(0,0);
@@ -40,12 +41,12 @@ package
 			
 			addChild(pic_1);
 			pic_1.graphics.lineStyle(3,0xffffff,1);
-			pic_1.graphics.drawCircle(0,0,11);
+			pic_1.graphics.drawCircle(0,0,15);
 			pic_1.graphics.endFill();
-			beginBig();
+//			beginBig();
 			
 			RoomPage.MAIN.zoomContainer.addChildAt(lineLayer,1);
-			timer = new Timer(1000/rate);
+			timer = new Timer(500/rate);
 			timer.addEventListener(TimerEvent.TIMER,onTimer);
 		}
 		private function beginSmall():void{

@@ -6,6 +6,7 @@ package page.homepages
 	import com.shangyi.component.scrollerRelated.Scroller;
 	
 	import flash.display.Sprite;
+	import flash.display.StageDisplayState;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
@@ -34,7 +35,8 @@ package page.homepages
 		public static var functionBar:FunctionPage = new FunctionPage();
 		public static var roomSelectpage:RoomSelectPage = new RoomSelectPage();
 		public static var homeRoot:HomePage;
-		private var advertiseContainer:SY_Scroller = new SY_Scroller(1200,340,1200,340);
+		//private var advertiseContainer:SY_Scroller = new SY_Scroller(1200,340,1200,340);
+		private var advertiseContainer:AdvertisementScroller = new AdvertisementScroller();
 		private var lifeStyleContainer:SY_Scroller = new SY_Scroller(1200,150,1200,150,0xffffff,0,false);
 		private var spaceContainer:SY_Scroller = new SY_Scroller(1200,130,1200,130);
 		
@@ -49,6 +51,10 @@ package page.homepages
 		private var downloadpageDic:Dictionary = new Dictionary();
 		
 		private var AdverTimer:Timer = new Timer(5000);
+		
+		private var fullScreenBtn:Image = new Image("data/img/fullscreen.png");
+		
+		private var adverTimer:Timer = new Timer(5000);
 		public function HomePage()
 		{
 			homeRoot = this;
@@ -64,6 +70,7 @@ package page.homepages
 			spaceContainer.scroller.setmasksize(0,180);
 			addChild(spaceContainer);
 			addChild(functionBar);
+			addChild(fullScreenBtn);
 			addChild(roomSelectpage);
 			roomSelectpage.visible = false;
 			
@@ -78,6 +85,38 @@ package page.homepages
 			AdverTimer.start();		
 			
 			drawBack();
+			
+			fullScreenBtn.x = 200;
+			fullScreenBtn.y = 840;
+			
+			fullScreenBtn.addEventListener(MouseEvent.CLICK,onFullScreen);
+			
+			addEventListener(Event.ENTER_FRAME,changeFullBtnState);
+			
+			AdverTimer.addEventListener(TimerEvent.TIMER,onAdverTimer);
+			AdverTimer.start();
+		}
+		
+		private function onAdverTimer(e:TimerEvent):void
+		{
+			
+		}
+		
+		private function changeFullBtnState(e:Event):void
+		{
+			if(stage.displayState == StageDisplayState.FULL_SCREEN){
+				fullScreenBtn.source = "data/img/outfull.png"
+			}else{
+				fullScreenBtn.source = "data/img/fullscreen.png"
+			}
+		}
+		
+		private function onFullScreen(e:MouseEvent):void{
+			if(stage.displayState != StageDisplayState.FULL_SCREEN){
+				stage.displayState = StageDisplayState.FULL_SCREEN;
+			}else{
+				stage.displayState = StageDisplayState.NORMAL;
+			}
 			
 		}
 		
@@ -116,7 +155,6 @@ package page.homepages
 		private function handleAdvertise(e:Event):void{
 			trace("adver");
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
-			//trace(e.currentTarget.data);
 			if(data.success){
 				var urlList:Array = new Array();
 				var dataList:Array = data.dataValue.datavalue as Array;
@@ -124,14 +162,15 @@ package page.homepages
 				for each(var obj:Object in dataList){
 					urlList.push(Common.url+"furniture/images/"+obj.ad_logo+".jpg");
 				}
-				
-				advertiseContainer.dataSource(urlList,600,0,onAdvertiseClick);
-				
-				var index:int = 0;
-				for each(var img:Image in advertiseContainer.scroller.btnArr){
-					img.info = dataList[index];
-					index++;
-				}
+				advertiseContainer.setData(urlList,dataList);
+//				
+//				advertiseContainer.dataSource(urlList,600,0,onAdvertiseClick);
+//				
+//				var index:int = 0;
+//				for each(var img:Image in advertiseContainer.scroller.btnArr){
+//					img.info = dataList[index];
+//					index++;
+//				}
 				
 			}
 		}

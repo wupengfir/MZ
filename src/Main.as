@@ -15,6 +15,7 @@
 	import flash.display.StageQuality;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.filesystem.File;
 	import flash.geom.Point;
@@ -22,6 +23,7 @@
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
+	import flash.ui.Keyboard;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
@@ -66,18 +68,17 @@
 			Common.MAIN = this;
 			Common.SCREEN_WIDTH = 1200;
 			Common.SCREEN_HEIGHT = 900;
-			Common.SCREEN_SCALEX = this.scaleX = 1/1.4;
-			Common.SCREEN_SCALEY = this.scaleY = 1/1.4;
+			Common.SCREEN_SCALEX = this.scaleX = 1/2;
+			Common.SCREEN_SCALEY = this.scaleY = 1/2;
 			basePath = File.applicationDirectory.url;
 			init();
 			
 			maskp.drawBack();
 			addChild(maskp);
 			this.mask = maskp;
-			//Confirm.confirm("wer",this);
-			//stage.addEventListener (Event.RESIZE,test);  
-			//stage.addEventListener(MouseEvent.CLICK,onStageXClick);
 			
+			//自适应
+			//stage.addEventListener (Event.RESIZE,test);  			
 		}
 		
 		private function onStageXClick (e:MouseEvent):void {  
@@ -86,8 +87,9 @@
 		}
 		
 		private function test (e:Event):void {  
-			Common.SCREEN_SCALEX = this.scaleX = stage.stageWidth/Common.MAX_WIDTH;
-			Common.SCREEN_SCALEY = this.scaleY = stage.stageHeight/Common.MAX_HEIGHT;
+			//Common.SCREEN_SCALEX = this.scaleX = stage.stageWidth/Common.MAX_WIDTH;
+			Common.SCREEN_SCALEX = this.scaleX = Common.SCREEN_SCALEY = this.scaleY = stage.stageHeight/Common.MAX_HEIGHT;
+			this.x = (stage.stageWidth-Common.MAX_WIDTH*Common.SCREEN_SCALEX)/2;
 		}
 		
 		private function init():void{

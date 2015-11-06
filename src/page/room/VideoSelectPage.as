@@ -71,7 +71,7 @@ package page.room
 					}
 				}			
 			}else if(currentDic["type"]=="final"){
-				addChild(new RoomPage(currentDic["name"]));
+				Common.MAIN.roomLayer.addChild(new RoomPage(currentDic["name"]));
 			}
 			setTimeout(function(){video.visible = false;},200);
 		}

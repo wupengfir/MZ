@@ -30,7 +30,7 @@
 		//决定scroller的组件可被选择
 		private var _selectAble:Boolean = true;
 		//决定scroller包含的组件是否接受click事件
-		private var contentClickAble:Boolean = true;
+		public var contentClickAble:Boolean = true;
 		
 		private var sliderContainer:Sprite = new Sprite();
 		private var rootSroller:Scroller;
@@ -379,10 +379,12 @@
 //						content.y = contentY + stage.mouseY - downY;
 					var resultY:Number = contentY + stage.mouseY - downY;
 					speed = (stage.mouseY - downY)/time;
-					currentpos = stage.mouseY;
+				//	trace(speed);
+					
 					if(Math.abs(stage.mouseY - currentpos) < 10){
 						speed = 0;
 					}
+					currentpos = stage.mouseY;
 					if(resultY >= 0){
 						content.y = 0;
 					}else if(resultY <= maxHeight - content.height){

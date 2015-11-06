@@ -631,6 +631,7 @@ package page.room
 						btnScroller.addChild(btnsim);
 						index++;
 						if(!clicked){
+							btnScroller.contentClickAble = true;
 							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 							clicked = true;
 						}
@@ -659,6 +660,7 @@ package page.room
 						btnScroller.addChild(btnsim);
 						index++;
 						if(!clicked){
+							btnScroller.contentClickAble = true;
 							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 							clicked = true;
 						}
@@ -687,6 +689,7 @@ package page.room
 						btnScroller.addChild(btnsim);
 						index++;
 						if(!clicked){
+							btnScroller.contentClickAble = true;
 							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 							clicked = true;
 						}
@@ -715,6 +718,7 @@ package page.room
 						btnScroller.addChild(btnsim);
 						index++;
 						if(!clicked){
+							btnScroller.contentClickAble = true;
 							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 							clicked = true;
 						}
@@ -743,6 +747,7 @@ package page.room
 						btnScroller.addChild(btnsim);
 						index++;
 						if(!clicked){
+							btnScroller.contentClickAble = true;
 							btnsim.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 							clicked = true;
 						}
