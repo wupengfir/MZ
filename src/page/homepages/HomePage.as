@@ -54,7 +54,7 @@ package page.homepages
 		
 		private var fullScreenBtn:Image = new Image("data/img/fullscreen.png");
 		
-		private var adverTimer:Timer = new Timer(5000);
+		
 		public function HomePage()
 		{
 			homeRoot = this;
@@ -93,14 +93,9 @@ package page.homepages
 			
 			addEventListener(Event.ENTER_FRAME,changeFullBtnState);
 			
-			AdverTimer.addEventListener(TimerEvent.TIMER,onAdverTimer);
-			AdverTimer.start();
-		}
-		
-		private function onAdverTimer(e:TimerEvent):void
-		{
 			
 		}
+		
 		
 		private function changeFullBtnState(e:Event):void
 		{
@@ -162,7 +157,7 @@ package page.homepages
 				for each(var obj:Object in dataList){
 					urlList.push(Common.url+"furniture/images/"+obj.ad_logo+".jpg");
 				}
-				advertiseContainer.setData(urlList,dataList);
+				advertiseContainer.setData(urlList,dataList,onAdvertiseClick);
 //				
 //				advertiseContainer.dataSource(urlList,600,0,onAdvertiseClick);
 //				
