@@ -35,6 +35,9 @@ package page.room
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
+	import page.alertpage.Confirm;
+	import page.order.ProductInfo;
+	
 	import user.UserConfig;
 
 	
@@ -167,12 +170,12 @@ package page.room
 			pingleiBtn.addEventListener(MouseEvent.CLICK,showpinglei);
 			
 			addChild(xiadanBtn);
-			xiadanBtn.x = 954*Common.MAX_HEIGHT/768;
+			xiadanBtn.x = 854*Common.MAX_HEIGHT/768;
 			xiadanBtn.y = yindex*Common.MAX_HEIGHT/768;
 			xiadanBtn.addEventListener(MouseEvent.CLICK,xiadan);
 			
 			addChild(qingdanBtn);
-			qingdanBtn.x = 874*Common.MAX_HEIGHT/768;
+			qingdanBtn.x = 774*Common.MAX_HEIGHT/768;
 			qingdanBtn.y = yindex*Common.MAX_HEIGHT/768;
 			qingdanBtn.addEventListener(MouseEvent.CLICK,showqingdan);
 			
@@ -213,12 +216,28 @@ package page.room
 		
 		private var orderImageForSave:BitmapData;
 		private function showqingdan(e:MouseEvent):void{
-//			addChild(saveContainer);
-//			saveContainer.visible = true;
-//			saveState.visible = true;
-//			
-//			productInfoScroller.clearContent();
-//			var i:int = 0;
+			addChild(saveContainer);
+			saveContainer.visible = true;
+			saveState.visible = true;
+			
+			productInfoScroller.clearContent();
+			var i:int = 0;
+			
+			for each(var product:Dictionary in orderInfoDic[Common.currentPath+"_"+kongjian]){
+				var info:ProductInfo = new ProductInfo(product);
+//				info.addEventListener(MouseEvent.CLICK,function(e:Event){
+//					Confirm.confirm("确认删除",e.currentTarget);
+//				});
+				info.addEventListener(Confirm.YES,function(e:Event){
+					var pi:ProductInfo = e.currentTarget as ProductInfo;
+					delete orderInfoDic[Common.currentPath+"_"+kongjian][pi.type];
+					showqingdan(null);
+				});
+				info.y = i*50;
+				i++;
+				productInfoScroller.addChild(info);
+			}
+			
 //			for(var key:String in orderInfoDic){
 //				var array:Array = sharedObject.data.array;
 //				var list:Dictionary = orderInfoDic[key];
@@ -272,28 +291,36 @@ package page.room
 //					productInfoScroller.addChild(info);
 //				}
 //			}
-//			setZongjia();
+			setZongjia();
 		}
 		
 		public static var orderInfoDic:Dictionary = new Dictionary();
 		private var productInfoData:XML;
 		private function xiadan(e:MouseEvent):void{
-//			orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian] = new Dictionary();
-//			for each(var p:pointMc in hotPointDic){
-//				if(!p.visible)continue;
-//				var img:Image = getImageByName(p.name);
-//				if(img == null){
-//					img = getImageByName(hotPointXmlDic[p.name].attribute("relatedTo").toString());
-//				}
-//				var idx:String = new File(img.sourceURL).name.split(".")[0];
-//				var proData:XML = productInfoData.product.(@name == p.name).(@id == idx)[0];
-//				orderInfoDic[FenggeSelectPage.currentPath+"_"+kongjian][p.name] = proData;
-//			}
-//			
-//			saveData.draw(selectableImageContainer);
-//			saveImage.bitmapData = saveData;saveImage.scaleX = saveImage.scaleY = 1;saveImage.x = saveImage.y = 0;
-//			stage.addChild(saveImage);
-//			TweenLite.to(saveImage,1,{x:xiadanBtn.x+20,y:xiadanBtn.y+20,scaleX:0,scaleY:0});
+			orderInfoDic[Common.currentPath+"_"+kongjian] = new Dictionary();
+			
+			for each(var pointList:Array in hotPointDic){
+				for each(var p:pointMc in pointList){
+					if(!p.visible)continue;
+//					var img:Image = getImageByName(p.name);
+//					if(img == null){
+//						img = getImageByName(hotPointXmlDic[p.name].attribute("relatedTo").toString());
+//					}
+//					var idx:String = new File(img.sourceURL).name.split(".")[0];
+					var proData:Dictionary = getProductDataById(p.info["zoomout"]);
+					proData["num"] = "1";
+					orderInfoDic[Common.currentPath+"_"+kongjian][p.info["name"]] = proData;
+				}
+			}
+			
+			
+			
+			saveData.draw(selectableImageContainer);
+			saveImage.bitmapData = saveData;
+			saveImage.scaleX = saveImage.scaleY = 1;
+			saveImage.x = saveImage.y = 0;
+			addChild(saveImage);
+			TweenLite.to(saveImage,1,{x:xiadanBtn.x+20,y:xiadanBtn.y+20,scaleX:0,scaleY:0});
 		}
 		
 		private var showed:Boolean = false;
@@ -372,7 +399,7 @@ package page.room
 			
 			initRightScroller();
 			createArrowBtn();
-//			createSave();
+			createSave();
 			createKongjianBtn();
 			createHotPoint();
 			pingmianImage.backImage.scaleMax();
@@ -1045,7 +1072,7 @@ package page.room
 		//			});
 		//		}
 		
-		private var saveContainer:Image = new Image();
+		private var saveContainer:Page = new Page();
 		private var closeImage:Image = new Image(Main.basePath + "img/close.png");
 		private var saveData:BitmapData = new BitmapData(Common.MAX_WIDTH,Common.MAX_HEIGHT);
 		private var saveImage:Bitmap = new Bitmap();
@@ -1060,19 +1087,19 @@ package page.room
 		private var userAddressText:TextField = new TextField();
 		
 		private var noticeLabel:Label = new Label("姓名与联系电话为必填项");
-		private var productInfoScroller:Scroller = new Scroller(1000,400,1);
+		private var productInfoScroller:Scroller = new Scroller(Common.MAX_WIDTH,600,1);
 		
 		private var zongjia:Label = new Label();
+		private var saveBack:Image = new Image("data/img/ui/orderdetails.png");
 		private function createSave():void{
-			
-			//			saveData.draw(selectableImageContainer);
-			//			saveImage.bitmapData = saveData;
 			saveContainer.addChild(closeImage);
 			saveContainer.graphics.beginFill(0,.6);
 			saveContainer.graphics.drawRect(-300,-300,Common.MAX_WIDTH*2,Common.MAX_HEIGHT*2);
 			saveContainer.graphics.endFill();
 			addChild(saveContainer);
-			saveContainer.source =Main.basePath + "img/saveback.png";
+			saveBack.scaleMax();
+			saveContainer.addChild(saveBack);
+			//saveContainer.source =Main.basePath + "data/img/ui/orderdetails.png";
 			saveContainer.x = 0;
 			saveContainer.y = 0;
 			saveState.x = savedState.x = 134;
@@ -1135,9 +1162,6 @@ package page.room
 			saveState.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
 				var h1:Number = 220;
 				var sp:Sprite = new Sprite();
-				
-				
-				
 				var i:int = 0;
 //				for(var key:String in orderInfoDic){
 //					var array:Array = sharedObject.data.array;
@@ -1192,33 +1216,33 @@ package page.room
 				
 				
 				
-				
-				var imageHeight:Number = h1+sp.height + 100;
-				var imageWidth:Number = Common.MAX_WIDTH;
-				var temp1:BitmapData = new BitmapData(imageWidth,h1);
-				var temp2:BitmapData = new BitmapData(imageWidth,sp.height);
-				temp1.draw(saveContainer);
-				temp2.draw(sp);
-				orderImageForSave = new BitmapData(imageWidth,imageHeight);
-				orderImageForSave.copyPixels(temp1,new Rectangle(0,0,1024,h1),new Point(0,0));
-				orderImageForSave.copyPixels(temp2,new Rectangle(0,0,1024,sp.height),new Point(0,h1));
-				saveState.visible = false;
-				savedState.visible = true;
-				if(CameraRoll.supportsAddBitmapData){	////////苹果系统专用，用于将图像保存到起相机卷中
-					cameraRoll.addBitmapData(orderImageForSave);
-				}else{
-					var file1:File = new File(File.documentsDirectory.resolvePath("ddd/order.jpg").nativePath);
-					var byteArray:ByteArray = new ByteArray();
-					orderImageForSave.encode(new Rectangle(0,0,imageWidth,imageHeight), new JPEGEncoderOptions(), byteArray); 
-					var nstream1:FileStream = new FileStream();
-					nstream1.open(file1,FileMode.WRITE);
-					nstream1.writeBytes(byteArray);
-					nstream1.close();
-				}
-				
-				temp1.dispose();
-				temp2.dispose();
-				orderImageForSave.dispose();
+			//这部分保存订单图片，不需要了	
+//				var imageHeight:Number = h1+sp.height + 100;
+//				var imageWidth:Number = Common.MAX_WIDTH;
+//				var temp1:BitmapData = new BitmapData(imageWidth,h1);
+//				var temp2:BitmapData = new BitmapData(imageWidth,sp.height);
+//				temp1.draw(saveContainer);
+//				temp2.draw(sp);
+//				orderImageForSave = new BitmapData(imageWidth,imageHeight);
+//				orderImageForSave.copyPixels(temp1,new Rectangle(0,0,1024,h1),new Point(0,0));
+//				orderImageForSave.copyPixels(temp2,new Rectangle(0,0,1024,sp.height),new Point(0,h1));
+//				saveState.visible = false;
+//				savedState.visible = true;
+//				if(CameraRoll.supportsAddBitmapData){	////////苹果系统专用，用于将图像保存到起相机卷中
+//					cameraRoll.addBitmapData(orderImageForSave);
+//				}else{
+//					var file1:File = new File(File.documentsDirectory.resolvePath("ddd/order.jpg").nativePath);
+//					var byteArray:ByteArray = new ByteArray();
+//					orderImageForSave.encode(new Rectangle(0,0,imageWidth,imageHeight), new JPEGEncoderOptions(), byteArray); 
+//					var nstream1:FileStream = new FileStream();
+//					nstream1.open(file1,FileMode.WRITE);
+//					nstream1.writeBytes(byteArray);
+//					nstream1.close();
+//				}
+//				
+//				temp1.dispose();
+//				temp2.dispose();
+//				orderImageForSave.dispose();
 			});
 			closeImage.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
 				saveContainer.visible = false;
@@ -1228,14 +1252,14 @@ package page.room
 		
 		public function setZongjia():void{
 			var total:Number = 0;
-			for(var key:String in orderInfoDic){
-				var array:Array = sharedObject.data.array;
-				var list:Dictionary = orderInfoDic[key];
-				for(var innerKey:String in list){
-					var xml1:XML = list[innerKey];					
-					total += Number(xml1.attribute("price"))*Number(xml1.attribute("num"));
-				}
-			}
+//			for(var key:String in orderInfoDic){
+//				var array:Array = sharedObject.data.array;
+//				var list:Dictionary = orderInfoDic[key];
+//				for(var innerKey:String in list){
+//					var xml1:XML = list[innerKey];					
+//					total += Number(xml1.attribute("price"))*Number(xml1.attribute("num"));
+//				}
+//			}
 			zongjia.text = "总价: " + total;
 		}
 		
