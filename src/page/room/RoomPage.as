@@ -35,10 +35,12 @@ package page.room
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
+	import page.alertpage.Alert;
 	import page.alertpage.Confirm;
 	import page.order.ProductInfo;
 	
 	import user.UserConfig;
+	import user.UserInfo;
 
 	
 	public class RoomPage extends Page
@@ -230,7 +232,7 @@ package page.room
 //				});
 				info.addEventListener(Confirm.YES,function(e:Event){
 					var pi:ProductInfo = e.currentTarget as ProductInfo;
-					delete orderInfoDic[Common.currentPath+"_"+kongjian][pi.type];
+					delete orderInfoDic[Common.currentPath+"_"+kongjian][e.currentTarget.info["tempId"]];
 					showqingdan(null);
 				});
 				info.y = i*50;
@@ -296,20 +298,18 @@ package page.room
 		
 		public static var orderInfoDic:Dictionary = new Dictionary();
 		private var productInfoData:XML;
+		public static var tempId:int = 0;
 		private function xiadan(e:MouseEvent):void{
 			orderInfoDic[Common.currentPath+"_"+kongjian] = new Dictionary();
 			
 			for each(var pointList:Array in hotPointDic){
 				for each(var p:pointMc in pointList){
 					if(!p.visible)continue;
-//					var img:Image = getImageByName(p.name);
-//					if(img == null){
-//						img = getImageByName(hotPointXmlDic[p.name].attribute("relatedTo").toString());
-//					}
-//					var idx:String = new File(img.sourceURL).name.split(".")[0];
 					var proData:Dictionary = getProductDataById(p.info["zoomout"]);
 					proData["num"] = "1";
-					orderInfoDic[Common.currentPath+"_"+kongjian][p.info["name"]] = proData;
+					proData["tempId"] = tempId.toString();
+					tempId++;
+					orderInfoDic[Common.currentPath+"_"+kongjian][proData["tempId"]] = proData;
 				}
 			}
 			
@@ -825,7 +825,7 @@ package page.room
 		private var hotPointPosDic:Dictionary = new Dictionary();//存储热点	
 		private var hotPointXmlDic:Dictionary = new Dictionary();//存储热点的对应xml		
 		private var appearPointDic:Dictionary = new Dictionary();//存储根据图片决定是否显示的热点
-		private var addToOrderBtn:Image = new Image(Main.basePath + "img/addtoorder.png");
+		private var addToOrderBtn:Image = new Image(Main.basePath + "data/img/addtoorder.png");
 		private var sharedObject:SharedObject;
 		private var biaojied:Boolean = false;
 		
@@ -873,8 +873,15 @@ package page.room
 			video.setSize(800,600);
 			video.x = 200;video.y = 150;
 			closeZoomBtn.x = closeStoryBtn.x = 1140/scx;
-			closeZoomBtn.y = closeStoryBtn.y = 0;
+			closeZoomBtn.y = closeStoryBtn.y = -35/scy;
+			addToOrderBtn.x = 1000/scx;
+			addToOrderBtn.y = -35/scy;
+			zoomScroller.setmasksize(Common.MAX_WIDTH,760,0,-50);
+			closeStoryBtn.buttonMode = closeStoryBtn.buttonMode = addToOrderBtn.buttonMode = true;
 			zoomImage.addChild(closeZoomBtn);
+			zoomImage.addChild(addToOrderBtn);
+			addToOrderBtn.addEventListener(MouseEvent.CLICK,onAddToOrder);
+			
 			storyImage.addChild(closeStoryBtn);
 
 
@@ -895,8 +902,32 @@ package page.room
 					currentPMC.lineLayer.graphics.clear();
 				}				
 			});
-
+			
 			video.addEventListener(VideoContainer.COMPLETE,onPlayEnd);
+			
+			
+		}
+		
+		private function onAddToOrder(e:MouseEvent):void{
+			if(orderInfoDic[Common.currentPath+"_"+kongjian] == null){
+				orderInfoDic[Common.currentPath+"_"+kongjian] = new Dictionary();
+			}
+			var proData:Dictionary = getProductDataById(currentPMC.info["zoomout"]);
+			proData["num"] = "1";
+			proData["tempId"] = tempId.toString();
+			tempId++;
+			orderInfoDic[Common.currentPath+"_"+kongjian][proData["tempId"]] = proData;
+			Alert.alert("已加入订单");
+//			for each(var pointList:Array in hotPointDic){
+//				for each(var p:pointMc in pointList){
+//					if(!p.visible)continue;
+//					var proData:Dictionary = getProductDataById(p.info["zoomout"]);
+//					proData["num"] = "1";
+//					proData["tempId"] = tempId.toString();
+//					tempId++;
+//					orderInfoDic[Common.currentPath+"_"+kongjian][proData["tempId"]] = proData;
+//				}
+//			}
 		}
 		
 		private function onStoryClick(e:MouseEvent):void{
@@ -1073,80 +1104,88 @@ package page.room
 		//		}
 		
 		private var saveContainer:Page = new Page();
-		private var closeImage:Image = new Image(Main.basePath + "img/close.png");
+		private var closeImage:Image = new Image(Main.basePath + "data/img/goback.png");
 		private var saveData:BitmapData = new BitmapData(Common.MAX_WIDTH,Common.MAX_HEIGHT);
 		private var saveImage:Bitmap = new Bitmap();
 		//private var saveImageBtn:Button = new Button(110,50,110,675);
-		private var saveState:Image = new Image(Main.basePath + "img/save.png");
+		private var saveState:Image = new Image(Main.basePath + "data/img/save.png");
 		private var savedState:Image = new Image(Main.basePath + "img/saved.png");
 		//private var closeBtn:Button = new Button(100,50,860,675);
 		
 		private var userNameText:TextField = new TextField();
 		private var userPhoneText:TextField = new TextField();
-		private var buildAddressText:TextField = new TextField();
+		private var guideText:TextField = new TextField();
 		private var userAddressText:TextField = new TextField();
 		
 		private var noticeLabel:Label = new Label("姓名与联系电话为必填项");
 		private var productInfoScroller:Scroller = new Scroller(Common.MAX_WIDTH,600,1);
 		
-		private var zongjia:Label = new Label();
+		private var zongjia:Label = new Label("",16);
 		private var saveBack:Image = new Image("data/img/ui/orderdetails.png");
 		private function createSave():void{
-			saveContainer.addChild(closeImage);
+			saveState.buttonMode = closeImage.buttonMode = true;
 			saveContainer.graphics.beginFill(0,.6);
 			saveContainer.graphics.drawRect(-300,-300,Common.MAX_WIDTH*2,Common.MAX_HEIGHT*2);
 			saveContainer.graphics.endFill();
 			addChild(saveContainer);
+			
 			saveBack.scaleMax();
 			saveContainer.addChild(saveBack);
 			//saveContainer.source =Main.basePath + "data/img/ui/orderdetails.png";
 			saveContainer.x = 0;
 			saveContainer.y = 0;
 			saveState.x = savedState.x = 134;
-			saveState.y = savedState.y = 710;
+			saveState.y = savedState.y = 866;
 			saveContainer.addChild(saveState);
+			saveContainer.addChild(closeImage);
 			//saveContainer.addChild(saveImageBtn);
 			saveContainer.addChild(savedState);
 			//saveContainer.addChild(closeBtn);
+			
+			
 			saveContainer.addChild(userAddressText);
 			saveContainer.addChild(userNameText);
 			saveContainer.addChild(userPhoneText);
-			saveContainer.addChild(buildAddressText);
+			saveContainer.addChild(guideText);
 			saveContainer.addChild(productInfoScroller);
 			saveContainer.addChild(zongjia);
-			zongjia.height = 40;
+			zongjia.height = 30;
+			zongjia.width = 150;
 			closeImage.x = 54;
-			closeImage.y = 710;
-			zongjia.x = 798+42;
-			zongjia.y = 190;
+			closeImage.y = 866;
+			zongjia.x = 428*2;
+			zongjia.y = 64*2;
 			zongjia.size = 20;
-			zongjia.color="0xFF6600";
+//			zongjia.color="0xFF6600";
 			saveContainer.visible = false;
 			savedState.visible = false;
-			
-			userAddressText.type = userNameText.type = userPhoneText.type = buildAddressText.type = TextFieldType.INPUT;
-			userNameText.x = 140;
-			userNameText.y = 89;
+			userNameText.height = userPhoneText.height = userAddressText.height = guideText.height = 30;
+			userAddressText.type = userNameText.type = userPhoneText.type = guideText.type = TextFieldType.INPUT;
+			userNameText.x = 67*2;
+			userNameText.y = 38*2;
 			var format:TextFormat = new TextFormat();
 			format.size = 20;
 			userNameText.defaultTextFormat = format;
-			userAddressText.x = 607;
-			userAddressText.y = 143;
+			userAddressText.x = 67*2;
+			userAddressText.y = 61*2;
+			format = new TextFormat();
+			format.size = 20;
+			userAddressText.defaultTextFormat = format;
 			
-			userPhoneText.x = 390;
-			userPhoneText.y = 89;
+			userPhoneText.x = 220*2;
+			userPhoneText.y = 38*2;
 			format = new TextFormat();
 			format.size = 20;
 			userPhoneText.defaultTextFormat = format;
-			buildAddressText.x = 140;
-			buildAddressText.y = 154;
+			guideText.x = 430*2;
+			guideText.y = 38*2;
 			format = new TextFormat();
 			format.size = 20;
-			buildAddressText.defaultTextFormat = format;
+			guideText.defaultTextFormat = format;
 			userNameText.width = 150;
-			userAddressText.width = 260;
+			userAddressText.width = 600;
 			userPhoneText.width = 150;
-			buildAddressText.width = 440+374;			
+			guideText.width = 440+374;			
 			productInfoScroller.x = 12;
 			productInfoScroller.y = 220;
 			//productInfoScroller.setSlider(true,-30);
@@ -1159,95 +1198,50 @@ package page.room
 			noticeLabel.visible = false;
 			saveContainer.addChild(noticeLabel);
 			
-			saveState.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
-				var h1:Number = 220;
-				var sp:Sprite = new Sprite();
-				var i:int = 0;
-//				for(var key:String in orderInfoDic){
-//					var array:Array = sharedObject.data.array;
-//					var list:Dictionary = orderInfoDic[key];
-//					var label:Label = new Label(Main.yangbanjianNameInfo.yangbanjian.(@id == key.split("_")[1])[0].attribute("name").toString());
-//					label.size = 12;
-//					label.x = 480;
-//					label.y = i*50;
-//					i++;
-//					sp.addChild(label);
-//					for(var innerKey:String in list){
-//						var xml1:XML = list[innerKey];
-//						if(key == FenggeSelectPage.currentPath+"_"+kongjian){
-//							var xml:XML = hotPointXmlDic[innerKey];
-//							var soldOut:Boolean = false;
-//							if(!xml.hasOwnProperty("@relatedTo")){
-//								var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(innerKey).info.fileName;						
-//								sharedObject = SharedObject.getLocal("product");
-//								
-//								if(array.indexOf(imagePath)==-1){
-//									soldOut = false;
-//									xml1.@soldout = "false";
-//								}else{
-//									soldOut = true;
-//									xml1.@soldout = "true";
-//								}
-//							}else{
-//								var imagePath:String = path_1 + "zoomout/" + innerKey + "/" + getImageByName(xml.attribute("relatedTo").toString()).info.fileName;						
-//								sharedObject = SharedObject.getLocal("product");
-//								if(array.indexOf(imagePath)==-1){
-//									soldOut = false;
-//									xml1.@soldout = "false";
-//								}else{
-//									soldOut = true;
-//									xml1.@soldout = "true";
-//								}
-//							}
-//						}else{
-//							if(xml1.hasOwnProperty("@soldout")){
-//								soldOut = xml1.attribute("soldout").toString() == "true";
-//							}else{
-//								soldOut = false;
-//							}
-//						}					
-//						var info:ProductInfo = new ProductInfo(xml1,innerKey,soldOut,"save");
-//						info.x = 100;
-//						info.y = i*50;
-//						i++;
-//						sp.addChild(info);
-//					}
-//				}
-				
-				
-				
-			//这部分保存订单图片，不需要了	
-//				var imageHeight:Number = h1+sp.height + 100;
-//				var imageWidth:Number = Common.MAX_WIDTH;
-//				var temp1:BitmapData = new BitmapData(imageWidth,h1);
-//				var temp2:BitmapData = new BitmapData(imageWidth,sp.height);
-//				temp1.draw(saveContainer);
-//				temp2.draw(sp);
-//				orderImageForSave = new BitmapData(imageWidth,imageHeight);
-//				orderImageForSave.copyPixels(temp1,new Rectangle(0,0,1024,h1),new Point(0,0));
-//				orderImageForSave.copyPixels(temp2,new Rectangle(0,0,1024,sp.height),new Point(0,h1));
-//				saveState.visible = false;
-//				savedState.visible = true;
-//				if(CameraRoll.supportsAddBitmapData){	////////苹果系统专用，用于将图像保存到起相机卷中
-//					cameraRoll.addBitmapData(orderImageForSave);
-//				}else{
-//					var file1:File = new File(File.documentsDirectory.resolvePath("ddd/order.jpg").nativePath);
-//					var byteArray:ByteArray = new ByteArray();
-//					orderImageForSave.encode(new Rectangle(0,0,imageWidth,imageHeight), new JPEGEncoderOptions(), byteArray); 
-//					var nstream1:FileStream = new FileStream();
-//					nstream1.open(file1,FileMode.WRITE);
-//					nstream1.writeBytes(byteArray);
-//					nstream1.close();
-//				}
-//				
-//				temp1.dispose();
-//				temp2.dispose();
-//				orderImageForSave.dispose();
-			});
+			saveState.addEventListener(MouseEvent.CLICK,saveOrder);
 			closeImage.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
 				saveContainer.visible = false;
 				savedState.visible = false;
 			});
+		}
+		
+		private function saveOrder(e:MouseEvent):void{
+			
+			if(userNameText.text == ""||userPhoneText.text == ""||guideText.text == ""){
+				Alert.alert("有*号的为必填项，请填写",2);
+				return;
+			}
+			
+			var localOrders:SharedObject = UserInfo.userLocalOrderData;
+			if(localOrders.data.orderlist == null){
+				localOrders.data.orderlist = new Dictionary();
+			}
+			var key:String = new Date().getTime().toString()+tempId;
+			
+			var jsonObject:Object = new Object();
+			jsonObject.to_address = userAddressText.text;
+			jsonObject.to_totalPrice = zongjia.text;
+			jsonObject.to_name = userNameText.text;
+			jsonObject.orderNo = key;
+			jsonObject.to_salesman = guideText.text;
+			jsonObject.to_tel = userPhoneText.text;
+			var productList:Array = new Array();
+			
+			for each(var product:Dictionary in orderInfoDic[Common.currentPath+"_"+kongjian]){
+				
+				var productData:Object = new Object();
+				productData.sc_name = product["brandName"];
+				productData.sc_money = product["price"];
+				productData.sc_number = product["num"];
+				productData.sc_guige = product["guige"];
+				productData.sc_prid = product["productId"];
+				productList.push(productData);
+			}
+			jsonObject.product = productList;
+			
+			var jsonString:String = JSON.stringify(jsonObject);
+			localOrders.data.orderlist[key] = jsonString;
+			localOrders.flush();
 		}
 		
 		public function setZongjia():void{
@@ -1260,7 +1254,13 @@ package page.room
 //					total += Number(xml1.attribute("price"))*Number(xml1.attribute("num"));
 //				}
 //			}
-			zongjia.text = "总价: " + total;
+			
+			for each(var product:Dictionary in orderInfoDic[Common.currentPath+"_"+kongjian]){
+				
+				total += Number(product["price"])*Number(product["num"]);
+			}
+			
+			zongjia.text = "" + total;
 		}
 		
 		//设计说明

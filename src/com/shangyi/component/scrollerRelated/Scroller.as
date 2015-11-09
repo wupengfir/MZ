@@ -79,11 +79,13 @@
 			}
 		}
 		
-		public function setmasksize(w:Number,h:Number):void{
+		public function setmasksize(w:Number,h:Number,mx:Number = 0,my:Number = 0):void{
 			addChildWithSelf = true;
 			content.mask = null;
 			this.removeChild(maskSp);
 			maskSp = new Sprite();
+			maskSp.x = mx;
+			maskSp.y = my;
 			this.addChild(maskSp);
 			w = w==0?maxWidth:w;
 			h = h==0?maxHeight:h;

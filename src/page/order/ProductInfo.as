@@ -20,7 +20,7 @@ package page.order
 		private var productTypeLabel:Label = new Label();
 		private var numLabel:Label = new Label();
 		private var priceLabel:Label = new Label();
-		private var info:Dictionary;
+		public var info:Dictionary;
 		public var type:String;
 		private var deleteBtn:Image = new Image(Main.basePath + "data/img/close.png");
 		private var plusBtn:Image = new Image(Main.basePath + "data/img/plus.png");

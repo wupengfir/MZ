@@ -7,7 +7,7 @@ package user
 	{
 		
 		public static const DATA_KEY:String = "DATA_KEY";
-		
+		public static var LOCAL_ORDER_KEY:String = "_LOCAL_ORDER_KEY";
 		public static var userName:String;
 		public static var passWord:String;
 		public static var sessionID:String;
@@ -18,6 +18,10 @@ package user
 		
 		public function UserInfo()
 		{
+		}
+		
+		public static function get userLocalOrderData():SharedObject{
+			return SharedObject.getLocal(UserInfo.userName+UserInfo.LOCAL_ORDER_KEY);
 		}
 		
 		public static function get userData():SharedObject{

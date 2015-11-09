@@ -17,19 +17,19 @@ package page.alertpage
 			graphics.drawRoundRect(0,0,w,h,10);
 			graphics.endFill();
 			addChild(text);
-			text.width = 400;
+			text.width = 180;
 			this.x = 500;
 			this.y = 400;
 			text.color = 0xffffff;
 		}
 		
-		public static function alert(s:String):void{
+		public static function alert(s:String,delay:Number = 1):void{
 			a.visible = true;
 			a.text.text = s;
 			a.alpha = 0.5;
 			a.text.x = (w - a.text.textField.textWidth)/2-1;
 			a.text.y = (h - a.text.textField.textHeight)/2-1;
-			TweenLite.to(a,1,{alpha:1,onComplete:function():void{
+			TweenLite.to(a,1,{alpha:delay,onComplete:function():void{
 				a.visible = false
 			}});
 		}
