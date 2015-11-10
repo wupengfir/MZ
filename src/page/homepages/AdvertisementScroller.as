@@ -35,7 +35,7 @@ package page.homepages
 			addChild(imageContainer);
 			addChild(btnContainer);
 			adverTimer.addEventListener(TimerEvent.TIMER,onAdverTimer);
-			adverTimer.start();
+			
 			
 			
 			eventMask.graphics.beginFill(0,0);
@@ -124,7 +124,7 @@ package page.homepages
 			imgs.info = dataList[1];
 			imageContainer.addChild(imgs);
 			imgs.addEventListener(MouseEvent.CLICK,f);
-			
+			adverTimer.start();
 		}
 		
 		private function onClick(e:MouseEvent):void{

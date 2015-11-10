@@ -35,6 +35,9 @@ package page.room
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
+	import json.JsonData;
+	import json.JsonDecoder;
+	
 	import page.alertpage.Alert;
 	import page.alertpage.Confirm;
 	import page.order.ProductInfo;
@@ -1216,7 +1219,11 @@ package page.room
 			if(localOrders.data.orderlist == null){
 				localOrders.data.orderlist = new Dictionary();
 			}
-			var key:String = new Date().getTime().toString()+tempId;
+			var i:int = 1;
+			while(localOrders.data.orderlist[i.toString()]!=null&&localOrders.data.orderlist[i.toString()]!=""){
+				i++;
+			}
+			var key:String = i.toString();
 			
 			var jsonObject:Object = new Object();
 			jsonObject.to_address = userAddressText.text;
@@ -1242,6 +1249,21 @@ package page.room
 			var jsonString:String = JSON.stringify(jsonObject);
 			localOrders.data.orderlist[key] = jsonString;
 			localOrders.flush();
+			//Common.loadURL("furniture/action/order/iosSaveTempOrder?JSESSIONID="+UserInfo.sessionID+"&ordersJson="+"["+jsonString+"]",onSaveUploaded,null);
+			Alert.alert("订单已保存");
+		}
+		
+		private function onSaveUploaded(e:Event):void{
+			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
+			trace(e.currentTarget.data);
+			if(data.success){
+				var so:SharedObject = UserInfo.userLocalOrderData
+				for each(var obj:Object in data.dataValue.orders){					
+					so.data.orderlist[obj.orderNo] = "";					
+				}
+				so.flush();
+			}
+			Alert.alert("订单已上传");
 		}
 		
 		public function setZongjia():void{

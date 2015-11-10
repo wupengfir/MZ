@@ -15,6 +15,7 @@ package page.homepages
 	import flash.filters.ColorMatrixFilter;
 	import flash.geom.Rectangle;
 	import flash.media.StageWebView;
+	import flash.net.SharedObject;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.utils.Dictionary;
@@ -93,9 +94,42 @@ package page.homepages
 			
 			addEventListener(Event.ENTER_FRAME,changeFullBtnState);
 			
-			
+			uploadLocalOrders();
 		}
 		
+		private function uploadLocalOrders():void{
+			var so:SharedObject = UserInfo.userLocalOrderData;
+			//so.clear();
+			if(so.data.orderlist == null){
+				return;
+			}
+			var orderList:Array = new Array();
+			var flag:Boolean = false;
+			for each(var js:String in so.data.orderlist){
+				if(js == ""){
+					continue;
+				}
+				orderList.push(js);
+				flag = true;
+			}
+			if(flag){
+				Common.loadURL("furniture/action/order/iosSaveTempOrder?JSESSIONID="+UserInfo.sessionID+"&ordersJson="+JSON.stringify(orderList),onSaveUploaded,null);	
+			}
+
+		}
+		
+		private function onSaveUploaded(e:Event):void{
+			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
+			trace(e.currentTarget.data);
+			if(data.success){
+				var so:SharedObject = UserInfo.userLocalOrderData
+				for each(var obj:Object in data.dataValue.orders){					
+					so.data.orderlist[obj.orderNo] = "";				
+				}
+				so.flush();
+			}
+			//Alert.alert("订单已上传");
+		}
 		
 		private function changeFullBtnState(e:Event):void
 		{
