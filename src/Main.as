@@ -78,7 +78,7 @@
 			this.mask = maskp;
 			
 			//自适应
-			stage.addEventListener (Event.RESIZE,test);  			
+			//stage.addEventListener (Event.RESIZE,test);  			
 		}
 		
 		private function onStageXClick (e:MouseEvent):void {  

@@ -105,15 +105,25 @@ package page.homepages
 			}
 			var orderList:Array = new Array();
 			var flag:Boolean = false;
+			var first:Boolean = true;
+			var temp:String = "[";
 			for each(var js:String in so.data.orderlist){
 				if(js == ""){
 					continue;
 				}
-				orderList.push(js);
+				if(first){
+					temp+=js;
+					first = false;
+				}else{
+					temp+=(","+js);
+				}
+				
+				//orderList.push(js);
 				flag = true;
 			}
+			temp+="]";
 			if(flag){
-				Common.loadURL("furniture/action/order/iosSaveTempOrder?JSESSIONID="+UserInfo.sessionID+"&ordersJson="+JSON.stringify(orderList),onSaveUploaded,null);	
+				Common.loadURL("furniture/action/order/iosSaveTempOrder?JSESSIONID="+UserInfo.sessionID+"&ordersJson="+temp,onSaveUploaded,null);	
 			}
 
 		}

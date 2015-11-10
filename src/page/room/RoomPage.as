@@ -1249,7 +1249,7 @@ package page.room
 			var jsonString:String = JSON.stringify(jsonObject);
 			localOrders.data.orderlist[key] = jsonString;
 			localOrders.flush();
-			//Common.loadURL("furniture/action/order/iosSaveTempOrder?JSESSIONID="+UserInfo.sessionID+"&ordersJson="+"["+jsonString+"]",onSaveUploaded,null);
+			Common.loadURL("furniture/action/order/iosSaveTempOrder?JSESSIONID="+UserInfo.sessionID+"&ordersJson="+"["+jsonString+"]",onSaveUploaded,null);
 			Alert.alert("订单已保存");
 		}
 		
