@@ -18,11 +18,11 @@ package page.functionpage
 		public static var syncpage:PriceSynchronizePage;
 		public static var configpage:ConfigPage;
 		public static var orderpage:XorderListPage;
-		
+		public static var instance:FunctionPage;
 		public function FunctionPage()
 		{
 			initPage();
-			
+			instance = this;
 		}
 		
 		private function initPage():void{
@@ -50,15 +50,19 @@ package page.functionpage
 			(Common.MAIN as Main).functionLayer.addChild(syncpage);
 		}
 		
+		public function showHomePage():void{
+			for(var i:int = 0;i<(Common.MAIN as Main).functionLayer.numChildren;i++){
+				(Common.MAIN as Main).functionLayer.getChildAt(i).visible = false;
+			}
+			(Common.MAIN as Main).functionLayer.visible = false;
+		}
+		
 		private function onthisClick(e:MouseEvent):void{
 			(Common.MAIN as Main).functionLayer.visible = true;
 			
 			
 			if(Common.checkClick(120/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				for(var i:int = 0;i<(Common.MAIN as Main).functionLayer.numChildren;i++){
-					(Common.MAIN as Main).functionLayer.getChildAt(i).visible = false;
-				}
-				(Common.MAIN as Main).functionLayer.visible = false;
+				showHomePage();
 			}
 			
 			

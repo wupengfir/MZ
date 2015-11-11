@@ -40,6 +40,7 @@ package page.room
 	
 	import page.alertpage.Alert;
 	import page.alertpage.Confirm;
+	import page.functionpage.FunctionPage;
 	import page.order.ProductInfo;
 	
 	import user.UserConfig;
@@ -115,6 +116,7 @@ package page.room
 		private var imgCurrentCountDic:Dictionary = new Dictionary();
 		private var backtoVideo:Boolean;
 		
+		private var settingBar:Page = new Page();
 		private var hotPointLayer:Sprite = new Sprite();
 		public function RoomPage(roomName:String,initInfo:Dictionary = null,backtoVideo:Boolean = true)
 		{
@@ -405,9 +407,52 @@ package page.room
 			createSave();
 			createKongjianBtn();
 			createHotPoint();
+			createSetting();
 			pingmianImage.backImage.scaleMax();
 			pingmianImage.setCloseBtn(Common.MAX_WIDTH-50,0);
 		}
+		
+		private var settingBarBtn:Button = new Button(40,60,70,90);
+		private var backHomeBtn:Button = new Button(70,70,0,15);
+		private var settingBtn:Button = new Button(70,70,0,130);
+		private function createSetting():void{
+			settingBarBtn.buttonMode = backHomeBtn.buttonMode = settingBtn.buttonMode = true;
+			settingBar.backSource = "data/img/zuobianbianfanhui.png";
+			settingBar.backImage.width = 110;
+			settingBar.backImage.height = 235;
+			settingBar.addChild(settingBarBtn);
+			settingBar.addChild(backHomeBtn);
+			settingBar.addChild(settingBtn);
+			settingBarBtn.addEventListener(MouseEvent.CLICK,onSettingBarBtnClick);
+			backHomeBtn.addEventListener(MouseEvent.CLICK,onSettingBarBtnClick);
+			settingBtn.addEventListener(MouseEvent.CLICK,onSettingBarBtnClick);
+			addChild(settingBar);
+			settingBar.y = 330;
+			settingBar.x = -67;
+		}
+		
+		private function onSettingBarBtnClick(e:MouseEvent):void{
+			switch(e.currentTarget){
+				case settingBarBtn:
+					if(settingBar.x < 0){
+						TweenLite.to(settingBar,.6,{x:0});
+					}else{
+						TweenLite.to(settingBar,.6,{x:-67});
+					}
+					break;
+				case backHomeBtn:
+					RoomPage.MAIN.remove();
+					FunctionPage.instance.showHomePage();
+					if(backtoVideo){
+						VideoSelectPage.vpage.clear();
+					}
+					
+					break;
+				case settingBtn:
+					break;
+			}
+		}
+		
 		private var pingmianImage:Page = new Page();
 		private function addpingmian(e:MouseEvent):void{
 			

@@ -7,7 +7,10 @@ package page.order
 		public var customerPhone:String;
 		public var customerAddress:String;
 		public var customerReceiverName:String;
+		public var orderId:String = "";
 		public var orderEntryList:Array;
+		public var type:String = "server";
+		public var orderNo:String;
 		public function OrderData()
 		{
 			

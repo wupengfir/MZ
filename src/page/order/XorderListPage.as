@@ -15,8 +15,10 @@ package page.order
 	{
 		private var scroller:Scroller = new Scroller(Common.MAX_WIDTH,700,1);
 		private var orderList:Array;
+		public static var instance:XorderListPage;
 		public function XorderListPage()
 		{
+			instance = this;
 			backSource = "data/img/ui/orderlistback.png";
 			backImage.width = Common.MAX_WIDTH;
 			backImage.height = 840;
@@ -46,6 +48,7 @@ package page.order
 				var o:OrderData
 				for each(var obj:Object in orderdata.dataValue.datavalue){		
 					o = new OrderData();
+					o.orderId = obj.to_id;
 					o.customerAddress = obj.to_address;
 					o.customerName = obj.to_name;
 					o.customerPhone = obj.to_tel;
@@ -55,12 +58,15 @@ package page.order
 				//添加本地订单
 				var so:SharedObject = UserInfo.userLocalOrderData;
 				if(so.data.orderlist != null){
-					for each(var js:String in so.data.orderlist){
+					for(var key:String in so.data.orderlist){
+						var js:String = so.data.orderlist[key];
 						if(js == ""){
 							continue;
 						}
 						var od:Object = JSON.parse(js);
 						o = new OrderData();
+						o.type = "local";
+						o.orderNo = key;
 						o.customerAddress = od.to_address;
 						o.customerName = od.to_name;
 						o.customerPhone = od.to_tel;
@@ -74,6 +80,7 @@ package page.order
 				var index:int = 0;
 				for each(var data:OrderData in orderList){
 					var view:OrderDataView = new OrderDataView(data);
+					view.type = data.type;
 					view.y = index*105;
 					index++;
 					scroller.addChild(view);
