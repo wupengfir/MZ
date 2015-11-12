@@ -4,6 +4,7 @@ package page.order
 	import com.shangyi.component.imageRelated.Image;
 	import com.shangyi.component.scrollerRelated.Scroller;
 	
+	import flash.display.Shape;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
@@ -15,9 +16,8 @@ package page.order
 	{
 		
 		private var saveContainer:Page = new Page();
-		private var closeImage:Image = new Image(Main.basePath + "data/img/goback.png");
-		private var saveState:Image = new Image(Main.basePath + "data/img/save.png");
-		private var savedState:Image = new Image(Main.basePath + "img/saved.png");
+		private var closeImage:Image = new Image(Main.basePath + "data/img/fanhuiliebiao.png");
+		private var saveState:Image = new Image(Main.basePath + "data/img/tijiaodingdan.png");
 		
 		private var userNameText:TextField = new TextField();
 		private var userPhoneText:TextField = new TextField();
@@ -30,16 +30,50 @@ package page.order
 		private var zongjia:Label = new Label("",16);
 		private var saveBack:Image = new Image("data/img/ui/dingdanback2.png");
 		
-		public function OrderDetailPage()
+		private var data:OrderData;
+		
+		public var label1:Label = new Label("产品类型:",20);
+		public var label2:Label = new Label("产品规格:",20);
+		public var label3:Label = new Label("购买数量:",20);
+		public var label4:Label = new Label("单价:",20);
+		public var label5:Label = new Label("小计:",20);
+		public var line:Shape = new Shape();
+		private var ps:XML = 
+			<root>
+				<object name="line" x="0" y="220"/>
+				<object name="label1" x="60" y="230"/>
+				<object name="label2" x="307" y="230"/>
+				<object name="label3" x="571" y="230"/>
+				<object name="label4" x="911" y="230"/>
+				<object name="label5" x="1112" y="230"/>
+			</root>
+		
+		public function OrderDetailPage(data:OrderData)
 		{
+			this.data = data;
+			createSave();
+			showData();
 			
+			line.graphics.beginFill(0,.2);
+			line.graphics.drawRect(24,0,1151,40);
+			line.graphics.endFill();
+			initByPageScript(ps);
 		}
 		
 		private function hide():void{
-			this.clearAll();
+			this.clearAll(this);
+		}
+		
+		private function showData():void{
+			userNameText.text = data.customerName;
+			userPhoneText.text = data.customerPhone;
+			userAddressText.text = data.customerAddress;
+			guideText.text = data.customerReceiverName;
 		}
 		
 		private function createSave():void{
+			closeImage.width = saveState.width = 160;
+			closeImage.height = saveState.height = 40;
 			saveState.buttonMode = closeImage.buttonMode = true;
 			saveContainer.graphics.beginFill(0,.6);
 			saveContainer.graphics.drawRect(-300,-300,Common.MAX_WIDTH*2,Common.MAX_HEIGHT*2);
@@ -49,8 +83,6 @@ package page.order
 			//saveContainer.source =Main.basePath + "data/img/ui/orderdetails.png";
 			saveContainer.x = 0;
 			saveContainer.y = 0;
-			saveState.x = savedState.x = 134;
-			saveState.y = savedState.y = 866;
 			saveContainer.addChild(saveState);
 			saveContainer.addChild(closeImage);
 
@@ -64,33 +96,34 @@ package page.order
 			saveContainer.addChild(zongjia);
 			zongjia.height = 30;
 			zongjia.width = 150;
-			closeImage.x = 54;
-			closeImage.y = 866;
-			zongjia.x = 428*2;
-			zongjia.y = 64*2;
+			closeImage.x = 1033;
+			closeImage.y = 85;
+			saveState.x = 1033;
+			saveState.y = 136;
+			zongjia.x = 307;
+			zongjia.y = 190;
+			zongjia.text = "总价:"
 			zongjia.size = 20;
-			saveContainer.visible = false;
-			savedState.visible = false;
 			userNameText.height = userPhoneText.height = userAddressText.height = guideText.height = 30;
 			//userAddressText.type = userNameText.type = userPhoneText.type = guideText.type = TextFieldType.INPUT;
-			userNameText.x = 67*2;
-			userNameText.y = 38*2;
+			userNameText.x = 77*2;
+			userNameText.y = 49*2;
 			var format:TextFormat = new TextFormat();
 			format.size = 20;
 			userNameText.defaultTextFormat = format;
-			userAddressText.x = 67*2;
-			userAddressText.y = 61*2;
+			userAddressText.x = 77*2;
+			userAddressText.y = 77*2;
 			format = new TextFormat();
 			format.size = 20;
 			userAddressText.defaultTextFormat = format;
 			
-			userPhoneText.x = 220*2;
-			userPhoneText.y = 38*2;
+			userPhoneText.x = 304*2;
+			userPhoneText.y = 49*2;
 			format = new TextFormat();
 			format.size = 20;
 			userPhoneText.defaultTextFormat = format;
-			guideText.x = 430*2;
-			guideText.y = 38*2;
+			guideText.x = 33;
+			guideText.y = 189;
 			format = new TextFormat();
 			format.size = 20;
 			guideText.defaultTextFormat = format;

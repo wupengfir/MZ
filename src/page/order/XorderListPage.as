@@ -4,6 +4,7 @@ package page.order
 	import com.shangyi.component.scrollerRelated.Scroller;
 	
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.net.SharedObject;
 	
 	import json.JsonData;
@@ -80,6 +81,7 @@ package page.order
 				var index:int = 0;
 				for each(var data:OrderData in orderList){
 					var view:OrderDataView = new OrderDataView(data);
+					view.addEventListener(MouseEvent.CLICK,createOrderDetail);
 					view.type = data.type;
 					view.y = index*105;
 					index++;
@@ -92,17 +94,28 @@ package page.order
 					
 		}
 		
-//		private function getOrderData():Array{
-//			var o:OrderData = new OrderData();
-//			o.customerAddress = "dizhi";
-//			o.customerName = "司思思";
-//			o.customerPhone = "13545672345";
-//			o.customerReceiverName = "搜懂得";
-//			
-//			var a:Array = new Array();
-//			a.push(o);
-//			return a;	
-//		}
+		private function createOrderDetail(e:MouseEvent):void{
+			if(e.target == e.currentTarget)
+			addChild(new OrderDetailPage(e.currentTarget.data));
+			if((e.currentTarget.data as OrderData).type == "server"){
+				var id:String = (e.currentTarget.data as OrderData).orderId.toString();
+			//	var js:String = user
+				Common.loadURL("furniture/action/order/iosOrderScart?JSESSIONID="+UserInfo.sessionID+"&orderid="+id,onSaveUploaded,null);
+			}
+			
+		}
+		
+		private function onSaveUploaded(e:Event):void{
+			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
+			trace(e.currentTarget.data);
+			if(data.success){
+//				var so:SharedObject = UserInfo.userLocalOrderData
+//				for each(var obj:Object in data.dataValue.orders){					
+//					so.data.orderlist[obj.orderNo] = "";					
+//				}
+//				so.flush();
+			}
+		}
 		
 	}
 }

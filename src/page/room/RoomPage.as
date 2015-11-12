@@ -1261,8 +1261,14 @@ package page.room
 			}
 			
 			var localOrders:SharedObject = UserInfo.userLocalOrderData;
+			var database:SharedObject = UserInfo.userOrdersDatabase;
 			if(localOrders.data.orderlist == null){
 				localOrders.data.orderlist = new Dictionary();
+				localOrders.flush();
+			}
+			if(database.data.orderlist == null){
+				database.data.orderlist = new Dictionary();
+				database.flush();
 			}
 			var i:int = 1;
 			while(localOrders.data.orderlist[i.toString()]!=null&&localOrders.data.orderlist[i.toString()]!=""){
@@ -1302,10 +1308,13 @@ package page.room
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
 			trace(e.currentTarget.data);
 			if(data.success){
-				var so:SharedObject = UserInfo.userLocalOrderData
-				for each(var obj:Object in data.dataValue.orders){					
+				var so:SharedObject = UserInfo.userLocalOrderData;
+				var database:SharedObject = UserInfo.userOrdersDatabase;
+				for each(var obj:Object in data.dataValue.orders){	
+					database.data.orderlist[obj.orderId.toString()] = so.data.orderlist[obj.orderNo];
 					so.data.orderlist[obj.orderNo] = "";					
 				}
+				database.flush();
 				so.flush();
 			}
 			Alert.alert("订单已上传");
