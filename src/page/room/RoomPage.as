@@ -6,6 +6,7 @@ package page.room
 	import com.shangyi.component.buttonRelated.Button;
 	import com.shangyi.component.buttonRelated.ImageButton;
 	import com.shangyi.component.buttonRelated.SimpleButton;
+	import com.shangyi.component.buttonRelated.SwitchButton;
 	import com.shangyi.component.imageRelated.Image;
 	import com.shangyi.component.scrollerRelated.SY_Scroller;
 	import com.shangyi.component.scrollerRelated.ScrollableSprite;
@@ -118,6 +119,9 @@ package page.room
 		
 		private var settingBar:Page = new Page();
 		private var hotPointLayer:Sprite = new Sprite();
+		
+		private var showJiageBar:Page = new Page();
+		private var showPriceBtn:SwitchButton = new SwitchButton(UserConfig.showPrice);
 		public function RoomPage(roomName:String,initInfo:Dictionary = null,backtoVideo:Boolean = true)
 		{
 			backImage.scaleMax();
@@ -186,7 +190,25 @@ package page.room
 			qingdanBtn.y = yindex*Common.MAX_HEIGHT/768;
 			qingdanBtn.addEventListener(MouseEvent.CLICK,showqingdan);
 			
+			showJiageBar.backSource = "data/img/shezhijiantou4.png";
+			addChild(showJiageBar);
+			showPriceBtn.x = 220;
+			showPriceBtn.y = 6;
+			showJiageBar.addChild(showPriceBtn);
+			showJiageBar.backImage.width = 1200;
+			showJiageBar.backImage.height = 60;
+			showJiageBar.y = Common.MAX_HEIGHT;
+			showPriceBtn.addEventListener(Event.CHANGE,onShowPrice);
 			loadXml();
+			addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
+				if(e.target != settingBtn&&e.target != showJiageBar.backImage)
+				TweenLite.to(showJiageBar,.6,{y:Common.MAX_HEIGHT});
+			});
+		}
+		
+		private function onShowPrice(e:Event):void{
+			UserConfig.showPrice = UserConfig.userConfigData.data.showPrice = showPriceBtn.selected;
+			UserConfig.userConfigData.flush();
 		}
 		
 		private function getVideo(dic:Dictionary,s:String):void{
@@ -449,6 +471,9 @@ package page.room
 					
 					break;
 				case settingBtn:
+					if(showJiageBar.y = Common.MAX_HEIGHT){
+						TweenLite.to(showJiageBar,.6,{y:Common.MAX_HEIGHT - 60});
+					}
 					break;
 			}
 		}

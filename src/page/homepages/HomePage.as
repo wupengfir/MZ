@@ -1,6 +1,7 @@
 package page.homepages
 {
 	import com.shangyi.component.base.Page;
+	import com.shangyi.component.buttonRelated.SimpleButton;
 	import com.shangyi.component.imageRelated.Image;
 	import com.shangyi.component.scrollerRelated.SY_Scroller;
 	import com.shangyi.component.scrollerRelated.Scroller;
@@ -35,6 +36,7 @@ package page.homepages
 		
 		public static var functionBar:FunctionPage = new FunctionPage();
 		public static var roomSelectpage:RoomSelectPage = new RoomSelectPage();
+		public static var allSpacePage:AllSpacePage;// = new AllSpacePage();
 		public static var homeRoot:HomePage;
 		//private var advertiseContainer:SY_Scroller = new SY_Scroller(1200,340,1200,340);
 		private var advertiseContainer:AdvertisementScroller = new AdvertisementScroller();
@@ -53,14 +55,18 @@ package page.homepages
 		
 		private var AdverTimer:Timer = new Timer(5000);
 		
-		private var fullScreenBtn:Image = new Image("data/img/fullscreen.png");
+		private var fullScreenBtn:Image = new Image("data/img/max.png");
 		
-		
+		private var label1:Label = new Label("情景.生活");
+		private var label2:Label = new Label("空间选择");
+		private var showAllSpaceBtn:SimpleButton = new SimpleButton(80,30,false,0,0,15);
 		public function HomePage()
 		{
 			homeRoot = this;
 			loadData();
-			
+			addChild(label1);
+			addChild(label2);
+			addChild(showAllSpaceBtn);
 			addChild(advertiseContainer);
 					
 			lifeStyleContainer.y = 380;
@@ -87,7 +93,7 @@ package page.homepages
 			
 			drawBack();
 			
-			fullScreenBtn.x = 200;
+			fullScreenBtn.x = 1108;
 			fullScreenBtn.y = 840;
 			
 			fullScreenBtn.addEventListener(MouseEvent.CLICK,onFullScreen);
@@ -95,6 +101,24 @@ package page.homepages
 			addEventListener(Event.ENTER_FRAME,changeFullBtnState);
 			
 			uploadLocalOrders();
+			
+			label1.x = 10;label1.y = 350;
+			label2.x = 10;label2.y = 610;
+			showAllSpaceBtn.x = 1080;showAllSpaceBtn.y = 604;
+			showAllSpaceBtn.label = "显示全部 >";
+			
+			drawLine(0,590,1200,590,0x646464);
+			showAllSpaceBtn.addEventListener(MouseEvent.CLICK,onAllSpaceClick);
+		}
+		
+		private function onAllSpaceClick(e:MouseEvent):void{
+			if(allSpacePage == null){
+				allSpacePage = new AllSpacePage();
+				addChild(allSpacePage);
+			}else{
+				allSpacePage.visible = true;
+				addChild(allSpacePage);
+			}
 		}
 		
 		private function uploadLocalOrders():void{
@@ -144,9 +168,9 @@ package page.homepages
 		private function changeFullBtnState(e:Event):void
 		{
 			if(stage.displayState == StageDisplayState.FULL_SCREEN){
-				fullScreenBtn.source = "data/img/outfull.png"
+				fullScreenBtn.source = "data/img/real.png"
 			}else{
-				fullScreenBtn.source = "data/img/fullscreen.png"
+				fullScreenBtn.source = "data/img/max.png"
 			}
 		}
 		
@@ -242,24 +266,44 @@ package page.homepages
 					}
 				}
 				
-				if(updatePlistFlag){
-					functionBar.sync();
-				}
+//				if(updatePlistFlag){
+//					functionBar.sync();
+//				}
 				/////////////////////////
-				lifeStyleContainer.dataSource(urlList,290,30,null);
+				lifeStyleContainer.dataSource(urlList,290,12,null);
 				
 				var index:int = 0;
+//				UserInfo.diyDataLoaded.push("mzchunjing");
+//				UserInfo.diyDataLoaded.push("mzdzh");
+//				UserInfo.diyDataLoaded.push("mzflx");
+//				UserInfo.userData.data.diyDataLoaded = UserInfo.diyDataLoaded;
+//				UserInfo.userData.flush();
 				for each(var img:Image in lifeStyleContainer.scroller.btnArr){
 					img.info = dataList[index];
-					if(UserInfo.diyDataLoaded.indexOf(img.info.li_No) == -1){//!new File(File.applicationDirectory.nativePath+"/data/img/"+img.info.li_No).exists){
+					if(!(new File(File.applicationDirectory.nativePath+"/data/img/"+img.info.li_No).exists)){
+						if((UserInfo.diyDataLoaded.indexOf(img.info.li_No) != -1)){
+							for(var i:int = 0;i<UserInfo.diyDataLoaded.length;i++){
+								if(UserInfo.diyDataLoaded[i] == img.info.li_No){
+									UserInfo.diyDataLoaded.splice(i,1);
+									UserInfo.userData.data.diyDataLoaded = UserInfo.diyDataLoaded;
+									UserInfo.userData.flush();
+									break;
+								}
+								
+							}
+						}
+						
+					}
+					if((UserInfo.diyDataLoaded.indexOf(img.info.li_No) == -1)){//!new File(File.applicationDirectory.nativePath+"/data/img/"+img.info.li_No).exists){
 						img.addEventListener(MouseEvent.CLICK,onLoadClick);
 						img.addEventListener(Image.GET_DATA,function(evt:Event):void{
-							var nameLebel:Label = new Label(evt.currentTarget.info.li_name,18/evt.currentTarget.scaleY);
+							var nameLebel:Label = new Label(evt.currentTarget.info.li_name,15/evt.currentTarget.scaleY);
+							nameLebel.color = 0x646464;
 							nameLebel.width = 150/evt.currentTarget.scaleY;
 							nameLebel.height = 30/evt.currentTarget.scaleY;
 							nameLebel.x = 3;
 							nameLebel.y = 160/evt.currentTarget.scaleY;
-							evt.currentTarget.addChild(nameLebel)
+							evt.currentTarget.addChild(nameLebel);
 						});
 						if(img.back.bitmapData != null){
 							img.dispatchEvent(new Event(Image.GET_DATA));
@@ -269,7 +313,8 @@ package page.homepages
 					}else{
 						img.addEventListener(MouseEvent.CLICK,onLifeWayClick);
 						img.addEventListener(Image.GET_DATA,function(evt:Event):void{
-							var nameLebel:Label = new Label(evt.currentTarget.info.li_name,18/evt.currentTarget.scaleY);
+							var nameLebel:Label = new Label(evt.currentTarget.info.li_name,15/evt.currentTarget.scaleY);
+							nameLebel.color = 0x646464;
 							nameLebel.width = 150/evt.currentTarget.scaleY;
 							nameLebel.height = 30/evt.currentTarget.scaleY;
 							nameLebel.x = 3;
@@ -297,7 +342,7 @@ package page.homepages
 					urlList.push(Common.url+"furniture/images/"+obj.sp_logo+".jpg");
 				}
 				
-				spaceContainer.dataSource(urlList,170,30,null);
+				spaceContainer.dataSource(urlList,170,12,null);
 				
 				var index:int = 0;
 				for each(var img:Image in spaceContainer.scroller.btnArr){
@@ -307,7 +352,8 @@ package page.homepages
 					//生成空间名字label
 					img.addEventListener(Image.GET_DATA,function(evt:Event):void{
 						
-						var nameLebel:Label = new Label(evt.currentTarget.info.sp_name,18/evt.currentTarget.scaleY);
+						var nameLebel:Label = new Label(evt.currentTarget.info.sp_name,15/evt.currentTarget.scaleY);
+						nameLebel.color = 0x646464;
 						nameLebel.width = 150/evt.currentTarget.scaleY;
 						nameLebel.height = 40/evt.currentTarget.scaleY;
 						nameLebel.x = 3;

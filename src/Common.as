@@ -36,6 +36,10 @@ package
 			
 		}		
 		
+		public static function RGB(r:int,g:int,b:int):uint{
+			return uint(0xff|(r<<16)|(g<<8)|b);
+		}
+		
 		public static function plistToDictionary(plist:XML):void{
 			var dic:Dictionary = new Dictionary();
 			currentRoomDicDic = new Dictionary();

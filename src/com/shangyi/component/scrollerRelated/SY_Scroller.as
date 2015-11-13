@@ -138,8 +138,15 @@ package com.shangyi.component.scrollerRelated
 		
 		private var _size:int;
 		private var _lines:int;
-		public function dataSource(data:Array,space:int,offset:int,func:Function = null,selectedIndex:int = 0,lines:int = 1):void{
+		private var _lineOffset:Number;
+		public function dataSource(data:Array,space:int,offset:int,func:Function = null,selectedIndex:int = 0,lines:int = 1,lineOffset:Number = 0):void{
 			this.offset = offset;//space + offset;
+			if(lineOffset != 0){
+				this._lineOffset = lineOffset;
+			}else{
+				this._lineOffset = offset;
+			}
+			
 			var index:int = 0;
 			var size:int;
 			var a:Number;
@@ -204,14 +211,14 @@ package com.shangyi.component.scrollerRelated
 			if(type == 0){
 				btn.width = (_size/btn.height)*btn.width;
 				btn.height = _size;
-				btn.x = (Math.floor(btn.index/_lines))*(this.offset+btn.width);
+				btn.x = (Math.floor(btn.index/_lines))*(this._lineOffset+btn.width);
 				btn.y = (btn.index%_lines)*(_size + offset);
 			}else{
 				btn.height = (_size/btn.width)*btn.height;
 				btn.width = _size;
 				
 				btn.x = (btn.index%_lines)*(_size + offset);
-				btn.y = (Math.floor(btn.index/_lines))*(this.offset+btn.height);
+				btn.y = (Math.floor(btn.index/_lines))*(this._lineOffset+btn.height);
 			}
 		}
 		

@@ -11,7 +11,7 @@ package page.homepages
 		private var _alpha:Number;
 		private var rootx:AdverPointBtn;
 		public var index:int;
-		public function AdverPointBtn(_r:Number,_color:uint = 0x242424,_alpha:Number = .8)
+		public function AdverPointBtn(_r:Number,_color:uint = 0x646464,_alpha:Number = .8)
 		{
 
 			this.graphics.beginFill(_color,_alpha);
@@ -32,7 +32,7 @@ package page.homepages
 //				var g:Number = _color>>8 & 0xff;
 //				var b:Number = _color & 0xff;					
 //				var result:uint = (r-20)<<16|(g-20)<<8|(b-20);
-				this.graphics.beginFill(0xbbbbbb,_alpha);
+				this.graphics.beginFill(Common.RGB(58,148,228),_alpha);
 				this.graphics.drawCircle(0,0,_r);
 				this.graphics.endFill();
 			}else{

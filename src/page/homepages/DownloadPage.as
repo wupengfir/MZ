@@ -48,11 +48,11 @@ package page.homepages
 			<root>
 				<object name="labelName" x="230" y="20"/>
 				<object name="labelProgress" x="300" y="110"/>
-				<object name="imageLogo" x="20" y="20"/>
-				<object name="btnDownload" x="230" y="100"/>
+				<object name="imageLogo" x="15" y="20"/>
+				<object name="btnDownload" x="230" y="80"/>
 				<object name="scroller" x="10" y="150"/>	
-				<object name="labelNeirong" x="10" y="350"/>
-				<object name="labelNeirongText" x="10" y="380"/>
+				<object name="labelNeirong" x="10" y="355"/>
+				<object name="labelNeirongText" x="10" y="385"/>
 			</root>
 //<root>
 //<object name="labelName" x="200" y="20"/>
@@ -73,6 +73,9 @@ package page.homepages
 			imageLogo.height = 100;
 			labelNeirongText.width = 600;
 			labelNeirongText.height = 100;
+			labelName.width = 200;
+			labelNeirong.color = 0x646464;
+			labelNeirongText.color = 0x646464;
 			labelProgress.width = 300;
 			labelNeirongText.textField.wordWrap = true;
 			setCloseBtn(550,0);
@@ -213,7 +216,7 @@ package page.homepages
 				urlList.push(Common.url+"furniture/images/"+obj.i_name+".jpg");
 			}
 			
-			scroller.dataSource(urlList,300,30,null);
+			scroller.dataSource(urlList,300,5,null);
 			
 		}
 	}

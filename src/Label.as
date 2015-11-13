@@ -10,7 +10,7 @@ package
 		private var _text:String = "";
 		public var textField:TextField = new TextField();
 		private var textFormat:TextFormat = new TextFormat();
-		public function Label(_text:String = "",s:Number = 14)
+		public function Label(_text:String = "",s:Number = 15)
 		{
 			this._text = _text;
 			addChild(textField);
@@ -20,6 +20,7 @@ package
 			textField.wordWrap = true;
 //			textField.setTextFormat(textFormat);
 			this.font = "simHei";
+			this.color = 0x333333;
 		}
 		
 		override public function set width(_width:Number):void{

@@ -50,6 +50,7 @@ package com.shangyi.component.buttonRelated
 		}
 		
 		private function onClick(e:MouseEvent):void{
+			e.stopImmediatePropagation();
 			if(_selected){
 				_selected = false;
 				drawNormal();

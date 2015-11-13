@@ -8,6 +8,7 @@ package page.functionpage
 	import page.functionpage.config.ConfigPage;
 	import page.functionpage.pricesync.PriceSynchronizePage;
 	import page.functionpage.update.UpdatePage;
+	import page.homepages.HomePage;
 	import page.order.XorderListPage;
 	
 	public class FunctionPage extends Page
@@ -55,6 +56,7 @@ package page.functionpage
 				(Common.MAIN as Main).functionLayer.getChildAt(i).visible = false;
 			}
 			(Common.MAIN as Main).functionLayer.visible = false;
+			HomePage.allSpacePage.visible = false;
 		}
 		
 		private function onthisClick(e:MouseEvent):void{
@@ -67,14 +69,14 @@ package page.functionpage
 			
 			
 			if(Common.checkClick(220/this.backImage.scaleX,0,70/this.backImage.scaleX,65/this.backImage.scaleY,e)){
-				if(!orderpage){
-					orderpage = new XorderListPage();
-				}else{
-					orderpage.visible = true;
-					orderpage.loadOrders();
-				}
-				
-				(Common.MAIN as Main).functionLayer.addChild(orderpage);
+//				if(!orderpage){
+//					orderpage = new XorderListPage();
+//				}else{
+//					orderpage.visible = true;
+//					orderpage.loadOrders();
+//				}
+//				
+//				(Common.MAIN as Main).functionLayer.addChild(orderpage);
 			}
 			
 			

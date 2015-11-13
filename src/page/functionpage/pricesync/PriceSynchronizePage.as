@@ -28,8 +28,12 @@ package page.functionpage.pricesync
 			addChild(image);
 			
 			image.addEventListener(MouseEvent.CLICK,onClick);
-			
+			addEventListener(MouseEvent.CLICK,onBackClick);
 			synchronize();
+		}
+		
+		private function onBackClick(e:MouseEvent):void{
+			if(e.target != image)visible = false;
 		}
 		
 		private function onClick(e:MouseEvent):void{

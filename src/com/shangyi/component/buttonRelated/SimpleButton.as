@@ -17,11 +17,12 @@ package com.shangyi.component.buttonRelated
 		private var text:TextField = new TextField();
 		public var round:Boolean;
 		private var textFormat:TextFormat;
-		public function SimpleButton(_width:Number,_height:Number,round:Boolean = false,_color:uint = 0x483d8b,_alpha:Number = .8)
+		public function SimpleButton(_width:Number,_height:Number,round:Boolean = false,_color:uint = 0x483d8b,_alpha:Number = .8,size:Number = 20)
 		{
 			textFormat = new TextFormat();
-			textFormat.size = "20";
-			textFormat.font = "SimHei"
+			textFormat.size = size;
+			textFormat.font = "SimHei";
+			textFormat.color = 0x646464;
 			text.setTextFormat(textFormat);
 			this.round = round; 
 			this.graphics.beginFill(_color,_alpha);

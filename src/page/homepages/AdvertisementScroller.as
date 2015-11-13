@@ -27,7 +27,7 @@ package page.homepages
 		public function AdvertisementScroller()
 		{
 			mask1.graphics.beginFill(0,0);
-			mask1.graphics.drawRect(0,0,1200,340);
+			mask1.graphics.drawRect(0,0,1200,370);
 			mask1.graphics.endFill();
 			addChild(mask1);
 			mask = mask1;
@@ -81,7 +81,7 @@ package page.homepages
 				var btn:AdverPointBtn = new AdverPointBtn(5);
 				btn.index = i;
 				btn.x = i*30+540;
-				btn.y = 300;
+				btn.y = 350;
 				btnContainer.addChild(btn);
 				btn.addEventListener(MouseEvent.CLICK,onClick);
 				btnList.push(btn);

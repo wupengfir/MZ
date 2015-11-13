@@ -35,6 +35,7 @@
 	import page.room.VideoSelectPage;
 	
 	import user.UserConfig;
+	import user.UserHelpPage;
 	import user.UserInfo;
 
 	
@@ -57,7 +58,7 @@
 		public var loadingPage:LoadingMc = new LoadingMc();
 		
 		private var maskp:Page = new Page();
-		
+		private var video:VideoContainer = new VideoContainer(false);
 		public function Main()
 		{
 
@@ -71,14 +72,29 @@
 			Common.SCREEN_SCALEX = this.scaleX = 1/2;
 			Common.SCREEN_SCALEY = this.scaleY = 1/2;
 			basePath = File.applicationDirectory.url;
-			init();
+			
 			
 			maskp.drawBack();
 			addChild(maskp);
 			this.mask = maskp;
 			
+			addChild(video);
+			video.addEventListener(VideoContainer.COMPLETE,onPlayEnd);
+			init();
+			
 			//自适应
-			//stage.addEventListener (Event.RESIZE,test);  			
+			stage.addEventListener (Event.RESIZE,test);  			
+		}
+		
+		private function onPlayEnd(e:Event):void{
+			addChild(new LoginPage);
+			//UserConfig.userConfigData.data.firstUse = null;
+			if(UserConfig.userConfigData.data.firstUse == null){
+				UserConfig.userConfigData.data.firstUse = false;
+				UserConfig.userConfigData.flush();
+				addChild(new UserHelpPage);
+			}
+			
 		}
 		
 		private function onStageXClick (e:MouseEvent):void {  
@@ -94,7 +110,10 @@
 		
 		private function init():void{
 			loadXml();
-			showLogo();
+			//showLogo();
+			video.playSt(Main.basePath+"data/img/main.flv");
+			video.width = Common.MAX_WIDTH;
+			video.height = Common.MAX_HEIGHT;
 			addChild(normalLayer);
 			addChild(functionLayer);
 			addChild(roomLayer);
