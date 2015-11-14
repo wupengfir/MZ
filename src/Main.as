@@ -83,7 +83,7 @@
 			init();
 			
 			//自适应
-			stage.addEventListener (Event.RESIZE,test);  			
+			//stage.addEventListener (Event.RESIZE,test);  			
 		}
 		
 		private function onPlayEnd(e:Event):void{

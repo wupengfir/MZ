@@ -10,6 +10,8 @@ package page.order
 	import json.JsonData;
 	import json.JsonDecoder;
 	
+	import page.alertpage.Confirm;
+	
 	import user.UserInfo;
 	
 	public class XorderListPage extends Page
@@ -95,14 +97,23 @@ package page.order
 		}
 		
 		private function createOrderDetail(e:MouseEvent):void{
-			if(e.target == e.currentTarget)
-			addChild(new OrderDetailPage(e.currentTarget.data));
-			if((e.currentTarget.data as OrderData).type == "server"){
-				var id:String = (e.currentTarget.data as OrderData).orderId.toString();
-			//	var js:String = user
-				Common.loadURL("furniture/action/order/iosOrderScart?JSESSIONID="+UserInfo.sessionID+"&orderid="+id,onSaveUploaded,null);
-			}
-			
+			if(e.target == e.currentTarget){
+				var dp:OrderDetailPage;
+				if((e.currentTarget.data as OrderData).type == "server"){
+					dp = new OrderDetailPage(e.currentTarget.data,"server");
+					var id:String = (e.currentTarget.data as OrderData).orderId.toString();
+					var js:String = UserInfo.userOrdersDatabase.data.orderlist[id];
+					var orderDetails:Object = JSON.parse(js);
+					dp.showqingdan(orderDetails);
+				}else{
+					dp = new OrderDetailPage(e.currentTarget.data,"local");
+					var id:String = (e.currentTarget.data as OrderData).orderNo.toString();
+					var js:String = UserInfo.userOrdersDatabase.data.orderlist[id];
+					var orderDetails:Object = JSON.parse(js);
+					dp.showqingdan(orderDetails);
+				}
+				addChild(dp);
+			}			
 		}
 		
 		private function onSaveUploaded(e:Event):void{

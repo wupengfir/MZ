@@ -20,14 +20,14 @@ package page.order
 		private var productTypeLabel:Label = new Label();
 		private var numLabel:Label = new Label();
 		private var priceLabel:Label = new Label();
-		public var info:Dictionary;
+		public var info:Object;
 		public var type:String;
 		private var deleteBtn:Image = new Image(Main.basePath + "data/img/close.png");
 		private var plusBtn:Image = new Image(Main.basePath + "data/img/plus.png");
 		private var minusBtn:Image = new Image(Main.basePath + "data/img/minus.png");
 		
 		private var offsetX:Number = -20;
-		public function ProductInfo(data:Dictionary)
+		public function ProductInfo(data:Object)
 		{
 				this.type = data["name"];
 				info = data;

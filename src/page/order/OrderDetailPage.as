@@ -5,12 +5,19 @@ package page.order
 	import com.shangyi.component.scrollerRelated.Scroller;
 	
 	import flash.display.Shape;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 	
+	import json.JsonData;
+	import json.JsonDecoder;
+	
 	import page.alertpage.Alert;
+	import page.alertpage.Confirm;
+	
+	import user.UserInfo;
 	
 	public class OrderDetailPage extends Page
 	{
@@ -38,19 +45,25 @@ package page.order
 		public var label4:Label = new Label("单价:",20);
 		public var label5:Label = new Label("小计:",20);
 		public var line:Shape = new Shape();
+		public var type:String;
+		
+		private var orderData:Object;
+		public static var instance:OrderDetailPage;
 		private var ps:XML = 
 			<root>
 				<object name="line" x="0" y="220"/>
 				<object name="label1" x="60" y="230"/>
-				<object name="label2" x="307" y="230"/>
-				<object name="label3" x="571" y="230"/>
-				<object name="label4" x="911" y="230"/>
-				<object name="label5" x="1112" y="230"/>
+				<object name="label2" x="357" y="230"/>
+				<object name="label3" x="760" y="230"/>
+				<object name="label4" x="600" y="230"/>
+				<object name="label5" x="1008" y="230"/>
 			</root>
 		
-		public function OrderDetailPage(data:OrderData)
+		public function OrderDetailPage(data:OrderData,type:String = "server")
 		{
+			instance = this;
 			this.data = data;
+			this.type = type;
 			createSave();
 			showData();
 			
@@ -131,8 +144,8 @@ package page.order
 			userAddressText.width = 600;
 			userPhoneText.width = 150;
 			guideText.width = 440+374;			
-			productInfoScroller.x = 12;
-			productInfoScroller.y = 220;
+			productInfoScroller.x = 30;
+			productInfoScroller.y = 275;
 			
 			noticeLabel.x = 500;
 			noticeLabel.y = 680;
@@ -142,10 +155,48 @@ package page.order
 			noticeLabel.visible = false;
 			saveContainer.addChild(noticeLabel);
 			
-			saveState.addEventListener(MouseEvent.CLICK,saveOrder);
+			saveState.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
+				Confirm.confirm("确认保存订单",e.currentTarget);
+			});
+			saveState.addEventListener(Confirm.YES,saveOrder);
 			closeImage.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
 				hide();
 			});
+		}
+		
+		public function showqingdan(js:Object):void{
+			if(js!=null){
+				this.orderData = js;
+			}		
+			var i:int = 0;
+			productInfoScroller.clearContent();
+			for each(var product:Object in this.orderData.product){
+				var info:RealOrderProductInfoView = new RealOrderProductInfoView(product);
+				info.addEventListener(Confirm.YES,function(e:Event){
+					var dob:Object = (e.currentTarget as RealOrderProductInfoView).data;
+					for(var i:int = 0;i<orderData.product.length;i++){
+						if(orderData.product[i] == dob){
+							orderData.product.splice(i,1);
+							break;
+						}
+					}
+					showqingdan(null);
+				});
+				info.y = i*50;
+				i++;
+				productInfoScroller.addChild(info);
+			}
+			setZongjia();
+		}
+		private var total:Number = 0;
+		public function setZongjia():void{
+			total = 0;
+			for each(var product:Object in orderData.product){
+				
+				total += Number(product["sc_money"])*Number(product["sc_number"]);
+			}
+			
+			zongjia.text = "总价:" + total;
 		}
 		
 		private function saveOrder(e:MouseEvent):void{
@@ -159,34 +210,45 @@ package page.order
 //				i++;
 //			}
 //			var key:String = i.toString();
-//			
-//			var jsonObject:Object = new Object();
-//			jsonObject.to_address = userAddressText.text;
-//			jsonObject.to_totalPrice = zongjia.text;
-//			jsonObject.to_name = userNameText.text;
-//			jsonObject.orderNo = key;
-//			jsonObject.to_salesman = guideText.text;
-//			jsonObject.to_tel = userPhoneText.text;
-//			var productList:Array = new Array();
-//			
-//			for each(var product:Dictionary in orderInfoDic[Common.currentPath+"_"+kongjian]){
-//				
-//				var productData:Object = new Object();
-//				productData.sc_name = product["brandName"];
-//				productData.sc_money = product["price"];
-//				productData.sc_number = product["num"];
-//				productData.sc_guige = product["guige"];
-//				productData.sc_prid = product["productId"];
-//				productList.push(productData);
-//			}
-//			jsonObject.product = productList;
-//			
-//			var jsonString:String = JSON.stringify(jsonObject);
-//			localOrders.data.orderlist[key] = jsonString;
-//			localOrders.flush();
-//			Common.loadURL("furniture/action/order/iosSaveTempOrder?JSESSIONID="+UserInfo.sessionID+"&ordersJson="+"["+jsonString+"]",onSaveUploaded,null);
-//			Alert.alert("订单已保存");
+			
+			var jsonObject:Object = new Object();
+			jsonObject.to_address = data.customerAddress;
+			jsonObject.to_name = data.customerName;
+			jsonObject.to_id = (this.type == "server"?data.orderId:"0");
+			jsonObject.to_salesman = data.customerReceiverName;
+			jsonObject.to_tel = data.customerPhone;
+			var productList:Array = new Array();
+			
+			for each(var product:Object in orderData.product){
+				
+				var productData:Object = new Object();
+				productData.sc_money = product["sc_money"];
+				productData.sc_number = product["sc_number"];
+				productData.sc_prid = product["sc_prid"];
+				productList.push(productData);
+			}
+			jsonObject.product = productList;
+			
+			var jsonString:String = JSON.stringify(jsonObject);
+			Common.loadURL("furniture/action/order/iosSaveOrder?JSESSIONID="+UserInfo.sessionID+"&ordersJson="+jsonString,onSaveUploaded,null);
 		}
+		
+		private function onSaveUploaded(e:Event):void{
+			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
+			trace(e.currentTarget.data);
+			if(data.success){
+//				var so:SharedObject = UserInfo.userLocalOrderData;
+//				var database:SharedObject = UserInfo.userOrdersDatabase;
+//				for each(var obj:Object in data.dataValue.orders){	
+//					database.data.orderlist[obj.orderId.toString()] = so.data.orderlist[obj.orderNo];
+//					so.data.orderlist[obj.orderNo] = "";					
+//				}
+//				database.flush();
+//				so.flush();
+			}
+			Alert.alert("订单已上传");
+		}
+		
 		
 	}
 }
