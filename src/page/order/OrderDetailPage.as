@@ -6,7 +6,9 @@ package page.order
 	
 	import flash.display.Shape;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
+	import flash.net.SharedObject;
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
@@ -156,7 +158,7 @@ package page.order
 			saveContainer.addChild(noticeLabel);
 			
 			saveState.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
-				Confirm.confirm("确认保存订单",e.currentTarget);
+				Confirm.confirm("确认保存订单",e.currentTarget as EventDispatcher);
 			});
 			saveState.addEventListener(Confirm.YES,saveOrder);
 			closeImage.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void{
@@ -199,7 +201,7 @@ package page.order
 			zongjia.text = "总价:" + total;
 		}
 		
-		private function saveOrder(e:MouseEvent):void{
+		private function saveOrder(e:Event):void{
 			
 //			var localOrders:SharedObject = UserInfo.userLocalOrderData;
 //			if(localOrders.data.orderlist == null){
@@ -222,8 +224,8 @@ package page.order
 			for each(var product:Object in orderData.product){
 				
 				var productData:Object = new Object();
-				productData.sc_money = product["sc_money"];
-				productData.sc_number = product["sc_number"];
+				productData.sc_money = Number(product["sc_money"]);
+				productData.sc_number = Number(product["sc_number"]);
 				productData.sc_prid = product["sc_prid"];
 				productList.push(productData);
 			}
@@ -234,17 +236,21 @@ package page.order
 		}
 		
 		private function onSaveUploaded(e:Event):void{
-			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
+			var dataJson:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
 			trace(e.currentTarget.data);
-			if(data.success){
-//				var so:SharedObject = UserInfo.userLocalOrderData;
-//				var database:SharedObject = UserInfo.userOrdersDatabase;
-//				for each(var obj:Object in data.dataValue.orders){	
-//					database.data.orderlist[obj.orderId.toString()] = so.data.orderlist[obj.orderNo];
-//					so.data.orderlist[obj.orderNo] = "";					
-//				}
-//				database.flush();
-//				so.flush();
+			if(dataJson.success){
+				if(type == "local"){
+					var so:SharedObject = UserInfo.userLocalOrderData;
+					so.data.orderlist[data.orderId] = "";	
+					so.flush();
+				}else{
+					var database:SharedObject = UserInfo.userOrdersDatabase;
+					database.data.orderlist[data.orderId] = "";				
+					database.flush();
+				}
+				
+				
+				
 			}
 			Alert.alert("订单已上传");
 		}

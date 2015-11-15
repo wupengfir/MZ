@@ -40,6 +40,7 @@ package page.order
 		public function OrderDataView(_data:OrderData)
 		{
 			this.data = _data;
+			this.type = _data.type;
 			initByPageScript(ps);
 			customerNameLabel.text = data.customerName;
 			customerAddressLabel.text = data.customerAddress;
@@ -69,6 +70,7 @@ package page.order
 				so.data.orderlist[this.data.orderNo] = "";				
 				so.flush();
 				XorderListPage.instance.loadOrders();
+				Alert.alert("已删除");
 			}else{
 				Common.loadURL("furniture/action/order/iosOrderDelete?JSESSIONID="+UserInfo.sessionID+"&orderid="+this.data.orderId,onDeleteed,null);	
 			}
