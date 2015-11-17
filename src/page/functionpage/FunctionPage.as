@@ -56,7 +56,10 @@ package page.functionpage
 				(Common.MAIN as Main).functionLayer.getChildAt(i).visible = false;
 			}
 			(Common.MAIN as Main).functionLayer.visible = false;
-			HomePage.allSpacePage.visible = false;
+			if(HomePage.allSpacePage){
+				HomePage.allSpacePage.visible = false;
+			}
+			
 		}
 		
 		private function onthisClick(e:MouseEvent):void{

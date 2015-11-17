@@ -213,16 +213,35 @@ package page.order
 //			}
 //			var key:String = i.toString();
 			
+//			var jsonObject:Object = new Object();
+//			jsonObject.to_address = data.customerAddress;
+//			jsonObject.to_name = data.customerName;
+//			jsonObject.to_id = (this.type == "server"?data.orderId:"0");
+//			jsonObject.to_salesman = data.customerReceiverName;
+//			jsonObject.to_tel = data.customerPhone;
+//			var productList:Array = new Array();
+//			
+//			for each(var product:Object in orderData.product){
+//				
+//				var productData:Object = new Object();
+//				productData.sc_money = Number(product["sc_money"]);
+//				productData.sc_number = Number(product["sc_number"]);
+//				productData.sc_prid = product["sc_prid"];
+//				productList.push(productData);
+//			}
+//			jsonObject.product = productList;
+			
+	///////////////////////////////////////////////////////////////////////////////		
 			var jsonObject:Object = new Object();
-			jsonObject.to_address = data.customerAddress;
-			jsonObject.to_name = data.customerName;
+			jsonObject.to_address = userAddressText.text;
+			jsonObject.to_totalPrice = total.toString();
+			jsonObject.to_name = userNameText.text;
 			jsonObject.to_id = (this.type == "server"?data.orderId:"0");
-			jsonObject.to_salesman = data.customerReceiverName;
-			jsonObject.to_tel = data.customerPhone;
+			jsonObject.to_salesman = guideText.text;
+			jsonObject.to_tel = userPhoneText.text;
 			var productList:Array = new Array();
 			
 			for each(var product:Object in orderData.product){
-				
 				var productData:Object = new Object();
 				productData.sc_money = Number(product["sc_money"]);
 				productData.sc_number = Number(product["sc_number"]);
@@ -232,7 +251,7 @@ package page.order
 			jsonObject.product = productList;
 			
 			var jsonString:String = JSON.stringify(jsonObject);
-			Common.loadURL("furniture/action/order/iosSaveOrder?JSESSIONID="+UserInfo.sessionID+"&ordersJson="+jsonString,onSaveUploaded,null);
+			Common.loadURL("furniture/action/order/iosSaveOrder?JSESSIONID="+UserInfo.sessionID+"&orderJson="+jsonString,onSaveUploaded,null);
 		}
 		
 		private function onSaveUploaded(e:Event):void{
