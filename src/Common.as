@@ -5,6 +5,7 @@ package
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
+	import flash.filesystem.File;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
@@ -30,7 +31,7 @@ package
 		public static var currentPath:String = "mzchunjing";
 		public static var currentRoomData:Dictionary;
 		public static var currentRoomDicDic:Dictionary;
-		
+		public static var rootDirc:File = File.applicationDirectory;
 		public function Common()
 		{
 			

@@ -46,8 +46,8 @@ package page.homepages
 					urlList.push(Common.url+"furniture/images/"+obj.sp_logo+".jpg");
 				}
 				
-				spaceContainer.dataSource(urlList,170,15,null,0,6,45);
-				
+				spaceContainer.dataSource(urlList,80,15,null,0,6,45);
+				spaceContainer.setRoundImages();
 				var index:int = 0;
 				for each(var img:Image in spaceContainer.scroller.btnArr){
 					img.info = dataList[index];

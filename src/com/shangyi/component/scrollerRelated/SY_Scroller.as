@@ -81,6 +81,12 @@ package com.shangyi.component.scrollerRelated
 			this.selectAble = false;
 		}
 		
+		public function setRoundImages():void{
+			for each(var i:Image in scroller.btnArr){
+				i.setRoundMask();
+			}
+		}
+		
 		public function set selectAble(flag:Boolean):void{
 				scroller.selectAble = flag;
 		}
@@ -209,16 +215,16 @@ package com.shangyi.component.scrollerRelated
 			//trace("ordered......");
 			var btn:ImageButton = e.currentTarget as ImageButton;
 			if(type == 0){
-				btn.width = (_size/btn.height)*btn.width;
+				btn.width = (_size/btn.back.height)*btn.back.width;
 				btn.height = _size;
-				btn.x = (Math.floor(btn.index/_lines))*(this._lineOffset+btn.width);
+				btn.x = (Math.floor(btn.index/_lines))*(this._lineOffset+btn.back.width*btn._width/btn.back.width);
 				btn.y = (btn.index%_lines)*(_size + offset);
 			}else{
-				btn.height = (_size/btn.width)*btn.height;
+				btn.height = (_size/btn.back.width)*btn.back.height;
 				btn.width = _size;
 				
 				btn.x = (btn.index%_lines)*(_size + offset);
-				btn.y = (Math.floor(btn.index/_lines))*(this._lineOffset+btn.height);
+				btn.y = (Math.floor(btn.index/_lines))*(this._lineOffset+btn.back.height*btn._height/btn.back.height);
 			}
 		}
 		

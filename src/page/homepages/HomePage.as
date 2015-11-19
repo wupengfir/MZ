@@ -41,7 +41,7 @@ package page.homepages
 		//private var advertiseContainer:SY_Scroller = new SY_Scroller(1200,340,1200,340);
 		private var advertiseContainer:AdvertisementScroller = new AdvertisementScroller();
 		private var lifeStyleContainer:SY_Scroller = new SY_Scroller(1200,150,1200,150,0xffffff,0,false);
-		private var spaceContainer:SY_Scroller = new SY_Scroller(1200,130,1200,130);
+		private var spaceContainer:SY_Scroller = new SY_Scroller(1200,130,1200,130,0xffffff,0,false);
 		
 		
 		
@@ -271,7 +271,7 @@ package page.homepages
 //				}
 				/////////////////////////
 				lifeStyleContainer.dataSource(urlList,290,12,null);
-				
+				lifeStyleContainer.setRoundImages();
 				var index:int = 0;
 //				UserInfo.diyDataLoaded.push("mzchunjing");
 //				UserInfo.diyDataLoaded.push("mzdzh");
@@ -343,7 +343,7 @@ package page.homepages
 				}
 				
 				spaceContainer.dataSource(urlList,170,12,null);
-				
+				spaceContainer.setRoundImages();
 				var index:int = 0;
 				for each(var img:Image in spaceContainer.scroller.btnArr){
 					img.info = dataList[index];

@@ -44,11 +44,14 @@ package com.shangyi.component.imageRelated
 		protected var _selectAble:Boolean = true;
 		
 		public var keepRatio:Boolean = false;
+		public var roundMask:Sprite = new Sprite();
+		public var roundMaskFlag:Boolean = false;
 		public function Image(source:String = null,bm:Boolean = false,_w:Number = 0,_h:Number = 0,keep:Boolean = false)
 		{
 			back = new Bitmap();
 			back.smoothing = true;
 			addChild(back);
+			addChild(roundMask);
 			shape = new Shape();
 			addChild(shape);
 			if(source){
@@ -76,6 +79,18 @@ package com.shangyi.component.imageRelated
 		public function setGray():void{
 			var filter:ColorMatrixFilter = new ColorMatrixFilter([0.3,0.6,0,0,0,0.3,0.6,0,0,0,0.3,0.6,0,0,0,0,0,0,1,0]) ;
 			this.filters = [filter];
+		}
+		
+		public function setRoundMask():void{
+			if(this.back.bitmapData != null){		
+				roundMask.graphics.clear();
+				roundMask.graphics.beginFill(0,0);
+				roundMask.graphics.drawRoundRect(0,0,this.back.bitmapData.width,this.back.bitmapData.height,back.bitmapData.width/10);
+				roundMask.graphics.drawRect(0,this.back.bitmapData.height,this.back.bitmapData.width,this.back.bitmapData.height);
+				roundMask.graphics.endFill();
+				this.mask = roundMask;			
+			}
+			this.roundMaskFlag = true;
 		}
 		
 		public function cancelGray():void{
@@ -114,6 +129,9 @@ package com.shangyi.component.imageRelated
 				}
 				if(_height != 0){
 					this.height = _height;
+				}
+				if(roundMaskFlag){
+					setRoundMask();
 				}
 				selected = _selected;
 				loading = false;

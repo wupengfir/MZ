@@ -29,7 +29,7 @@ package page.alertpage
 			a.alpha = 0.5;
 			a.text.x = (w - a.text.textField.textWidth)/2-1;
 			a.text.y = (h - a.text.textField.textHeight)/2-1;
-			TweenLite.to(a,1,{alpha:delay,onComplete:function():void{
+			TweenLite.to(a,delay,{alpha:1,onComplete:function():void{
 				a.visible = false
 			}});
 		}

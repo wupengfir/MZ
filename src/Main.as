@@ -83,7 +83,8 @@
 			init();
 			
 			//自适应
-			//stage.addEventListener (Event.RESIZE,test);  			
+			stage.addEventListener (Event.RESIZE,test);  	
+			Alert.alert(File.applicationDirectory.nativePath,10);
 		}
 		
 		private function onPlayEnd(e:Event):void{

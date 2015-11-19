@@ -64,15 +64,16 @@ package page.room
 					var container:Page = new Page();
 					container.info = obj;
 					var logo:Image = new Image(Common.getImageUrljpg(obj.li_logo));
-					
+					logo.setRoundMask();
 					var label:Label = new Label(obj.li_name,20);
 					var roomScroller:SY_Scroller = new SY_Scroller(Common.MAX_WIDTH,140,Common.MAX_WIDTH,140);
+					roomScroller.x = 10;
 					var array:Array = new Array();
 					for each(var o:Object in obj.spaces){
 						array.push(Common.getImageUrljpg(o.sp_logo));
 					}
-					roomScroller.dataSource(array,300,30,onRoomClick);
-					
+					roomScroller.dataSource(array,300,15,onRoomClick);
+					roomScroller.setRoundImages();
 					var index:int = 0;
 					for each(var img:Image in roomScroller.scroller.btnArr){
 						img.info = obj.spaces[index];

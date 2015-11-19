@@ -10,6 +10,7 @@ package page.order
 	import json.JsonData;
 	import json.JsonDecoder;
 	
+	import page.alertpage.Alert;
 	import page.alertpage.Confirm;
 	
 	import user.UserInfo;
@@ -103,6 +104,10 @@ package page.order
 					dp = new OrderDetailPage(e.currentTarget.data,"server");
 					var id:String = (e.currentTarget.data as OrderData).orderId.toString();
 					var js:String = UserInfo.userOrdersDatabase.data.orderlist[id];
+					if(js == null||js == ""||js == undefined){
+						Alert.alert("无本地订单数据");
+						return;
+					}
 					var orderDetails:Object = JSON.parse(js);
 					dp.showqingdan(orderDetails);
 				}else{

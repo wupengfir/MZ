@@ -217,7 +217,7 @@ package page.homepages
 			}
 			
 			scroller.dataSource(urlList,300,5,null);
-			
+			scroller.setRoundImages();
 		}
 	}
 		
