@@ -267,8 +267,8 @@ package page.order
 					database.data.orderlist[data.orderId] = "";				
 					database.flush();
 				}
-				
-				
+				hide();
+				XorderListPage.instance.loadOrders();
 				
 			}
 			Alert.alert("订单已上传");
