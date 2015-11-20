@@ -73,7 +73,7 @@ package page.functionpage.pricesync
 		}
 		
 		private function onComplete(e:Event):void{
-			var zip:UnZip = new UnZip(File.applicationDirectory.resolvePath(e.target.info).nativePath);			
+			var zip:UnZip = new UnZip(Common.dataDir.resolvePath(e.target.info).nativePath);			
 			zip.addEventListener(Event.COMPLETE,function(e:Event):void{
 				total--;
 				if(total == 0){

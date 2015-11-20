@@ -32,6 +32,7 @@ package page.alertpage
 			TweenLite.to(a,delay,{alpha:1,onComplete:function():void{
 				a.visible = false
 			}});
+			trace(s);
 		}
 		
 	}

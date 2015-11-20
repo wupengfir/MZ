@@ -126,7 +126,7 @@
 //			}
 		}
 		
-		public function drawBack(_width:Number = Common.MAX_WIDTH,_height:Number = Common.MAX_HEIGHT,color:uint = 0xffffff,al:Number = 1):void{
+		public function drawBack(_width:Number = 1200,_height:Number = 900,color:uint = 0xffffff,al:Number = 1):void{
 			graphics.beginFill(color,al);
 			graphics.drawRect(0,0,_width,_height);
 			graphics.endFill();

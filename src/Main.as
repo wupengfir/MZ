@@ -71,7 +71,7 @@
 			Common.SCREEN_HEIGHT = 900;
 			Common.SCREEN_SCALEX = this.scaleX = 1/2;
 			Common.SCREEN_SCALEY = this.scaleY = 1/2;
-			basePath = File.applicationDirectory.url;
+			basePath = Common.dataDir.url+"/";
 			
 			
 			maskp.drawBack();
@@ -84,7 +84,6 @@
 			
 			//自适应
 			stage.addEventListener (Event.RESIZE,test);  	
-			Alert.alert(File.applicationDirectory.nativePath,10);
 		}
 		
 		private function onPlayEnd(e:Event):void{
@@ -112,7 +111,7 @@
 		private function init():void{
 			loadXml();
 			//showLogo();
-			video.playSt(Main.basePath+"data/img/main.flv");
+			video.playSt("data/img/main.flv");
 			video.width = Common.MAX_WIDTH;
 			video.height = Common.MAX_HEIGHT;
 			addChild(normalLayer);
@@ -149,7 +148,7 @@
 		
 		private function loadXml():void{
 			var urlLoader:URLLoader = new URLLoader();
-			urlLoader.load(new URLRequest(basePath + "data/xml/url.xml"));
+			urlLoader.load(new URLRequest("data/xml/url.xml"));
 			urlLoader.addEventListener(Event.COMPLETE,onLoadComplete);
 		}
 

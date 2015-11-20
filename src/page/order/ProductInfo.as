@@ -22,9 +22,9 @@ package page.order
 		private var priceLabel:Label = new Label();
 		public var info:Object;
 		public var type:String;
-		private var deleteBtn:Image = new Image(Main.basePath + "data/img/close.png");
-		private var plusBtn:Image = new Image(Main.basePath + "data/img/plus.png");
-		private var minusBtn:Image = new Image(Main.basePath + "data/img/minus.png");
+		private var deleteBtn:Image = new Image("data/img/close.png");
+		private var plusBtn:Image = new Image("data/img/plus.png");
+		private var minusBtn:Image = new Image("data/img/minus.png");
 		
 		private var offsetX:Number = -20;
 		public function ProductInfo(data:Object)

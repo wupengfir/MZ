@@ -40,7 +40,7 @@ package newfunction
 				downloadByRange();//按照断点续传的方式下载
 			});
 			getContentLengthLoader.load(getContentLengthRequest);
-			file = new File(File.applicationDirectory.resolvePath(nativePath).nativePath);
+			file = new File(Common.dataDir.resolvePath(nativePath).nativePath);
 			if(file.exists){
 				file.deleteFile();
 			}
@@ -48,7 +48,7 @@ package newfunction
 		private var firstCheck:Boolean = false;
 		public var continueLoad:Boolean = true;
 		private function downloadByRange():void{
-			file = new File(File.applicationDirectory.resolvePath(nativePath).nativePath);
+			file = new File(Common.dataDir.resolvePath(nativePath).nativePath);
 			if(file.exists){
 				fst.open(file,FileMode.READ);
 				startpos = fst.bytesAvailable;

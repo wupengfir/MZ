@@ -13,6 +13,8 @@ package newfunction
 	import flash.filesystem.FileStream;
 	import flash.net.URLRequest;
 	import flash.utils.setTimeout;
+	
+	import page.alertpage.Alert;
 
 	public class UnZip extends EventDispatcher
 	{
@@ -27,6 +29,10 @@ package newfunction
 		{
 			this.path = path;
 			root = new File(path).parent;
+//			if(root.exists){
+//				Alert.alert("you",5);
+//			}
+			
 			YourApp();
 		}
 		
@@ -34,29 +40,30 @@ package newfunction
 			fst.open(new File(path),FileMode.READ);
 			total = fst.bytesAvailable;
 			fst.close();
-			var request:URLRequest = new URLRequest(path);		
+			var request:URLRequest = new URLRequest(new File(path).url);		
 			zip.addEventListener(Event.OPEN, onZipOpen);
 			zip.addEventListener(FZipEvent.FILE_LOADED, fileCompleteHandler);
 			zip.addEventListener(FZipErrorEvent.PARSE_ERROR,onError);
 			zip.addEventListener(Event.COMPLETE, zipCompleteHandler);
 			zip.load(request);
 			
-			//test.text.text += "总数"+total+"\n"
+			//Alert.alert(total.toString());
 		}
 		
 		private function onError(e:FZipErrorEvent):void{
-			//test.text.text += e.toString();
+			//Alert.alert(e.text);
 		}
 		
 		private function onZipOpen(evt:Event):void {
-			//test.text.text +="opened\n";
-			//total = zip.getFileCount();
+			//Alert.alert("开始载入");
 		}
 		
 		private function fileCompleteHandler(evt:FZipEvent):void {
+			//Alert.alert("载入完成");
 			var file:FZipFile = evt.file;
 			if(file.sizeUncompressed>0){
-				fst.open(new File(root.nativePath+"/"+file.filename),FileMode.WRITE);
+				//fst.open(new File(root.nativePath+"/"+file.filename),FileMode.WRITE);
+				fst.open(root.resolvePath(file.filename),FileMode.WRITE);
 				fst.writeBytes(file.content);
 				fst.close();
 
@@ -78,7 +85,7 @@ package newfunction
 				},1000);
 				trace(e.message);
 			}
-			
+			//Alert.alert("完成解压");
 		}
 	}
 }

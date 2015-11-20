@@ -17,7 +17,7 @@ package user
 		public function UserHelpPage()
 		{
 			addChild(container);
-			num = new File(File.applicationDirectory.resolvePath("data/img/guide").nativePath).getDirectoryListing().length;
+			num = new File(Common.dataDir.resolvePath("data/img/guide").nativePath).getDirectoryListing().length;
 			for(var i:int = 1;i<=num;i++){
 				var img:Image = new Image("data/img/guide/guide0"+i+".png");
 				img.x = 1200*(i-1);

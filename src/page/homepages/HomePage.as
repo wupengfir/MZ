@@ -258,7 +258,7 @@ package page.homepages
 				for each(var obj:Object in dataList){
 					urlList.push(Common.url+"furniture/images/"+obj.li_logo+".jpg");
 					if(UserInfo.diyDataLoaded.indexOf(obj.li_No) != -1){
-						if(new File(File.applicationDirectory.resolvePath("data/img/"+obj.li_No+"/"+obj.li_No+"_"+UserInfo.userName+".plist").nativePath).exists){
+						if(new File(Common.dataDir.resolvePath("data/img/"+obj.li_No+"/"+obj.li_No+"_"+UserInfo.userName+".plist").nativePath).exists){
 						
 						}else{
 							updatePlistFlag = true;
@@ -278,9 +278,10 @@ package page.homepages
 //				UserInfo.diyDataLoaded.push("mzflx");
 //				UserInfo.userData.data.diyDataLoaded = UserInfo.diyDataLoaded;
 //				UserInfo.userData.flush();
+				var a:Array = UserInfo.diyDataLoaded;
 				for each(var img:Image in lifeStyleContainer.scroller.btnArr){
 					img.info = dataList[index];
-					if(!(new File(File.applicationDirectory.nativePath+"/data/img/"+img.info.li_No).exists)){
+					if(!(new File(Common.dataDir.nativePath+"/data/img/"+img.info.li_No).exists)){
 						if((UserInfo.diyDataLoaded.indexOf(img.info.li_No) != -1)){
 							for(var i:int = 0;i<UserInfo.diyDataLoaded.length;i++){
 								if(UserInfo.diyDataLoaded[i] == img.info.li_No){
@@ -394,6 +395,7 @@ package page.homepages
 				downloadpage.x = 300;
 				downloadpage.y = 150;
 				
+				downloadpage.graphics.clear();
 				downloadpage.graphics.beginFill(0,.5);
 				downloadpage.graphics.drawRect(-300,-150,Common.MAX_WIDTH,Common.MAX_HEIGHT);
 				downloadpage.graphics.endFill();

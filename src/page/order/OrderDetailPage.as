@@ -25,8 +25,8 @@ package page.order
 	{
 		
 		private var saveContainer:Page = new Page();
-		private var closeImage:Image = new Image(Main.basePath + "data/img/fanhuiliebiao.png");
-		private var saveState:Image = new Image(Main.basePath + "data/img/tijiaodingdan.png");
+		private var closeImage:Image = new Image("data/img/fanhuiliebiao.png");
+		private var saveState:Image = new Image("data/img/tijiaodingdan.png");
 		
 		private var userNameText:TextField = new TextField();
 		private var userPhoneText:TextField = new TextField();

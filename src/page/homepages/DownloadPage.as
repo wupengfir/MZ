@@ -101,9 +101,11 @@ package page.homepages
 					completeDic = new Dictionary();
 					downloadList = data.dataValue.lifewayData;
 					totalSize = data.dataValue.filesize;
-					
-					
-					
+					///////////////////////////////////////////////记着删
+					//downloadList = new Array();
+					//downloadList.push(data.dataValue.lifewayData[data.dataValue.lifewayData.length-1]);
+					//downloadList.push(data.dataValue.lifewayData[data.dataValue.lifewayData.length-3]);
+					/////////////////////////////////////////////////////
 					for each(var o:Object in downloadList){
 						var dl:BigFileDownload = new BigFileDownload("data/img/"+o.li_no+"/"+o.ui_name,Common.url+"furniture/data/"+o.li_no+"/"+o.ui_name);
 						dl.addEventListener(ProgressEvent.PROGRESS,onProgress);
@@ -151,7 +153,7 @@ package page.homepages
 			if(index<downloadList.length){
 				var obj:Object = downloadList[index];
 				try{
-					var zip:UnZip = new UnZip(File.applicationDirectory.resolvePath(currentPath + obj.ui_name).nativePath);
+					var zip:UnZip = new UnZip(Common.dataDir.resolvePath(currentPath + obj.ui_name).nativePath);
 				}catch(e:Error){
 					labelProgress.text = "解压失败";
 					return;

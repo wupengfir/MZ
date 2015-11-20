@@ -31,7 +31,7 @@ package
 		public static var currentPath:String = "mzchunjing";
 		public static var currentRoomData:Dictionary;
 		public static var currentRoomDicDic:Dictionary;
-		public static var rootDirc:File = File.applicationDirectory;
+		public static var dataDir:File = File.documentsDirectory.resolvePath("MZ");//File.applicationDirectory;
 		public function Common()
 		{
 			

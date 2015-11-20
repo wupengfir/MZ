@@ -134,7 +134,7 @@ package page.room
 				NoticePage.notice.show();
 			}});
 			MAIN = this;	
-			this.path = File.applicationDirectory.resolvePath("data/img/"+Common.currentPath+"/"+Common.currentColor).nativePath;
+			this.path = Common.dataDir.resolvePath("data/img/"+Common.currentPath+"/"+Common.currentColor).nativePath;
 			path_1 = path;
 			kongjian = roomName;
 			selectableImageContainer = new Sprite();
@@ -898,7 +898,7 @@ package page.room
 		private var hotPointPosDic:Dictionary = new Dictionary();//存储热点	
 		private var hotPointXmlDic:Dictionary = new Dictionary();//存储热点的对应xml		
 		private var appearPointDic:Dictionary = new Dictionary();//存储根据图片决定是否显示的热点
-		private var addToOrderBtn:Image = new Image(Main.basePath + "data/img/addtoorder.png");
+		private var addToOrderBtn:Image = new Image("data/img/addtoorder.png");
 		private var sharedObject:SharedObject;
 		private var biaojied:Boolean = false;
 		
@@ -1177,12 +1177,12 @@ package page.room
 		//		}
 		
 		private var saveContainer:Page = new Page();
-		private var closeImage:Image = new Image(Main.basePath + "data/img/goback.png");
+		private var closeImage:Image = new Image("data/img/goback.png");
 		private var saveData:BitmapData = new BitmapData(Common.MAX_WIDTH,Common.MAX_HEIGHT);
 		private var saveImage:Bitmap = new Bitmap();
 		//private var saveImageBtn:Button = new Button(110,50,110,675);
-		private var saveState:Image = new Image(Main.basePath + "data/img/save.png");
-		private var savedState:Image = new Image(Main.basePath + "img/saved.png");
+		private var saveState:Image = new Image("data/img/save.png");
+		private var savedState:Image = new Image("img/saved.png");
 		//private var closeBtn:Button = new Button(100,50,860,675);
 		
 		private var userNameText:TextField = new TextField();
@@ -1391,7 +1391,7 @@ package page.room
 			var clicked:Boolean = false;
 			for each(var fileName:String in existProducts){
 				var btn:Button = new Button(133,35,30,index*45);
-				btn.buttonSource = [Main.basePath + "img/btn/"+fileName+"_1.png",Main.basePath + "img/btn/"+fileName+"_2.png"];
+				btn.buttonSource = ["img/btn/"+fileName+"_1.png","img/btn/"+fileName+"_2.png"];
 				btn.name = fileName;
 				btn.addEventListener(MouseEvent.CLICK,onBtnClick);
 				btnScroller.addChild(btn);

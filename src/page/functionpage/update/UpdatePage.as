@@ -69,7 +69,7 @@ package page.functionpage.update
 			for each(var u:UpdateSpace in scroller.btnArr){
 				if(u.checkBox.selected){
 					var liName:String = u.dataObj.datavalue[0].li_no;
-					var file:File = new File(File.applicationDirectory.resolvePath("data/img/" + liName).nativePath);
+					var file:File = new File(Common.dataDir.resolvePath("data/img/" + liName).nativePath);
 					if(file.exists){
 						
 						

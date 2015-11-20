@@ -77,7 +77,7 @@ package page.functionpage.update
 		
 		private function onDelete(e:Event):void{
 			var liName:String = dataObj.datavalue[0].li_no;
-			var file:File = new File(File.applicationDirectory.resolvePath("data/img/" + liName).nativePath);
+			var file:File = new File(Common.dataDir.resolvePath("data/img/" + liName).nativePath);
 			if(file.exists){
 				
 				
@@ -186,7 +186,7 @@ package page.functionpage.update
 			if(index<downloadList.length){
 				var obj:Object = downloadList[index];
 				try{
-					var zip:UnZip = new UnZip(File.applicationDirectory.resolvePath(currentPath + obj.ui_name).nativePath);
+					var zip:UnZip = new UnZip(Common.dataDir.resolvePath(currentPath + obj.ui_name).nativePath);
 				}catch(e:Error){
 					labelProgress.text = "解压失败";
 					return;
