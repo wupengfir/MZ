@@ -76,6 +76,25 @@ package page.room
 			setTimeout(function(){video.visible = false;},200);
 		}
 		
+		public function changeRoom(roomName:String):void{
+			var rootDic:Dictionary = Common.currentRoomData[Common.currentPath+"_video"];
+			var stack:Array = new Array();
+			stack.push(rootDic);
+			while(stack.length>0){
+				var currentTarget:Dictionary = stack.pop();
+				if(currentTarget["name"] != null&&currentTarget["name"] == roomName){
+					currentDic = currentTarget;
+					return;
+				}else{
+					if(currentTarget["video"]!=null){
+						for each(var xml:Dictionary in currentTarget["video"]){
+							stack.push(xml);
+						}
+					}
+				}
+			}
+		}
+		
 		private function onBtnClick(e:MouseEvent):void{
 			video.visible = true;
 			currentDic = e.currentTarget.info;

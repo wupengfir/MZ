@@ -568,6 +568,7 @@ package page.room
 		private function onBack(e:MouseEvent):void{		
 			RoomPage.MAIN.remove();
 			if(backtoVideo){
+				VideoSelectPage.vpage.changeRoom(kongjian);
 				VideoSelectPage.vpage.back.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 			}		
 			Common.currentColor = "shense";
