@@ -28,12 +28,12 @@ package com.shangyi.component.buttonRelated
 			var g:Graphics = drawer.graphics;
 			g.clear();
 			g.lineStyle(2,0xffffff);
-			g.drawRoundRect(0,0,60,40,32);
+			g.drawRoundRect(0,10,50,25,25);
 			g.beginFill(0xffffff,0);
-			g.drawRoundRect(1,1,58,38,32);
+			g.drawRoundRect(1,11,48,23,25);
 			g.endFill();
 			g.beginFill(0xffffff,1);
-			g.drawCircle(20,20,20);
+			g.drawCircle(13,22,10);
 			g.endFill();
 		}
 		
@@ -41,11 +41,11 @@ package com.shangyi.component.buttonRelated
 			var g:Graphics = drawer.graphics;
 			g.clear();
 			g.lineStyle(2,0xffffff);
-			g.drawRoundRect(0,0,60,40,32);
-			g.beginFill(0xffffff,.6);
-			g.drawRoundRect(1,1,58,38,32);
+			g.drawRoundRect(0,10,50,25,25);
+			g.beginFill(0xffffff,0.6);
+			g.drawRoundRect(1,11,48,23,25);
 			g.beginFill(0xffffff,1);
-			g.drawCircle(40,20,20);
+			g.drawCircle(37,22,10);
 			g.endFill();
 		}
 		

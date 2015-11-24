@@ -2,6 +2,7 @@ package page.functionpage
 {
 	import com.shangyi.component.base.Page;
 	
+	import flash.display.Shape;
 	import flash.events.MouseEvent;
 	
 	import page.functionpage.changeuser.ChangeUserPage;
@@ -20,11 +21,25 @@ package page.functionpage
 		public static var configpage:ConfigPage;
 		public static var orderpage:XorderListPage;
 		public static var instance:FunctionPage;
+		
+		public var updateSignal:Shape = new Shape();
 		public function FunctionPage()
 		{
 			initPage();
 			instance = this;
+			
+			updateSignal.graphics.beginFill(0xff0000,1);
+			updateSignal.graphics.drawCircle(0,0,5);
+			updateSignal.graphics.endFill();
+			updateSignal.x = 660/this.backImage.scaleX;
+			updateSignal.y = 20;
+			updateSignal.visible = false;
+			addChild(updateSignal);
+			//为了显示更新红点，先实例化
+			updatepage = new UpdatePage();
 		}
+		
+		//public function showUpdate
 		
 		private function initPage():void{
 			this.y = 830;
@@ -126,6 +141,7 @@ package page.functionpage
 					updatepage = new UpdatePage();
 				}else{
 					updatepage.visible = true;
+					updateSignal.visible = false;
 				}
 				
 				(Common.MAIN as Main).functionLayer.addChild(updatepage);

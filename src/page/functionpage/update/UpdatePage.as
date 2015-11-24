@@ -18,6 +18,7 @@ package page.functionpage.update
 	
 	import page.alertpage.Alert;
 	import page.alertpage.Confirm;
+	import page.functionpage.FunctionPage;
 	import page.homepages.HomePage;
 	
 	import user.UserInfo;
@@ -113,6 +114,7 @@ package page.functionpage.update
 						}else{
 							update.button.label = "更新";
 							update.updateAble = true;
+							FunctionPage.instance.updateSignal.visible = true;
 						}
 					}
 				}
