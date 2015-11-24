@@ -89,13 +89,16 @@ package page.room
 					logo.width = 100;
 					logo.height = 75;
 					logo.x = 10;
-					label.x = 150;
+					label.x = 115;
+					label.y = 55;
+					label.size = 15;
+					label.color = 0x505050;
 					label.width = 200;
 					roomScroller.y = 80;
 					container.addChild(logo);
 					container.addChild(label);
 					container.addChild(roomScroller);
-					container.drawLine(0,230,Common.MAX_WIDTH,230);
+					container.drawLine(0,230,Common.MAX_WIDTH,230,0xb2b2b2,1);
 					container.y = i*240;
 					i++;
 					scroller.addChild(container);

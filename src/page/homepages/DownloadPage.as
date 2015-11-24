@@ -46,12 +46,12 @@ package page.homepages
 		public var completeNum:int = 0;
 		private var ps:XML = 
 			<root>
-				<object name="labelName" x="230" y="20"/>
+				<object name="labelName" x="205" y="20"/>
 				<object name="labelProgress" x="300" y="110"/>
 				<object name="imageLogo" x="15" y="20"/>
-				<object name="btnDownload" x="230" y="80"/>
+				<object name="btnDownload" x="190" y="80"/>
 				<object name="scroller" x="10" y="150"/>	
-				<object name="labelNeirong" x="10" y="355"/>
+				<object name="labelNeirong" x="10" y="360"/>
 				<object name="labelNeirongText" x="10" y="385"/>
 			</root>
 //<root>
@@ -74,6 +74,7 @@ package page.homepages
 			labelNeirongText.width = 600;
 			labelNeirongText.height = 100;
 			labelName.width = 200;
+			labelName.color = 0x646464;
 			labelNeirong.color = 0x646464;
 			labelNeirongText.color = 0x646464;
 			labelProgress.width = 300;

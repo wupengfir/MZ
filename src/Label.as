@@ -19,7 +19,7 @@ package
 			textField.selectable = false;
 			textField.wordWrap = true;
 //			textField.setTextFormat(textFormat);
-			this.font = "simHei";
+			this.font = "宋体";
 			this.color = 0x333333;
 		}
 		

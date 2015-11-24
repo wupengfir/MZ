@@ -46,7 +46,7 @@ package page.functionpage.update
 			<root>
 				<object name="checkBox" x="10" y="40"/>
 				<object name="image" x="50" y="10"/>
-				<object name="nameLabel" x="180" y="20"/>
+				<object name="nameLabel" x="180" y="90"/>
 				<object name="descLabel" x="360" y="20"/>
 				<object name="labelProgress" x="850" y="40"/>	
 				<object name="button" x="960" y="40"/>	
@@ -56,14 +56,17 @@ package page.functionpage.update
 		public function UpdateSpace(data:Object)
 		{
 			initByPageScript(ps);
-			drawLine(100,140,Common.MAX_WIDTH,140);
+			drawLine(100,140,Common.MAX_WIDTH,140,0xb2b2b2);
 			
 			checkBox.label = "";
 			image.width = 125;
 			image.height = 100;
+			image.setRoundMask();
 			nameLabel.width = 130;
+			nameLabel.size = 15;
 			descLabel.width = 440;
 			descLabel.height = 100;
+			descLabel.size = 15;
 			deleteButton.buttonMode = true;
 			button.addEventListener(MouseEvent.CLICK,onUpdateClick);
 			deleteButton.addEventListener(MouseEvent.CLICK,onItendDelete);

@@ -31,6 +31,8 @@
 	
 	import page.alertpage.Alert;
 	import page.alertpage.Confirm;
+	import page.functionpage.FunctionPage;
+	import page.functionpage.update.UpdatePage;
 	import page.homepages.HomePage;
 	import page.room.VideoSelectPage;
 	
@@ -156,6 +158,9 @@
 		private function onLoadComplete(e:Event):void{
 			Common.url = ((new XML(e.target.data)).url.(@type=="common"))[0].attribute("path").toString();			
 			loadUserConfig();			
+			
+			//FunctionPage.updatepage = new UpdatePage();
+			
 		}				
 		
 		private function loadUserConfig():void{

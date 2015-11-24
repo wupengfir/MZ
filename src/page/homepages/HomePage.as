@@ -21,11 +21,13 @@ package page.homepages
 	import flash.net.navigateToURL;
 	import flash.utils.Dictionary;
 	import flash.utils.Timer;
+	import flash.utils.setTimeout;
 	
 	import json.JsonData;
 	import json.JsonDecoder;
 	
 	import page.functionpage.FunctionPage;
+	import page.functionpage.update.UpdatePage;
 	import page.room.RoomSelectPage;
 	import page.room.VideoSelectPage;
 	
@@ -198,9 +200,21 @@ package page.homepages
 		}
 		
 		private function loadData():void{
-			Common.loadURL("furniture/action/davert/iosAdvert",handleAdvertise,reload1);
-			Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,reload2);
-			Common.loadURL("furniture/action/space/iosSpaceBefore",handleSpace,reload3);
+			
+			setTimeout(function():void{
+				Common.loadURL("furniture/action/davert/iosAdvert",handleAdvertise,reload1);
+			},100);
+			
+			setTimeout(function():void{
+				Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,reload2);
+			},200);
+			
+			setTimeout(function():void{
+				Common.loadURL("furniture/action/space/iosSpaceBefore",handleSpace,reload3);
+			},300);
+//			Common.loadURL("furniture/action/davert/iosAdvert",handleAdvertise,reload1);
+//			Common.loadURL("furniture/action/lifeway/iosLifewayBefore",handleLifewayBefore,reload2);
+//			Common.loadURL("furniture/action/space/iosSpaceBefore",handleSpace,reload3);
 		}
 		
 		private function reload1(e:IOErrorEvent):void{
@@ -274,6 +288,9 @@ package page.homepages
 				lifeStyleContainer.setRoundImages();
 				var index:int = 0;
 //				UserInfo.diyDataLoaded.push("mzchunjing");
+				//为了显示更新红点
+				FunctionPage.updatepage = new UpdatePage();
+				
 //				UserInfo.diyDataLoaded.push("mzdzh");
 //				UserInfo.diyDataLoaded.push("mzflx");
 //				UserInfo.userData.data.diyDataLoaded = UserInfo.diyDataLoaded;

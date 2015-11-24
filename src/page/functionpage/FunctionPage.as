@@ -36,7 +36,7 @@ package page.functionpage
 			updateSignal.visible = false;
 			addChild(updateSignal);
 			//为了显示更新红点，先实例化
-			updatepage = new UpdatePage();
+			//updatepage = new UpdatePage();
 		}
 		
 		//public function showUpdate
