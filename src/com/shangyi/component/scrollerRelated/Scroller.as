@@ -481,6 +481,10 @@
 			}
 		}
 		
+		public function addChildToRoot(child:DisplayObject):void{
+			super.addChild(child);
+		}
+		
 		override public function addChild(child:DisplayObject):DisplayObject{
 			if(addChildWithSelf){
 				return super.addChild(child);

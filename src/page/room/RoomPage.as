@@ -941,19 +941,24 @@ package page.room
 			
 //			video.y = 24;
 //			zoomContainer.addChild(video);
-			zoomImage.width = storyImage.width = 1024*scx;
+			zoomImage.scaleX = scx;
+			storyImage.width = 1024*scx;
 			zoomImage.height = storyImage.height = 510*scy;
 			storyImage.y = 120;
 			video.setSize(800,600);
 			video.x = 200;video.y = 150;
-			closeZoomBtn.x = closeStoryBtn.x = 1140/scx;
-			closeZoomBtn.y = closeStoryBtn.y = -35/scy;
-			addToOrderBtn.x = 1000/scx;
-			addToOrderBtn.y = -35/scy;
+			closeZoomBtn.x = 1140;
+			closeStoryBtn.x = 1140/scx;
+			closeZoomBtn.y = -35;
+			closeStoryBtn.y = -35/scy;
+			addToOrderBtn.x = 1000;
+			addToOrderBtn.y = -35;
+			closeZoomBtn.scaleX = addToOrderBtn.scaleX = scx;
+			closeZoomBtn.scaleY = addToOrderBtn.scaleY = scy;
 			zoomScroller.setmasksize(Common.MAX_WIDTH,760,0,-50);
 			closeStoryBtn.buttonMode = closeStoryBtn.buttonMode = addToOrderBtn.buttonMode = true;
-			zoomImage.addChild(closeZoomBtn);
-			zoomImage.addChild(addToOrderBtn);
+			zoomScroller.addChildToRoot(closeZoomBtn);
+			zoomScroller.addChildToRoot(addToOrderBtn);
 			addToOrderBtn.addEventListener(MouseEvent.CLICK,onAddToOrder);
 			
 			storyImage.addChild(closeStoryBtn);

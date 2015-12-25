@@ -17,7 +17,7 @@ package com.shangyi.component.buttonRelated
 		private var text:TextField = new TextField();
 		public var round:Boolean;
 		private var textFormat:TextFormat;
-		public function SimpleButton(_width:Number,_height:Number,round:Boolean = false,_color:uint = 0x483d8b,_alpha:Number = .8,size:Number = 20)
+		public function SimpleButton(_width:Number,_height:Number,round:Boolean = false,_color:uint = 0xc2c2c2,_alpha:Number = .8,size:Number = 20)
 		{
 			textFormat = new TextFormat();
 			textFormat.size = size;
@@ -81,7 +81,7 @@ package com.shangyi.component.buttonRelated
 			text.selectable = false;
 			
 //			text.x = (_width - text.textWidth)/2-1;
-			text.y = (_height - text.textHeight)/2-1;				
+			text.y = (_height - text.textHeight)/2-5;				
 			text.autoSize = TextFieldAutoSize.CENTER;
 			text.setTextFormat(textFormat);
 		}
