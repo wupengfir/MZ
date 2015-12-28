@@ -57,6 +57,7 @@
 		public var functionLayer:Page = new Page();
 		public var roomLayer:Page = new Page();
 		public var MessageLayer:Page = new Page();
+		public var LoadingLayer:Page = new Page();
 		public var loadingPage:LoadingMc = new LoadingMc();
 		
 		private var maskp:Page = new Page();
@@ -89,7 +90,7 @@
 		}
 		
 		private function onPlayEnd(e:Event):void{
-			addChild(new LoginPage);
+			normalLayer.addChild(new LoginPage);
 			//UserConfig.userConfigData.data.firstUse = null;
 			if(UserConfig.userConfigData.data.firstUse == null){
 				UserConfig.userConfigData.data.firstUse = false;
@@ -120,10 +121,11 @@
 			addChild(functionLayer);
 			addChild(roomLayer);
 			addChild(MessageLayer);
+			addChild(LoadingLayer);
 			
 			MessageLayer.addChild(Alert.a);
 			MessageLayer.addChild(Confirm.a);
-			MessageLayer.addChild(loadingPage);
+			LoadingLayer.addChild(loadingPage);
 			loadingPage.visible = false;
 		}
 		

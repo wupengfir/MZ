@@ -26,7 +26,7 @@ package page.functionpage.update
 	public class UpdatePage extends Page
 	{
 		
-		private var scroller:Scroller = new Scroller(Common.MAX_WIDTH,Common.MAX_HEIGHT*3/4);
+		private var scroller:Scroller = new Scroller(Common.MAX_WIDTH,Common.MAX_HEIGHT*3/4,1);
 		private var quanxuanBtn:Image = new Image("data/img/quanxuan.png");
 		private var shanchuBtn:Image = new Image("data/img/shanchu.png");
 		public function UpdatePage()
