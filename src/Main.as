@@ -85,6 +85,8 @@
 			video.addEventListener(VideoContainer.COMPLETE,onPlayEnd);
 			init();
 			
+			
+			
 			//自适应
 			stage.addEventListener (Event.RESIZE,test);  	
 		}
@@ -158,7 +160,8 @@
 
 		
 		private function onLoadComplete(e:Event):void{
-			Common.url = ((new XML(e.target.data)).url.(@type=="common"))[0].attribute("path").toString();			
+			Common.url = ((new XML(e.target.data)).url.(@type=="common"))[0].attribute("path").toString();
+			Common.syncUrl = ((new XML(e.target.data)).url.(@type=="sync"))[0].attribute("path").toString();
 			loadUserConfig();			
 			
 			//FunctionPage.updatepage = new UpdatePage();

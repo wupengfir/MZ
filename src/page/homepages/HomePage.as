@@ -263,6 +263,7 @@ package page.homepages
 		
 		private function handleLifewayBefore(e:Event):void{
 			trace("lifeway");
+			trace(e.currentTarget.data);
 			var data:JsonData = JsonDecoder.decoderToJsonData(e.currentTarget.data);
 			if(data.success){
 				var updatePlistFlag:Boolean = false;
@@ -287,7 +288,7 @@ package page.homepages
 				lifeStyleContainer.dataSource(urlList,290,12,null);
 				lifeStyleContainer.setRoundImages();
 				var index:int = 0;
-//				UserInfo.diyDataLoaded.push("mzchunjing");
+//				UserInfo.diyDataLoaded.push("mzcj");
 				//为了显示更新红点
 				FunctionPage.updatepage = new UpdatePage();
 				
@@ -298,6 +299,7 @@ package page.homepages
 				var a:Array = UserInfo.diyDataLoaded;
 				for each(var img:Image in lifeStyleContainer.scroller.btnArr){
 					img.info = dataList[index];
+					trace(img.info.li_No);
 					if(!(new File(Common.dataDir.nativePath+"/data/img/"+img.info.li_No).exists)){
 						if((UserInfo.diyDataLoaded.indexOf(img.info.li_No) != -1)){
 							for(var i:int = 0;i<UserInfo.diyDataLoaded.length;i++){

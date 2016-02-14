@@ -26,7 +26,7 @@ package
 		
 		public static var MAIN:Main;
 		public static var url:String;
-		
+		public static var syncUrl:String;
 		public static var currentColor:String = "shense";
 		public static var currentPath:String = "mzchunjing";
 		public static var currentRoomData:Dictionary;
@@ -115,6 +115,18 @@ package
 			if(ef != null)
 			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, ef);
 		}
+		
+		public static function loadSyncURL(path:String,f:Function,ef:Function):void{
+			var urlLoader:URLLoader = new URLLoader();
+			var urlRequest:URLRequest = new URLRequest(Common.syncUrl + path);
+			urlRequest.method = URLRequestMethod.GET;
+			urlLoader.load(urlRequest);
+			if(f != null)
+				urlLoader.addEventListener(Event.COMPLETE, f);
+			if(ef != null)
+				urlLoader.addEventListener(IOErrorEvent.IO_ERROR, ef);
+		}
+		
 		
 		public static function loadURLWithJSON(path:String,v:URLVariables,f:Function,ef:Function):void{
 			var urlLoader:URLLoader = new URLLoader();

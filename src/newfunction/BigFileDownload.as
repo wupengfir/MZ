@@ -45,6 +45,11 @@ package newfunction
 				file.deleteFile();
 			}
 		}
+		
+		public function get nPath():String{
+			return Common.dataDir.resolvePath(nativePath).nativePath;
+		}
+		
 		private var firstCheck:Boolean = false;
 		public var continueLoad:Boolean = true;
 		private function downloadByRange():void{

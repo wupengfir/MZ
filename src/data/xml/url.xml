@@ -1,3 +1,4 @@
 <urls>
 	<url path="http://mzlive.zsmz.com:8080/" type="common"></url>
+	<url path="http://mzlive.zsmz.com:8081/" type="sync"></url>
 </urls>
