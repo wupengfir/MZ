@@ -73,7 +73,7 @@ package page.functionpage.pricesync
 		private function handleSync(e:Event):void{
 			Common.MAIN.loading = false;
 			trace(e.currentTarget.data);
-			var jd:String = new XML(e.currentTarget.data).text().toString();
+			var jd:String = e.currentTarget.data//"{\"data\":[{\"address\":\"http:\/\/mzlive.zsmz.com:8080\/furniture\/data\/mzcj\/mzcj_CID002.plist\",\"fengge\":\"mzcj\"}],\"message\":null,\"success\":\"0\"}"//new XML(e.currentTarget.data).text().toString();
 			trace(jd);
 			var data:JsonData = JsonDecoder.decoderPriceSyncToJsonData(jd);
 			
