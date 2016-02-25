@@ -289,6 +289,7 @@ package page.homepages
 				lifeStyleContainer.setRoundImages();
 				var index:int = 0;
 //				UserInfo.diyDataLoaded.push("mzcj");
+//				UserInfo.diyDataLoaded.splice(UserInfo.diyDataLoaded.indexOf("mzchunjing"),1);
 				//为了显示更新红点
 				FunctionPage.updatepage = new UpdatePage();
 				

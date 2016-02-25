@@ -93,15 +93,15 @@ package page.functionpage.pricesync
 		private function onComplete(e:Event):void{
 			total--;
 			
-			var p:String = e.target.nPath;
-			var f:File = new File(p);
-			var fs:FileStream = new FileStream();
-			fs.open(f,FileMode.READ);
-			var data:String = fs.readMultiByte(fs.bytesAvailable,"gb2312");
-			fs.close();
-			fs.open(f,FileMode.WRITE);
-			fs.writeMultiByte(data,"utf-8");
-			fs.close();
+//			var p:String = e.target.nPath;
+//			var f:File = new File(p);
+//			var fs:FileStream = new FileStream();
+//			fs.open(f,FileMode.READ);
+//			var data:String = fs.readMultiByte(fs.bytesAvailable,"gb2312");
+//			fs.close();
+//			fs.open(f,FileMode.WRITE);
+//			fs.writeMultiByte(data,"utf-8");
+//			fs.close();
 			if(total == 0){
 				FunctionPage.syncpage.visible = false;
 				Alert.alert("更新完成");
